@@ -1,15 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class HealthBar : MonoBehaviour {
 
 	public float maxHealth = 100f;
 	public float currentHealth;
+	public GameObject cam;
+	public bool sentMsg = false;
 
 	// Use this for initialization
 	void Start () {
 		currentHealth = maxHealth;
-		//InvokeRepeating("decreaseHealth", 1f, 1f);
+		cam = GameObject.Find ("Main Camera");
+		InvokeRepeating("decreaseHealth", 1f, 1f);
 	}
 
 	// Update is called once per frame
@@ -23,6 +27,12 @@ public class HealthBar : MonoBehaviour {
 			currentHealth -= 10f;
 			float scaledHealthVal = currentHealth / maxHealth;
 			UpdateHealthBar (scaledHealthVal);
+		} else {
+			cam.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+			if (!sentMsg) {
+				Fungus.Flowchart.BroadcastFungusMessage ("Defeat");
+				sentMsg = true;
+			}
 		}
 	}
 

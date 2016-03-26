@@ -55,4 +55,9 @@ public class MoveKnight : MonoBehaviour {
 			hp_bar.GetComponent<HealthBar> ().decreaseHealth ();
 		}
     }
+
+	// TODO: consider moving this elsewhere
+	public void LoadMenu() {
+		SceneManager.LoadScene ("Menu");
+	}
 }
