@@ -5,7 +5,9 @@ public class MoveEnemy : MonoBehaviour {
 
     Rigidbody rigid;
     public GameObject explosion;
-	//GameObject player;
+	GameObject player;
+	Transform target;
+	float speed;
 	GameObject maincamera; // for player move script -- WHY???
 	public int state;
 
@@ -13,9 +15,11 @@ public class MoveEnemy : MonoBehaviour {
     void Start()
     {
         rigid = GetComponentInChildren<Rigidbody>();
-		//player = GameObject.Find ("Knight");
+		player = GameObject.Find ("Knight");
+		target = player.transform;
 		maincamera = GameObject.Find ("Main Camera");
 		state = 0;
+		speed = 20.0f;
     }
 
     // Update is called once per frame
@@ -28,7 +32,7 @@ public class MoveEnemy : MonoBehaviour {
 			}
 			break;
 		case 1:
-			rigid.AddForce(Vector3.back * 10f);
+			transform.position = Vector3.MoveTowards (transform.position, target.position, Time.deltaTime * speed);
 			break;
 		default:
 			Debug.Log("MoveEnemy: Undefined state");
