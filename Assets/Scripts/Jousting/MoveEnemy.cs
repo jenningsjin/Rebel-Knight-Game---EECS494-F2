@@ -41,7 +41,9 @@ public class MoveEnemy : MonoBehaviour {
 			// in a given frame.
 			// On the other hand, if the frame rate is very slow, then Time.deltaTime is huge, and the enemy travels far
 			// in a given frame.
-			transform.position = Vector3.MoveTowards (transform.position, target.position, Time.deltaTime * speed);
+			if (transform.position.z > target.position.z) {
+				transform.position = Vector3.MoveTowards (transform.position, target.position, Time.deltaTime * speed);
+			}
 			break;
 		default:
 			Debug.Log("MoveEnemy: Undefined state");

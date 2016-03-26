@@ -13,7 +13,7 @@ public class HealthBar : MonoBehaviour {
 	void Start () {
 		currentHealth = maxHealth;
 		cam = GameObject.Find ("Main Camera");
-		//InvokeRepeating("decreaseHealth", 1f, 1f);
+		InvokeRepeating("decreaseHealth", 1f, 1f);
 	}
 
 	// Update is called once per frame
@@ -29,6 +29,7 @@ public class HealthBar : MonoBehaviour {
 			UpdateHealthBar (scaledHealthVal);
 		} else {
 			cam.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+			cam.GetComponent<MoveKnight> ().state = 0;
 			if (!sentMsg) {
 				Fungus.Flowchart.BroadcastFungusMessage ("Defeat");
 				sentMsg = true;
