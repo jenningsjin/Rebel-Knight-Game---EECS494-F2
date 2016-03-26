@@ -13,13 +13,17 @@ public class MoveKnight : MonoBehaviour {
     void Start () {
         rigid = GetComponentInChildren<Rigidbody>();
     }
-	
+
+	public void BeginGame() {
+		start = true;
+	}
+
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKey(KeyCode.Space))
+        /*if (Input.GetKey(KeyCode.Space))
         {
             start = true;
-        }
+        }*/
         if (start)
         {
                 rigid.AddForce(Vector3.forward * 20f);

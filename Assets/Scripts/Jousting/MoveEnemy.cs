@@ -5,7 +5,9 @@ public class MoveEnemy : MonoBehaviour {
 
     Rigidbody rigid;
     public GameObject explosion;
-    public bool start = false;
+	GameObject player;
+	GameObject maincamera; // for player move script -- WHY???
+    //public bool start = false;
     bool end = false;
     bool win = false;
     float time = 5f;
@@ -13,16 +15,14 @@ public class MoveEnemy : MonoBehaviour {
     void Start()
     {
         rigid = GetComponentInChildren<Rigidbody>();
+		player = GameObject.Find ("Knight");
+		maincamera = GameObject.Find ("Main Camera");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.Space))
-        {
-            start = true;
-        }
-        if (start && !end)
+		if (maincamera.GetComponent<MoveKnight>().start && !end)
         {
                 rigid.AddForce(Vector3.back * 10f);
         }
