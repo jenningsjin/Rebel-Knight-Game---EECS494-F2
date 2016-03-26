@@ -13,7 +13,7 @@ public class HealthBar : MonoBehaviour {
 	void Start () {
 		currentHealth = maxHealth;
 		cam = GameObject.Find ("Main Camera");
-		InvokeRepeating("decreaseHealth", 1f, 1f);
+		//InvokeRepeating("decreaseHealth", 1f, 1f);
 	}
 
 	// Update is called once per frame
