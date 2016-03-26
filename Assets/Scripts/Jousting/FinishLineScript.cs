@@ -21,7 +21,7 @@ public class FinishLineScript : MonoBehaviour {
 		Debug.Log ("FinishLine: Collision detected");
 		if (col.gameObject.CompareTag ("Knight")) {
 			Debug.Log ("FinishLine: Your gallant knight has crossed the finish line.");
-			maincamera.GetComponent<MoveKnight> ().end = true;
+			maincamera.GetComponent<MoveKnight> ().state++;
 		}
 	}
 }

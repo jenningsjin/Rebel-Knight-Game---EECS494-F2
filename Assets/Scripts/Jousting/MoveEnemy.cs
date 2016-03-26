@@ -27,11 +27,18 @@ public class MoveEnemy : MonoBehaviour {
     {
 		switch (state) {
 		case 0:
-			if (maincamera.GetComponent<MoveKnight>().start) {
+			if (maincamera.GetComponent<MoveKnight>().state == 1) {
+				Debug.Log ("Chasing player");
 				++state;
 			}
 			break;
 		case 1:
+			// MoveTowards: Each frame, a line is drawn from the enemy's current position to the player's current position,
+			// and the enemy moves a certain distance along this line, given by the third argument.
+			// If the frame rate is very fast, then Time.deltaTime is small, and the enemy doesn't travel far
+			// in a given frame.
+			// On the other hand, if the frame rate is very slow, then Time.deltaTime is huge, and the enemy travels far
+			// in a given frame.
 			transform.position = Vector3.MoveTowards (transform.position, target.position, Time.deltaTime * speed);
 			break;
 		default:
