@@ -6,11 +6,10 @@ public class MoveKnight : MonoBehaviour {
     Rigidbody rigid;
     public GameObject explosion;
 	public int state;
-    public bool start = false;
-    public bool end = false;
-    //bool win = false;
 	bool sentMsg = false;
-    //float time = 5f;
+	public int hp;
+	public int score;
+
     // Use this for initialization
     void Start () {
         rigid = GetComponentInChildren<Rigidbody>();
