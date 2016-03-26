@@ -19,7 +19,7 @@ public class MoveEnemy : MonoBehaviour {
 		target = player.transform;
 		maincamera = GameObject.Find ("Main Camera");
 		state = 0;
-		speed = 20.0f;
+		speed = 15.0f;
     }
 
     // Update is called once per frame
