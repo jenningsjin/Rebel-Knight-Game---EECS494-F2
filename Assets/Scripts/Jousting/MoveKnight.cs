@@ -8,6 +8,7 @@ public class MoveKnight : MonoBehaviour {
     public bool start = false;
     public bool end = false;
     bool win = false;
+	bool sentMsg = false;
     float time = 5f;
     // Use this for initialization
     void Start () {
@@ -32,6 +33,10 @@ public class MoveKnight : MonoBehaviour {
         {
 			rigid.constraints = RigidbodyConstraints.FreezeAll;
             time -= Time.deltaTime;
+			if (!sentMsg) {
+				Fungus.Flowchart.BroadcastFungusMessage ("LevelCleared");
+				sentMsg = true;
+			}
             if(time < 0)
             {
                 //End game
