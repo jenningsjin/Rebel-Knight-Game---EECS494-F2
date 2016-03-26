@@ -8,7 +8,6 @@ public class MoveKnight : MonoBehaviour {
 	public int state;
 	bool sentMsg = false;
 	public GameObject hp_bar;
-	public int score;
 
     // Use this for initialization
     void Start () {

@@ -10,6 +10,7 @@ public class MoveEnemy : MonoBehaviour {
 	float speed;
 	GameObject maincamera; // for player move script -- WHY???
 	public int state;
+	public GameObject score;
 
     // Use this for initialization
     void Start()
@@ -20,6 +21,7 @@ public class MoveEnemy : MonoBehaviour {
 		maincamera = GameObject.Find ("Main Camera");
 		state = 0;
 		speed = 15.0f;
+		score = GameObject.Find ("Score");
     }
 
     // Update is called once per frame
@@ -57,6 +59,7 @@ public class MoveEnemy : MonoBehaviour {
             explosion.transform.position = collision.transform.position;
             Instantiate<GameObject>(explosion);
 			Destroy (this.gameObject, 3);
+			score.GetComponent<ScoreScript>().updateScore ();
         }
     }
 }
