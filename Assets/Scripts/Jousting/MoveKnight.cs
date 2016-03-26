@@ -6,7 +6,7 @@ public class MoveKnight : MonoBehaviour {
     Rigidbody rigid;
     public GameObject explosion;
     public bool start = false;
-    bool end = false;
+    public bool end = false;
     bool win = false;
     float time = 5f;
     // Use this for initialization
@@ -26,6 +26,7 @@ public class MoveKnight : MonoBehaviour {
         }
         if (end)
         {
+			rigid.constraints = RigidbodyConstraints.FreezeAll;
             time -= Time.deltaTime;
             if(time < 0)
             {
