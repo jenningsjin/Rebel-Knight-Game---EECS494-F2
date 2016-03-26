@@ -7,13 +7,14 @@ public class MoveKnight : MonoBehaviour {
     public GameObject explosion;
 	public int state;
 	bool sentMsg = false;
-	public int hp;
+	public GameObject hp_bar;
 	public int score;
 
     // Use this for initialization
     void Start () {
         rigid = GetComponentInChildren<Rigidbody>();
 		state = 0;
+		hp_bar = GameObject.Find ("HP_Bar");
     }
 
 	public void BeginGame() {
@@ -51,5 +52,8 @@ public class MoveKnight : MonoBehaviour {
     void OnCollisionEnter(Collision collision)
     {
         rigid.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+		if (collision.gameObject.CompareTag ("Enemy")) {
+			hp_bar.GetComponent<HealthBar> ().decreaseHealth ();
+		}
     }
 }

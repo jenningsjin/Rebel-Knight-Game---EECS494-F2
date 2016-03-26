@@ -9,7 +9,7 @@ public class HealthBar : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		currentHealth = maxHealth;
-		InvokeRepeating("decreaseHealth", 1f, 1f);
+		//InvokeRepeating("decreaseHealth", 1f, 1f);
 	}
 
 	// Update is called once per frame
@@ -17,7 +17,7 @@ public class HealthBar : MonoBehaviour {
 
 	}
 
-	void decreaseHealth() {
+	public void decreaseHealth() {
 		Debug.Log ("Decreasing health");
 		if (currentHealth > 0) {
 			currentHealth -= 10f;
