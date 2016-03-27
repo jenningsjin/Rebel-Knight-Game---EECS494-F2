@@ -43,6 +43,7 @@ public class MoveEnemy : MonoBehaviour {
 			// in a given frame.
 			if (transform.position.z > target.position.z) {
 				transform.position = Vector3.MoveTowards (transform.position, target.position, Time.deltaTime * speed);
+				transform.LookAt (player.transform);
 			}
 			break;
 		default:
