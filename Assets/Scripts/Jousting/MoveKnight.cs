@@ -26,13 +26,18 @@ public class MoveKnight : MonoBehaviour {
 		case 0: // Before game start
 			break;
 		case 1: // Charge
-			rigid.AddForce(Vector3.forward * 20f);
+			rigid.AddForce (Vector3.forward * 20f);
 			Vector3 vel = rigid.velocity;
-			if (Input.GetKey(KeyCode.LeftArrow) && vel.x > -5f) {
+			Vector3 tmp = rigid.rotation.eulerAngles;
+			if (Input.GetKey (KeyCode.LeftArrow) && vel.x > -5f) {
 				vel.x -= 0.5f;
-			} else if (Input.GetKey(KeyCode.RightArrow) && vel.x < 5f) {
+				tmp.y -= 0.5f;
+			} else if (Input.GetKey (KeyCode.RightArrow) && vel.x < 5f) {
 				vel.x += 0.5f;
+				tmp.y += 0.5f;
 			}
+
+			rigid.rotation = Quaternion.Euler (tmp.x, tmp.y, tmp.z);
 			rigid.velocity = vel;
 			break;
 		case 2: // After crossing the finish line
