@@ -60,7 +60,7 @@ public class MoveEnemy : MonoBehaviour {
         {
             rigid.constraints = RigidbodyConstraints.None;
             explosion.transform.position = collision.transform.position;
-            Instantiate<GameObject>(explosion);
+            //Instantiate<GameObject>(explosion);
 			Destroy (this.gameObject, 3);
 			score.GetComponent<ScoreScript>().updateScore ();
         }
