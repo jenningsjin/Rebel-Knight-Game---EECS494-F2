@@ -19,14 +19,14 @@ public class Slap : MonoBehaviour {
         if (slapping == 1)//Slap
         {
             next.y += 8f;
-            if (next.y >= 120f)
+            if (next.y >= 180f)
             {
                 slapping = 2;
             }
         } else if(slapping == 2)//Return to original position
         {
             next.y -= 4f;
-            if (next.y <= 0)
+            if (next.y <= 0f)
             {
                 slapping = 3;
                 time = 0;

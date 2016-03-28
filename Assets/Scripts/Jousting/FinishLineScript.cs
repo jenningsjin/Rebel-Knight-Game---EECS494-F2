@@ -4,10 +4,10 @@ using System.Collections;
 public class FinishLineScript : MonoBehaviour {
 	// The variables below are temporary. Not sure why we have the Knight script attached
 	// to the main camera of all places!
-	GameObject maincamera;
+	GameObject player;
 	// Use this for initialization
 	void Start () {
-		if (!(maincamera = GameObject.Find ("Main Camera"))) {
+		if (!(player = GameObject.Find ("Knight"))) {
 			Debug.Log ("FinishLine: Couldn't find main camera");
 		}
 	}
@@ -21,7 +21,7 @@ public class FinishLineScript : MonoBehaviour {
 		Debug.Log ("FinishLine: Collision detected");
 		if (col.gameObject.CompareTag ("Knight")) {
 			Debug.Log ("FinishLine: Your gallant knight has crossed the finish line.");
-			maincamera.GetComponent<MoveKnight> ().state++;
+			player.GetComponent<MoveKnight> ().state++;
 		}
 	}
 }

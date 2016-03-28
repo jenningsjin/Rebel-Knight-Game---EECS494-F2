@@ -11,7 +11,7 @@ public class MoveKnight : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        rigid = GetComponentInChildren<Rigidbody>();
+        rigid = GetComponent<Rigidbody>();
 		state = 0;
 		hp_bar = GameObject.Find ("HP_Bar");
     }
@@ -30,7 +30,6 @@ public class MoveKnight : MonoBehaviour {
 				rigid.AddForce (Vector3.forward * 20f);
 			}
 			Vector3 vel = rigid.velocity;
-            //print(vel);
 			Vector3 tmp = rigid.rotation.eulerAngles;
 			if (Input.GetKey (KeyCode.LeftArrow) && vel.x > -5f) {
 				vel.x -= 0.5f;
@@ -56,13 +55,19 @@ public class MoveKnight : MonoBehaviour {
 		}
     }
 
-    void OnCollisionEnter(Collision collision)
-    {
-        rigid.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
-		if (collision.gameObject.CompareTag ("Enemy")) {
-			hp_bar.GetComponent<HealthBar> ().decreaseHealth ();
+	void OnCollisionEnter(Collision col) {
+		//print ("Player body collided with something");
+		// Contact points: every contact stores a contact point and the two colliders
+		// involved.
+		foreach (ContactPoint c in col.contacts) {
+			//print ("Contact " + c.thisCollider.name + " hit " + c.otherCollider.name);
+			if (c.thisCollider.name == "VulnerableArea" && c.otherCollider.name == "EnemyLance" ||
+				c.thisCollider.name == "EnemyLance" && c.otherCollider.name == "VulnerableArea") {
+				print ("Contact " + c.thisCollider.name + " hit " + c.otherCollider.name);
+				hp_bar.GetComponent<HealthBar> ().decreaseHealth ();
+			}
 		}
-    }
+	}
 
 	// TODO: consider moving this elsewhere
 	public void LoadMenu() {

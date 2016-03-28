@@ -8,7 +8,7 @@ public class MoveEnemy : MonoBehaviour {
 	GameObject player;
 	Transform target;
 	float speed;
-	GameObject maincamera; // for player move script -- WHY???
+	//GameObject maincamera; // for player move script -- WHY???
 	public int state;
 	public GameObject score;
 
@@ -18,7 +18,7 @@ public class MoveEnemy : MonoBehaviour {
         rigid = GetComponentInChildren<Rigidbody>();
 		player = GameObject.Find ("Knight");
 		target = player.transform;
-		maincamera = GameObject.Find ("Main Camera");
+		//maincamera = GameObject.Find ("Main Camera");
 		state = 0;
 		speed = 15.0f;
 		score = GameObject.Find ("Score");
@@ -29,7 +29,7 @@ public class MoveEnemy : MonoBehaviour {
     {
 		switch (state) {
 		case 0:
-			if (maincamera.GetComponent<MoveKnight>().state == 1) {
+			if (player.GetComponent<MoveKnight>().state == 1) {
 				Debug.Log ("Chasing player");
 				++state;
 			}
@@ -42,6 +42,7 @@ public class MoveEnemy : MonoBehaviour {
 			// On the other hand, if the frame rate is very slow, then Time.deltaTime is huge, and the enemy travels far
 			// in a given frame.
 			if (transform.position.z > target.position.z) {
+				Debug.Log ("CHANGING ENEMY's POSITION");
 				transform.position = Vector3.MoveTowards (transform.position, target.position, Time.deltaTime * speed);
 				transform.LookAt (player.transform);
 			}
@@ -52,17 +53,19 @@ public class MoveEnemy : MonoBehaviour {
 		}
 
     }
-
-    void OnCollisionEnter(Collision collision)
-    {
-
-        if (collision.gameObject.name == "Main Camera")
-        {
-            rigid.constraints = RigidbodyConstraints.None;
-            explosion.transform.position = collision.transform.position;
-            //Instantiate<GameObject>(explosion);
-			Destroy (this.gameObject, 3);
-			score.GetComponent<ScoreScript>().updateScore ();
-        }
-    }
+		
+	void OnCollisionEnter(Collision col) {
+		//print ("Player body collided with something");
+		// Contact points: every contact stores a contact point and the two colliders
+		// involved.
+		foreach (ContactPoint c in col.contacts) {
+			//print ("Contact " + c.thisCollider.name + " hit " + c.otherCollider.name);
+			if (c.thisCollider.name == "VulnerableArea" && c.otherCollider.name == "KnightLance" ||
+				c.thisCollider.name == "KnightLance" && c.otherCollider.name == "VulnerableArea") {
+				print ("Contact " + c.thisCollider.name + " hit " + c.otherCollider.name);
+				Destroy (this.gameObject);
+				score.GetComponent<ScoreScript>().updateScore ();
+			}
+		}
+	}
 }
