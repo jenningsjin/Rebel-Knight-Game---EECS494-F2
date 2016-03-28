@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class MoveKnight : MonoBehaviour {
-    Rigidbody rigid;
+    public static Rigidbody rigid;
     public GameObject explosion;
 	public int state;
 	bool sentMsg = false;
@@ -28,6 +28,7 @@ public class MoveKnight : MonoBehaviour {
 		case 1: // Charge
 			rigid.AddForce (Vector3.forward * 20f);
 			Vector3 vel = rigid.velocity;
+            //print(vel);
 			Vector3 tmp = rigid.rotation.eulerAngles;
 			if (Input.GetKey (KeyCode.LeftArrow) && vel.x > -5f) {
 				vel.x -= 0.5f;
