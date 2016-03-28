@@ -26,7 +26,9 @@ public class MoveKnight : MonoBehaviour {
 		case 0: // Before game start
 			break;
 		case 1: // Charge
-			rigid.AddForce (Vector3.forward * 20f);
+			if( rigid.velocity.magnitude < 50) {
+				rigid.AddForce (Vector3.forward * 20f);
+			}
 			Vector3 vel = rigid.velocity;
             //print(vel);
 			Vector3 tmp = rigid.rotation.eulerAngles;
