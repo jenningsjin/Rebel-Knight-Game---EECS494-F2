@@ -15,5 +15,6 @@ public class Arrow : MonoBehaviour {
 
     void OnCollisionEnter(Collision c) {
         print("arrows");
+        Destroy(this);
     }
 }
