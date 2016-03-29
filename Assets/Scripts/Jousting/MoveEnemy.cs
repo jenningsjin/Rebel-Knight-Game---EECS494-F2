@@ -73,7 +73,9 @@ public class MoveEnemy : MonoBehaviour {
 				}*/
 				Destroy (this.gameObject);
 				//score.GetComponent<ScoreScript>().updateScore ();
-				BoidController.flockSize+=1;
+				if(BoidController.flockSize < 10) {
+					BoidController.flockSize+=1;
+				}
 				CarpetBossScript.bossHP-=1;
 			}
 		}

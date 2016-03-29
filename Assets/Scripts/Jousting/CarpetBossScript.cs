@@ -24,17 +24,21 @@ public class CarpetBossScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if( (bossHP <=15) && (bossHP > 12)) {
+		if( (bossHP <=15) && (bossHP > 11)) {
 			bossPhase = 0;
 		}
-		else if (bossHP <=12 && bossHP > 7) {
+		else if (bossHP <=11 && bossHP > 7) {
 			bossPhase = 1;
 		}
 		else if (bossHP <= 7 && bossHP > 1) {
 			bossPhase = 2;
 		}
-		else  {
+		else if (bossHP == 1)  {
 			bossPhase = 3;
+		}
+
+		else { // boss is dead
+			Destroy(this.gameObject);
 		}
 
 
@@ -43,14 +47,14 @@ public class CarpetBossScript : MonoBehaviour {
 				//chaserDistance = 30;
 				break;
 			case 1:
-				chaserDistance = 12;
+				chaserDistance = 22;
 				//CancelInvoke("spawnEnemy");
 				break;
 			case 2:
-				chaserDistance = 8;
+				chaserDistance = 17;
 				break;
 			case 3:
-				chaserDistance = 1;
+				chaserDistance = 6;
 				break;
 			default:
 				print("We should never be here");
