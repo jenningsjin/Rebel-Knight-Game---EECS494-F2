@@ -16,7 +16,7 @@ public class LoopScript : MonoBehaviour {
 
 	void OnTriggerEnter(Collider col) {
 		print(col.gameObject.name);
-		itemToLoop.transform.position = new Vector3(itemToLoop.transform.position.x, 1.9f, 0f);
+		itemToLoop.transform.position = new Vector3(itemToLoop.transform.position.x, itemToLoop.transform.position.y , 0f);
 
 	}
 }
