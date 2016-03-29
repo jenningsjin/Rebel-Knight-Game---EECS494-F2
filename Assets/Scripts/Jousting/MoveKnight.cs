@@ -39,7 +39,7 @@ public class MoveKnight : MonoBehaviour {
 				tmp.y += 0.5f;
 			}
 
-			rigid.rotation = Quaternion.Euler (tmp.x, tmp.y, tmp.z);
+			//rigid.rotation = Quaternion.Euler (tmp.x, tmp.y, tmp.z);
 			rigid.velocity = vel;
 			break;
 		case 2: // After crossing the finish line

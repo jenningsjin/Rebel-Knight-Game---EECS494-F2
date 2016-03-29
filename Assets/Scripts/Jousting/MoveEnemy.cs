@@ -65,6 +65,7 @@ public class MoveEnemy : MonoBehaviour {
 				print ("Contact " + c.thisCollider.name + " hit " + c.otherCollider.name);
 				Destroy (this.gameObject);
 				score.GetComponent<ScoreScript>().updateScore ();
+				BoidController.flockSize+=1;
 			}
 		}
 	}

@@ -6,7 +6,7 @@ public class BoidController : MonoBehaviour
     public float minVelocity = 5;
     public float maxVelocity = 20;
     public float randomness = 1;
-    public int flockSize = 20;
+    public static int flockSize = 3;
     public GameObject prefab;
     public GameObject chasee;
 
@@ -34,6 +34,7 @@ public class BoidController : MonoBehaviour
             print(boids[i]);
         }
     }
+
 
     void Update()
     {
