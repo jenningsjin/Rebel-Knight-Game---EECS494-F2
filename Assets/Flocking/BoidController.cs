@@ -40,7 +40,11 @@ public class BoidController : MonoBehaviour
     {
         Vector3 theCenter = Vector3.zero;
         Vector3 theVelocity = Vector3.zero;
-
+        if(boids.Length != flockSize)
+        {
+            Destroy(boids);
+            Start();
+        }
         foreach (GameObject boid in boids)
         {
             theCenter = theCenter + boid.transform.localPosition;
@@ -51,5 +55,14 @@ public class BoidController : MonoBehaviour
         flockCenter = this.transform.localPosition;
         flockVelocity = theVelocity / (flockSize);
         flockVelocity = MoveKnight.rigid.velocity;
+    }
+
+    private void Destroy(GameObject[] boids)
+    {
+        var size = boids.Length;
+        for (int i = 0; i < size; i++)
+        {
+            Destroy(boids[i]);
+        }
     }
 }

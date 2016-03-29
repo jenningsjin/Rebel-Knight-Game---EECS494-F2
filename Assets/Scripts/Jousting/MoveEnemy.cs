@@ -55,6 +55,7 @@ public class MoveEnemy : MonoBehaviour {
     }
 		
 	void OnCollisionEnter(Collision col) {
+        
 		//print ("Player body collided with something");
 		// Contact points: every contact stores a contact point and the two colliders
 		// involved.
