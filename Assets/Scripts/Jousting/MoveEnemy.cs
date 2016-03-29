@@ -10,7 +10,7 @@ public class MoveEnemy : MonoBehaviour {
 	float speed;
 	//GameObject maincamera; // for player move script -- WHY???
 	public int state;
-	public GameObject score;
+	//public GameObject score;
 
     // Use this for initialization
     void Start()
@@ -20,8 +20,8 @@ public class MoveEnemy : MonoBehaviour {
 		target = player.transform;
 		//maincamera = GameObject.Find ("Main Camera");
 		state = 0;
-		speed = 15.0f;
-		score = GameObject.Find ("Score");
+		speed = 7.0f;
+		//score = GameObject.Find ("Score");
     }
 
     // Update is called once per frame
@@ -63,8 +63,15 @@ public class MoveEnemy : MonoBehaviour {
 			if (c.thisCollider.name == "VulnerableArea" && c.otherCollider.name == "KnightLance" ||
 				c.thisCollider.name == "KnightLance" && c.otherCollider.name == "VulnerableArea") {
 				print ("Contact " + c.thisCollider.name + " hit " + c.otherCollider.name);
+				/*rigid.constraints = RigidbodyConstraints.None;
+				rigid.AddExplosionForce (7.0f, this.gameObject.transform.position, 5.0f);
+				// disable all child colliders
+				Collider [] componentsList = this.gameObject.GetComponentsInChildren<Collider>();
+				foreach (Collider collider in componentsList) {
+					collider.enabled = false;
+				}*/
 				Destroy (this.gameObject);
-				score.GetComponent<ScoreScript>().updateScore ();
+				//score.GetComponent<ScoreScript>().updateScore ();
 				BoidController.flockSize+=1;
 			}
 		}
