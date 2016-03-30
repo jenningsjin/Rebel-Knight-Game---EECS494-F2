@@ -94,8 +94,6 @@ public class MoveKnight : MonoBehaviour {
             case 2: pos.x = rightLane; break;
             default: pos.x = midLane; lane = 0; break;
         }
-        print(pos);
-        print(lane);
         
         //rigid.MovePosition(pos);
         rigid.position = Vector3.MoveTowards(transform.position, pos, 1.5f);
@@ -113,6 +111,11 @@ public class MoveKnight : MonoBehaviour {
 				hp_bar.GetComponent<HealthBar> ().decreaseHealth ();
 			}
 		}
+        print(col.gameObject.tag);
+        if(col.gameObject.tag == "Grounded")
+        {
+            grounded = true;
+        }
 	}
 
     void changeSpeed()

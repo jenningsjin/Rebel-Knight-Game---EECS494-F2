@@ -43,5 +43,6 @@ public class HealthBar : MonoBehaviour {
 			currentHP,
 			this.gameObject.transform.localScale.y,
 			this.gameObject.transform.localScale.z);
+        BoidController.flockSize /= 2;
 	}
 }
