@@ -9,6 +9,8 @@ public class MoveKnight : MonoBehaviour {
 	public GameObject hp_bar;
 	public int jumpSpeed = 100;
 	public BoxCollider groundCollider;
+    private float moveTimer = 0.1f;
+    private int lane = 1;
 
 	bool sentMsg = false;
 	bool grounded = true;
@@ -25,23 +27,32 @@ public class MoveKnight : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+        moveTimer -= Time.deltaTime;
 		switch (state) {
 		case 0: // Before game start
 			break;
 		case 1: // Charge
-			if( rigid.velocity.z < 20) {
-				rigid.AddForce (Vector3.forward * 20f);
+			if( rigid.velocity.z < 30) {
+				rigid.AddForce (Vector3.forward * 40f);
 			}
 			Vector3 vel = rigid.velocity;
 			//Vector3 tmp = rigid.rotation.eulerAngles;
-			if (Input.GetKey (KeyCode.LeftArrow) && vel.x > -5f) {
-				vel.x -= 0.8f;
+			if (Input.GetKey (KeyCode.LeftArrow) && moveTimer < 0 && lane > 0) {
+                    Vector3 pos = this.transform.position;
+                    pos.x -= 4f;
+                    rigid.MovePosition(pos);
+                    moveTimer = 0.1f;
+                    lane--;
 				//tmp.y -= 0.5f;
 			} 
-			else if (Input.GetKey (KeyCode.RightArrow) && vel.x < 5f) {
-				vel.x += 0.8f;
-				//tmp.y += 0.5f;
-			}
+			else if (Input.GetKey (KeyCode.RightArrow) && moveTimer < 0 && lane < 2) {
+                    Vector3 pos = this.transform.position;
+                    pos.x += 4f;
+                    rigid.MovePosition(pos);
+                    moveTimer = 0.1f;
+                    lane++;
+                    //tmp.y += 0.5f;
+                }
 			else if (Input.GetKey (KeyCode.UpArrow) && grounded) {
 				rigid.AddForce(Vector3.up * jumpSpeed, ForceMode.Impulse);
 				Debug.Log("Jumping");
