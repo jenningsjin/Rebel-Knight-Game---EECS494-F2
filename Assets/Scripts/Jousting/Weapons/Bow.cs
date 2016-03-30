@@ -8,7 +8,7 @@ public class Bow : MonoBehaviour {
     public Vector3 bowPosition;
     public Quaternion bowRotation;
     public bool canShoot = true;
-
+    Vector3 arrowVel;
     public float reloadTime = 0.5f;
     public float timerCounter;
 
@@ -22,7 +22,8 @@ public class Bow : MonoBehaviour {
         bowPosition = bow.transform.position;
         bowRotation = bow.transform.rotation;
         timerCounter -= Time.deltaTime;
-
+        arrowVel = transform.parent.gameObject.GetComponent<Rigidbody>().velocity;
+        arrowVel = new Vector3(0, arrowVel.y, arrowVel.z);
         if (Input.GetKeyDown(KeyCode.Space) && timerCounter < 0) {
             ShootArrow();
         }            
@@ -31,7 +32,8 @@ public class Bow : MonoBehaviour {
 
     void ShootArrow() {
         Debug.Log("shooot");
-        Instantiate(arrow, bowPosition, bowRotation);
+        GameObject tempArrow = (GameObject) Instantiate(arrow, bowPosition, bowRotation);
+        tempArrow.GetComponent<Rigidbody>().velocity = arrowVel * 2;
         timerCounter = reloadTime;
 
     }

@@ -6,9 +6,12 @@ public class MoveKnight : MonoBehaviour {
     public static Rigidbody rigid;
     public GameObject explosion;
 	public int state;
-	bool sentMsg = false;
 	public GameObject hp_bar;
+	public int jumpSpeed = 100;
+	public BoxCollider groundCollider;
 
+	bool sentMsg = false;
+	bool grounded = true;
     // Use this for initialization
     void Start () {
         rigid = GetComponent<Rigidbody>();
@@ -32,13 +35,18 @@ public class MoveKnight : MonoBehaviour {
 			Vector3 vel = rigid.velocity;
 			//Vector3 tmp = rigid.rotation.eulerAngles;
 			if (Input.GetKey (KeyCode.LeftArrow) && vel.x > -5f) {
-				vel.x -= 0.5f;
+				vel.x -= 0.8f;
 				//tmp.y -= 0.5f;
-			} else if (Input.GetKey (KeyCode.RightArrow) && vel.x < 5f) {
-				vel.x += 0.5f;
+			} 
+			else if (Input.GetKey (KeyCode.RightArrow) && vel.x < 5f) {
+				vel.x += 0.8f;
 				//tmp.y += 0.5f;
 			}
-
+			else if (Input.GetKey (KeyCode.UpArrow) && grounded) {
+				rigid.AddForce(Vector3.up * jumpSpeed, ForceMode.Impulse);
+				Debug.Log("Jumping");
+				grounded = false;
+			}
 			//rigid.rotation = Quaternion.Euler (tmp.x, tmp.y, tmp.z);
 			rigid.velocity = vel;
 			break;
@@ -66,6 +74,13 @@ public class MoveKnight : MonoBehaviour {
 				print ("Contact " + c.thisCollider.name + " hit " + c.otherCollider.name);
 				hp_bar.GetComponent<HealthBar> ().decreaseHealth ();
 			}
+		}
+	}
+
+	//Groundedcheck
+	void OnTriggerEnter(Collider col) {
+		if (col.gameObject.tag == "Ground") {
+			grounded = true;
 		}
 	}
 

@@ -6,7 +6,7 @@ public class BoidController : MonoBehaviour
     public float minVelocity = 5;
     public float maxVelocity = 20;
     public float randomness = 1;
-    public static int flockSize = 0;
+    public static int flockSize = 10;
     public GameObject prefab;
     public GameObject chasee;
 

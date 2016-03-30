@@ -5,12 +5,11 @@ public class Weapons : MonoBehaviour {
 
     public GameObject[] weapons;
     public int index = 0;
-    public int size = 1;
 
 	// Use this for initialization
 	void Start () {
         weapons[0].SetActive(true);
-	    for (int i = 1; i < size; i++) {
+	    for (int i = 1; i < weapons.Length; i++) {
             weapons[i].SetActive(false);
         }
 	}
@@ -19,8 +18,11 @@ public class Weapons : MonoBehaviour {
 	void Update () {
 	    if (Input.GetKeyDown(KeyCode.S)) {
             weapons[index].SetActive(false);
-            index = (index + 1) % size;
             weapons[index].SetActive(true);
+            if (index + 1 > weapons.Length)
+                index = 0;
+            else 
+                index++;
         }
 	}
 
