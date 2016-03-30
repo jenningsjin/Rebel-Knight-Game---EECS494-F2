@@ -6,14 +6,14 @@ public class BoidController : MonoBehaviour
     public float minVelocity = 5;
     public float maxVelocity = 20;
     public float randomness = 1;
-    public static int flockSize = 10;
+    public static int flockSize = 0;
     public GameObject prefab;
     public GameObject chasee;
-
+    public float timer = 3f;
     public Vector3 flockCenter;
     public Vector3 flockVelocity;
 
-    private GameObject[] boids;
+    public static GameObject[] boids;
 
     void Start()
     {
@@ -40,10 +40,12 @@ public class BoidController : MonoBehaviour
     {
         Vector3 theCenter = Vector3.zero;
         Vector3 theVelocity = Vector3.zero;
-        if(boids.Length != flockSize)
+        timer -= Time.deltaTime;
+        if(boids.Length != flockSize || timer < 0)
         {
             Destroy(boids);
             Start();
+            timer = 3f;
         }
         foreach (GameObject boid in boids)
         {

@@ -18,13 +18,14 @@ public class Weapons : MonoBehaviour {
 	void Update () {
 	    if (Input.GetKeyDown(KeyCode.S)) {
             weapons[index].SetActive(false);
-            weapons[index].SetActive(true);
-            if (index + 1 > weapons.Length)
+            if (index + 1 == weapons.Length)
                 index = 0;
             else 
                 index++;
+            weapons[index].SetActive(true);
+
         }
-	}
+    }
 
 
 }

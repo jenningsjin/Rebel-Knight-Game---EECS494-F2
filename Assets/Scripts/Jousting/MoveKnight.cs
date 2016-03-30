@@ -14,7 +14,7 @@ public class MoveKnight : MonoBehaviour {
     public static float leftLane = -4f;
     public static float rightLane = 4f;
     public static float midLane = 0f;
-
+    private float maxSpeed = 20f;
 	bool sentMsg = false;
 	bool grounded = true;
     // Use this for initialization
@@ -37,7 +37,8 @@ public class MoveKnight : MonoBehaviour {
 		case 0: // Before game start
 			break;
 		case 1: // Charge
-			if( rigid.velocity.z < 30) {
+            changeSpeed();
+			if( rigid.velocity.z < maxSpeed) {
 				rigid.AddForce (Vector3.forward * 40f);
 			}
                 //Vector3 tmp = rigid.rotation.eulerAngles;
@@ -104,6 +105,11 @@ public class MoveKnight : MonoBehaviour {
 			}
 		}
 	}
+
+    void changeSpeed()
+    {
+        maxSpeed = (BoidController.flockSize * 5f) + 20f;
+    }
 
 	//Groundedcheck
 	void OnTriggerEnter(Collider col) {
