@@ -31,7 +31,7 @@ public class BoidController : MonoBehaviour
             boid.transform.localPosition = position;
             boid.GetComponent<BoidFlocking>().SetController(gameObject);
             boids[i] = boid;
-            print(boids[i]);
+            //print(boids[i]);
         }
     }
 

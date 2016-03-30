@@ -10,7 +10,10 @@ public class MoveKnight : MonoBehaviour {
 	public int jumpSpeed = 100;
 	public BoxCollider groundCollider;
     private float moveTimer = 0.1f;
-    private int lane = 1;
+    public static int lane = 1;
+    public static float leftLane = -4f;
+    public static float rightLane = 4f;
+    public static float midLane = 0f;
 
 	bool sentMsg = false;
 	bool grounded = true;
@@ -19,6 +22,8 @@ public class MoveKnight : MonoBehaviour {
         rigid = GetComponent<Rigidbody>();
 		state = 0;
 		hp_bar = GameObject.Find ("HP_Bar");
+        lane = 1;
+        switchLanes();
     }
 
 	public void BeginGame() {
@@ -35,31 +40,26 @@ public class MoveKnight : MonoBehaviour {
 			if( rigid.velocity.z < 30) {
 				rigid.AddForce (Vector3.forward * 40f);
 			}
-			Vector3 vel = rigid.velocity;
-			//Vector3 tmp = rigid.rotation.eulerAngles;
-			if (Input.GetKey (KeyCode.LeftArrow) && moveTimer < 0 && lane > 0) {
-                    Vector3 pos = this.transform.position;
-                    pos.x -= 4f;
-                    rigid.MovePosition(pos);
-                    moveTimer = 0.1f;
+                //Vector3 tmp = rigid.rotation.eulerAngles;
+                switchLanes();
+			if (Input.GetKeyDown (KeyCode.LeftArrow) && moveTimer < 0 && lane > 0) {
                     lane--;
-				//tmp.y -= 0.5f;
-			} 
-			else if (Input.GetKey (KeyCode.RightArrow) && moveTimer < 0 && lane < 2) {
-                    Vector3 pos = this.transform.position;
-                    pos.x += 4f;
-                    rigid.MovePosition(pos);
+                    switchLanes();
                     moveTimer = 0.1f;
+                    //tmp.y -= 0.5f;
+                }
+                else if (Input.GetKeyDown (KeyCode.RightArrow) && moveTimer < 0 && lane < 2) {
                     lane++;
+                    switchLanes();
+                    moveTimer = 0.1f;
                     //tmp.y += 0.5f;
                 }
-			else if (Input.GetKey (KeyCode.UpArrow) && grounded) {
+                else if (Input.GetKeyDown (KeyCode.UpArrow) && grounded) {
 				rigid.AddForce(Vector3.up * jumpSpeed, ForceMode.Impulse);
 				Debug.Log("Jumping");
 				grounded = false;
 			}
 			//rigid.rotation = Quaternion.Euler (tmp.x, tmp.y, tmp.z);
-			rigid.velocity = vel;
 			break;
 		case 2: // After crossing the finish line
 			rigid.constraints = RigidbodyConstraints.FreezeAll;
@@ -72,6 +72,23 @@ public class MoveKnight : MonoBehaviour {
 			Debug.Log ("Unrecognized state");
 			break;
 		}
+    }
+
+    void switchLanes()
+    {
+        Vector3 pos = this.transform.position;
+        switch (lane)
+        {
+            case 0: pos.x = leftLane; break;
+            case 1: pos.x = midLane; break;
+            case 2: pos.x = rightLane; break;
+            default: pos.x = midLane; lane = 0; break;
+        }
+        print(pos);
+        print(lane);
+        
+        //rigid.MovePosition(pos);
+        rigid.position = Vector3.MoveTowards(transform.position, pos, 1.5f);
     }
 
 	void OnCollisionEnter(Collision col) {
@@ -91,6 +108,7 @@ public class MoveKnight : MonoBehaviour {
 	//Groundedcheck
 	void OnTriggerEnter(Collider col) {
 		if (col.gameObject.tag == "Ground") {
+            print("GROUNDED");
 			grounded = true;
 		}
 	}
@@ -99,4 +117,15 @@ public class MoveKnight : MonoBehaviour {
 	public void LoadMenu() {
 		SceneManager.LoadScene ("Menu");
 	}
+
+    public static float lanePosition()
+    {
+        switch (lane)
+        {
+            case 0: return leftLane;
+            case 1: return midLane;
+            case 2: return rightLane;
+            default: return midLane;
+        }
+    }
 }
