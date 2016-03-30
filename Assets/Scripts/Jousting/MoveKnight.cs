@@ -17,6 +17,7 @@ public class MoveKnight : MonoBehaviour {
     private float maxSpeed = 20f;
 	bool sentMsg = false;
 	bool grounded = true;
+    public GameObject person;
     // Use this for initialization
     void Start () {
         rigid = GetComponent<Rigidbody>();
@@ -60,6 +61,14 @@ public class MoveKnight : MonoBehaviour {
 				Debug.Log("Jumping");
 				grounded = false;
 			}
+                else if (Input.GetKeyDown(KeyCode.DownArrow) && BoidController.flockSize > 0)
+                {
+                    Vector3 personPos = this.transform.position;
+                    personPos.z += 0.5f;
+                    person.transform.position = personPos;
+                    GameObject.Instantiate(person);
+                    BoidController.flockSize--;
+                }
 			//rigid.rotation = Quaternion.Euler (tmp.x, tmp.y, tmp.z);
 			break;
 		case 2: // After crossing the finish line
