@@ -18,7 +18,7 @@ public class CarpetBossScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		if (spawnEnemies) {
-			InvokeRepeating("spawnEnemy", 4, 2.5f);
+			InvokeRepeating("spawnEnemy", 9, 2.5f);
 		}
 	}
 	
