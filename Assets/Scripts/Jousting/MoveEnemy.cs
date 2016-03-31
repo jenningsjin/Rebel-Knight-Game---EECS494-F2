@@ -9,7 +9,7 @@ public class MoveEnemy : MonoBehaviour {
 	Transform target;
 	float speed;
 	public int state;
-    float timer = 1f;
+    float timer = 0.8f;
     float currentLane = 0f;
 	//public GameObject score;
 

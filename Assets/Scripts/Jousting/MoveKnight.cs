@@ -21,6 +21,8 @@ public class MoveKnight : MonoBehaviour {
     float lanceTimer = 1f;
     public GameObject person;
     public ParticleSystem particle;
+    float healthTimer = 1f;
+    bool tookDamage = false;
 
     public Weapons weapon;
 
@@ -43,6 +45,18 @@ public class MoveKnight : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         moveTimer -= Time.deltaTime;
+        if (tookDamage)
+        {
+            healthTimer -= Time.deltaTime;
+            if(healthTimer < 0)
+            {
+                
+                Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), false);
+                Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), false);
+                tookDamage = false;
+                healthTimer = 1f;
+            }
+        }
         if (lanceReady)
         {
             particle.enableEmission = true;
@@ -132,6 +146,13 @@ public class MoveKnight : MonoBehaviour {
         {
             hp_bar.GetComponent<HealthBar>().decreaseHealth();
             Destroy(col.gameObject);
+        }
+        if(col.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+        {
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
+            hp_bar.GetComponent<HealthBar>().decreaseHealth();
+            tookDamage = true;
         }
         /*foreach (ContactPoint c in col.contacts) {
 			//print ("Contact " + c.thisCollider.name + " hit " + c.otherCollider.name);
