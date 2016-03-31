@@ -17,7 +17,10 @@ public class MoveKnight : MonoBehaviour {
     private float maxSpeed = 20f;
 	bool sentMsg = false;
 	bool grounded = true;
+    public static bool lanceReady = false;
+    float lanceTimer = 1f;
     public GameObject person;
+    public ParticleSystem particle;
     // Use this for initialization
     void Start () {
         rigid = GetComponent<Rigidbody>();
@@ -25,6 +28,8 @@ public class MoveKnight : MonoBehaviour {
 		hp_bar = GameObject.Find ("HP_Bar");
         lane = 1;
         switchLanes();
+        particle = GetComponent<ParticleSystem>();
+        particle.enableEmission = false;
     }
 
 	public void BeginGame() {
@@ -34,7 +39,18 @@ public class MoveKnight : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         moveTimer -= Time.deltaTime;
-		switch (state) {
+        if (lanceReady)
+        {
+            particle.enableEmission = true;
+            lanceTimer -= Time.deltaTime;
+            if(lanceTimer < 0)
+            {
+                particle.enableEmission = false;
+                lanceTimer = 1f;
+                lanceReady = false;
+            }
+        }
+        switch (state) {
 		case 0: // Before game start
 			break;
 		case 1: // Charge
@@ -68,6 +84,9 @@ public class MoveKnight : MonoBehaviour {
                     person.transform.position = personPos;
                     GameObject.Instantiate(person);
                     BoidController.flockSize--;
+                } else if(Input.GetKeyDown(KeyCode.Space) && lanceTimer > 0)
+                {
+                    lanceReady = true;
                 }
 			//rigid.rotation = Quaternion.Euler (tmp.x, tmp.y, tmp.z);
 			break;
@@ -103,16 +122,21 @@ public class MoveKnight : MonoBehaviour {
 		//print ("Player body collided with something");
 		// Contact points: every contact stores a contact point and the two colliders
 		// involved.
-		foreach (ContactPoint c in col.contacts) {
+        if(col.gameObject.tag == "Enemy" && !lanceReady)
+        {
+            hp_bar.GetComponent<HealthBar>().decreaseHealth();
+            Destroy(col.gameObject);
+        }
+        /*foreach (ContactPoint c in col.contacts) {
 			//print ("Contact " + c.thisCollider.name + " hit " + c.otherCollider.name);
 			if (c.thisCollider.name == "VulnerableArea" && c.otherCollider.name == "EnemyLance" ||
 				c.thisCollider.name == "EnemyLance" && c.otherCollider.name == "VulnerableArea") {
 				print ("Contact " + c.thisCollider.name + " hit " + c.otherCollider.name);
 				hp_bar.GetComponent<HealthBar> ().decreaseHealth ();
 			}
-		}
-        print(col.gameObject.tag);
-        if(col.gameObject.tag == "Grounded")
+		}*/
+        //print(col.gameObject.tag);
+        if(col.gameObject.tag == "Ground")
         {
             grounded = true;
         }

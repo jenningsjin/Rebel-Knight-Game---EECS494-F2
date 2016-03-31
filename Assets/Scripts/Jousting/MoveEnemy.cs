@@ -67,22 +67,35 @@ public class MoveEnemy : MonoBehaviour {
     }
 		
 	void OnCollisionEnter(Collision col) {
-        
+        print(col.gameObject.name);
+        if(col.gameObject.name == "Knight")
+        {
+            if (MoveKnight.lanceReady)
+            {
+                Destroy(this.gameObject);
+                //score.GetComponent<ScoreScript>().updateScore ();
+                if (BoidController.flockSize < 10)
+                {
+                    BoidController.flockSize += 1;
+                }
+                CarpetBossScript.bossHP -= 1;
+            }
+        }
 		//print ("Player body collided with something");
 		// Contact points: every contact stores a contact point and the two colliders
 		// involved.
-		foreach (ContactPoint c in col.contacts) {
+		/*foreach (ContactPoint c in col.contacts) {
 			//print ("Contact " + c.thisCollider.name + " hit " + c.otherCollider.name);
 			if (c.thisCollider.name == "VulnerableArea" && c.otherCollider.name == "KnightLance" ||
 				c.thisCollider.name == "KnightLance" && c.otherCollider.name == "VulnerableArea") {
 				print ("Contact " + c.thisCollider.name + " hit " + c.otherCollider.name);
-				/*rigid.constraints = RigidbodyConstraints.None;
+				rigid.constraints = RigidbodyConstraints.None;
 				rigid.AddExplosionForce (7.0f, this.gameObject.transform.position, 5.0f);
 				// disable all child colliders
 				Collider [] componentsList = this.gameObject.GetComponentsInChildren<Collider>();
 				foreach (Collider collider in componentsList) {
 					collider.enabled = false;
-				}*/
+				}
 				Destroy (this.gameObject);
 				//score.GetComponent<ScoreScript>().updateScore ();
 				if(BoidController.flockSize < 10) {
@@ -90,6 +103,6 @@ public class MoveEnemy : MonoBehaviour {
 				}
 				CarpetBossScript.bossHP-=1;
 			}
-		}
+		}*/
 	}
 }
