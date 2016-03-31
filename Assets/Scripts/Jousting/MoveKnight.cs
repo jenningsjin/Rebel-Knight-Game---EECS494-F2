@@ -84,7 +84,7 @@ public class MoveKnight : MonoBehaviour {
                     person.transform.position = personPos;
                     GameObject.Instantiate(person);
                     BoidController.flockSize--;
-                } else if(Input.GetKeyDown(KeyCode.Space) && lanceTimer > 0)
+                } else if(Input.GetKeyDown(KeyCode.Space) && lanceTimer > 0 && Weapons.index == 0)
                 {
                     lanceReady = true;
                 }

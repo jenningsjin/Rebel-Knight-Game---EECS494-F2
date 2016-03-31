@@ -4,7 +4,7 @@ using System.Collections;
 public class Weapons : MonoBehaviour {
 
     public GameObject[] weapons;
-    public int index = 0;
+    public static int index = 0;
 
 	// Use this for initialization
 	void Start () {
