@@ -45,18 +45,6 @@ public class MoveKnight : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         moveTimer -= Time.deltaTime;
-        if (tookDamage)
-        {
-            healthTimer -= Time.deltaTime;
-            if(healthTimer < 0)
-            {
-                
-                Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), false);
-                Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), false);
-                tookDamage = false;
-                healthTimer = 1f;
-            }
-        }
         if (lanceReady)
         {
             particle.enableEmission = true;
@@ -75,31 +63,35 @@ public class MoveKnight : MonoBehaviour {
 			break;
 		case 1: // Charge
             changeSpeed();
-                if (!grounded)
+                if (tookDamage)
                 {
-                    Vector3 vel = rigid.velocity;
-                    if(this.transform.position.y > 5.5f)
-                    {
-                        vel.y -= 1.5f;
-                        rigid.velocity = vel;
-                    }
-                    print(rigid.velocity.y);
-                    //Rotation Logic
-                    if (rigid.velocity.y < 0f)
-                    {
-                        transform.Rotate(Vector3.right, 20f * Time.deltaTime * 4f);
-                    } else
+                    healthTimer -= Time.deltaTime;
+                    if (healthTimer > 0.75f)
                     {
                         transform.Rotate(Vector3.right, -10f * Time.deltaTime * 4f);
+                        transform.Rotate(Vector3.up, -10f * Time.deltaTime * 4f);
                     }
-                } else if(grounded && transform.eulerAngles.x > 0f && transform.eulerAngles.x < 30f)
-                {
-                    //Gradually return rotation to 0
-                    transform.Rotate(Vector3.right, -10f * Time.deltaTime * 8f);
-                } else if(transform.eulerAngles != Vector3.zero)
-                {
-                    transform.eulerAngles = Vector3.zero;
+                    else if (healthTimer < 0.75f && healthTimer > 0.5f)
+                    {
+                        transform.Rotate(Vector3.right, 10f * Time.deltaTime * 8f);
+                        transform.Rotate(Vector3.up, 10f * Time.deltaTime * 8f);
+                    } else
+                    {
+                        transform.eulerAngles = Vector3.zero;
+                    }
+                    if (healthTimer < 0)
+                    {
+
+                        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), false);
+                        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), false);
+                        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), false);
+                        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), false);
+                        tookDamage = false;
+                        healthTimer = 1f;
+                        transform.eulerAngles = Vector3.zero;
+                    }
                 }
+                jumping();
 			if( rigid.velocity.z < maxSpeed) {
 				rigid.AddForce (Vector3.forward * 40f);
 			}
@@ -171,6 +163,13 @@ public class MoveKnight : MonoBehaviour {
         if(col.gameObject.tag == "Enemy" && !lanceReady)
         {
             hp_bar.GetComponent<HealthBar>().decreaseHealth();
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
+            Vector3 v = rigid.velocity;
+            v.z = -5f;
+            rigid.velocity = v;
             if (!grounded)
             {
                 Vector3 vel = rigid.velocity;
@@ -180,13 +179,19 @@ public class MoveKnight : MonoBehaviour {
                 }
                 rigid.velocity = vel;
             }
+            tookDamage = true;
             Destroy(col.gameObject);
         }
         if(col.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
         {
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
             hp_bar.GetComponent<HealthBar>().decreaseHealth();
+            Vector3 v = rigid.velocity;
+            v.z = -5f;
+            rigid.velocity = v;
             if (!grounded)
             {
                 Vector3 vel = rigid.velocity;
@@ -198,14 +203,6 @@ public class MoveKnight : MonoBehaviour {
             }
             tookDamage = true;
         }
-        /*foreach (ContactPoint c in col.contacts) {
-			//print ("Contact " + c.thisCollider.name + " hit " + c.otherCollider.name);
-			if (c.thisCollider.name == "VulnerableArea" && c.otherCollider.name == "EnemyLance" ||
-				c.thisCollider.name == "EnemyLance" && c.otherCollider.name == "VulnerableArea") {
-				print ("Contact " + c.thisCollider.name + " hit " + c.otherCollider.name);
-				hp_bar.GetComponent<HealthBar> ().decreaseHealth ();
-			}
-		}*/
         print(col.gameObject.tag);
         if(col.gameObject.tag == "Ground")
         {
@@ -241,6 +238,38 @@ public class MoveKnight : MonoBehaviour {
             case 1: return midLane;
             case 2: return rightLane;
             default: return midLane;
+        }
+    }
+
+    void jumping()
+    {
+        if (!grounded)
+        {
+            Vector3 vel = rigid.velocity;
+            if (this.transform.position.y > 5.5f)
+            {
+                vel.y -= 1.5f;
+                rigid.velocity = vel;
+            }
+            print(rigid.velocity.y);
+            //Rotation Logic
+            if (rigid.velocity.y < 0f)
+            {
+                transform.Rotate(Vector3.right, 15f * Time.deltaTime * 4f);
+            }
+            else
+            {
+                transform.Rotate(Vector3.right, -10f * Time.deltaTime * 4f);
+            }
+        }
+        else if (grounded && transform.eulerAngles.x > 0f && transform.eulerAngles.x < 30f)
+        {
+            //Gradually return rotation to 0
+            transform.Rotate(Vector3.right, -10f * Time.deltaTime * 8f);
+        }
+        else if (transform.eulerAngles != Vector3.zero && !tookDamage)
+        {
+            transform.eulerAngles = Vector3.zero;
         }
     }
 }
