@@ -10,7 +10,7 @@ public class Weapons : MonoBehaviour {
 	void Awake () {
         //weapons[0].SetActive(true);
 	    for (int i = 0; i < weapons.Length; i++) {
-            print(weapons[i]);
+            //print(weapons[i]);
             weapons[i].SetActive(false);
         }
 	}

@@ -67,7 +67,7 @@ public class MoveEnemy : MonoBehaviour {
     }
 		
 	void OnCollisionEnter(Collision col) {
-        print(col.gameObject.name);
+        //print(col.gameObject.name);
         if(col.gameObject.name == "Knight")
         {
             if (MoveKnight.lanceReady)

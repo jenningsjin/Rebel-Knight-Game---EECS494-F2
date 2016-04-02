@@ -16,7 +16,7 @@ public class MoveKnight : MonoBehaviour {
     public static float midLane = 0f;
     private float maxSpeed = 20f;
 	bool sentMsg = false;
-	bool grounded = true;
+	public bool grounded = true;
     public static bool lanceReady = false;
     float lanceTimer = 1f;
     public GameObject person;
@@ -75,6 +75,31 @@ public class MoveKnight : MonoBehaviour {
 			break;
 		case 1: // Charge
             changeSpeed();
+                if (!grounded)
+                {
+                    Vector3 vel = rigid.velocity;
+                    if(this.transform.position.y > 5.5f)
+                    {
+                        vel.y -= 1.5f;
+                        rigid.velocity = vel;
+                    }
+                    print(rigid.velocity.y);
+                    //Rotation Logic
+                    if (rigid.velocity.y < 0f)
+                    {
+                        transform.Rotate(Vector3.right, 20f * Time.deltaTime * 4f);
+                    } else
+                    {
+                        transform.Rotate(Vector3.right, -10f * Time.deltaTime * 4f);
+                    }
+                } else if(grounded && transform.eulerAngles.x > 0f && transform.eulerAngles.x < 30f)
+                {
+                    //Gradually return rotation to 0
+                    transform.Rotate(Vector3.right, -10f * Time.deltaTime * 8f);
+                } else if(transform.eulerAngles != Vector3.zero)
+                {
+                    transform.eulerAngles = Vector3.zero;
+                }
 			if( rigid.velocity.z < maxSpeed) {
 				rigid.AddForce (Vector3.forward * 40f);
 			}
@@ -93,9 +118,11 @@ public class MoveKnight : MonoBehaviour {
                     //tmp.y += 0.5f;
                 }
                 else if (Input.GetKeyDown (KeyCode.UpArrow) && grounded) {
-				rigid.AddForce(Vector3.up * jumpSpeed, ForceMode.Impulse);
-				Debug.Log("Jumping");
-				grounded = false;
+                    Vector3 vel = rigid.velocity;
+                    vel.y = jumpSpeed;
+                    rigid.velocity = vel;
+				    grounded = false;
+                    rigid.transform.eulerAngles = Vector3.zero;
 			}
                 else if (Input.GetKeyDown(KeyCode.DownArrow) && BoidController.flockSize > 0)
                 {
@@ -108,7 +135,6 @@ public class MoveKnight : MonoBehaviour {
                 {
                     lanceReady = true;
                 }
-			//rigid.rotation = Quaternion.Euler (tmp.x, tmp.y, tmp.z);
 			break;
 		case 2: // After crossing the finish line
 			rigid.constraints = RigidbodyConstraints.FreezeAll;
@@ -145,6 +171,15 @@ public class MoveKnight : MonoBehaviour {
         if(col.gameObject.tag == "Enemy" && !lanceReady)
         {
             hp_bar.GetComponent<HealthBar>().decreaseHealth();
+            if (!grounded)
+            {
+                Vector3 vel = rigid.velocity;
+                if (vel.y > 0)
+                {
+                    vel.y = -1f;
+                }
+                rigid.velocity = vel;
+            }
             Destroy(col.gameObject);
         }
         if(col.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
@@ -152,6 +187,15 @@ public class MoveKnight : MonoBehaviour {
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
             hp_bar.GetComponent<HealthBar>().decreaseHealth();
+            if (!grounded)
+            {
+                Vector3 vel = rigid.velocity;
+                if (vel.y > 0)
+                {
+                    vel.y = -1f;
+                }
+                rigid.velocity = vel;
+            }
             tookDamage = true;
         }
         /*foreach (ContactPoint c in col.contacts) {
@@ -162,10 +206,11 @@ public class MoveKnight : MonoBehaviour {
 				hp_bar.GetComponent<HealthBar> ().decreaseHealth ();
 			}
 		}*/
-        //print(col.gameObject.tag);
+        print(col.gameObject.tag);
         if(col.gameObject.tag == "Ground")
         {
             grounded = true;
+            //transform.eulerAngles = Vector3.zero;
         }
 	}
 
@@ -177,10 +222,11 @@ public class MoveKnight : MonoBehaviour {
 	//Groundedcheck
 	void OnTriggerEnter(Collider col) {
 		if (col.gameObject.tag == "Ground") {
-            print("GROUNDED");
+            //print("GROUNDED");
 			grounded = true;
-		}
-	}
+            //transform.eulerAngles = Vector3.zero;
+        }
+    }
 
 	// TODO: consider moving this elsewhere
 	public void LoadMenu() {

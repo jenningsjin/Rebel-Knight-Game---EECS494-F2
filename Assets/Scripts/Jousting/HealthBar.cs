@@ -22,7 +22,7 @@ public class HealthBar : MonoBehaviour {
 	}
 
 	public void decreaseHealth() {
-		Debug.Log ("Decreasing health");
+		//Debug.Log ("Decreasing health");
 		if (currentHealth > 0) {
 			currentHealth -= 10f;
 			float scaledHealthVal = currentHealth / maxHealth;
