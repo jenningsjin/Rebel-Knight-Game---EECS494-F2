@@ -67,9 +67,22 @@ public class CarpetBossScript : MonoBehaviour {
 
 	}
 
+	//Boss Attacks
 	void spawnEnemy() {
 		//this.gameObject.transform.position;
 		Instantiate(spawnedEnemy, this.transform.position, Quaternion.identity);
+		return;
+	}
+
+	void fireball() {
+		return;
+	}
+
+	void wideBeam() {
+		return;
+	}
+
+	void verticalBeam() {
 		return;
 	}
 
@@ -86,4 +99,6 @@ public class CarpetBossScript : MonoBehaviour {
 		}
 		return;
 	}
+
+
 }
