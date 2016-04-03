@@ -34,4 +34,14 @@ public class HeartsScript : MonoBehaviour {
 			gameObject.GetComponent<Image> ().sprite = hp_sprites [index];
 		}
 	}
+
+    public void killPlayer() {
+        index = 5;
+        player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+        player.GetComponent<MoveKnight>().state = 0;
+        if (!sentMsg) {
+            Fungus.Flowchart.BroadcastFungusMessage("Defeat");
+            sentMsg = true;
+        }
+    }
 }
