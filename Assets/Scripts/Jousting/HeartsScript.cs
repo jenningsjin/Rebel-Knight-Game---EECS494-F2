@@ -30,6 +30,8 @@ public class HeartsScript : MonoBehaviour {
 				sentMsg = true;
 			}
 		}
-		gameObject.GetComponent<Image>().sprite = hp_sprites[index];
+		if (index <= 5) {
+			gameObject.GetComponent<Image> ().sprite = hp_sprites [index];
+		}
 	}
 }
