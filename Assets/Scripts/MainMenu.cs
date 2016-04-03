@@ -14,7 +14,11 @@ public class MainMenu : MonoBehaviour {
 	
 	}
 
-	public void StartGame() {
+	public void ReadPrologue() {
+		SceneManager.LoadScene ("Prologue");
+	}
+
+	public void StartTutorial() {
 		SceneManager.LoadScene ("JoustTutorial");
 	}
 

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class KeepMusic : MonoBehaviour {
 	public AudioClip audioclip;
@@ -18,6 +19,9 @@ public class KeepMusic : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		Scene currentScene = SceneManager.GetActiveScene ();
+		if (currentScene.name != "Menu" && currentScene.name != "Menu_LevelSelect") {
+			Destroy (this.gameObject);
+		}
 	}
 }
