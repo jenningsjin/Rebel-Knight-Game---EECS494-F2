@@ -24,7 +24,6 @@ public class MoveKnight : MonoBehaviour {
     float healthTimer = 1f;
     bool tookDamage = false;
     bool left = false;
-    public Weapons weapon;
 
     // Use this for initialization
     void Start () {
@@ -35,7 +34,6 @@ public class MoveKnight : MonoBehaviour {
         switchLanes();
         particle = GetComponent<ParticleSystem>();
         particle.enableEmission = false;
-        weapon = GameObject.FindObjectOfType<Weapons>();
     }
 
 	public void BeginGame() {
@@ -49,11 +47,9 @@ public class MoveKnight : MonoBehaviour {
         {
             particle.enableEmission = true;
             lanceTimer -= Time.deltaTime;
-            weapon.weapons[weapon.index].SetActive(true);
             if(lanceTimer < 0)
             {
                 particle.enableEmission = false;
-                weapon.weapons[weapon.index].SetActive(false);
                 lanceTimer = 1f;
                 lanceReady = false;
             }
@@ -131,7 +127,7 @@ public class MoveKnight : MonoBehaviour {
                     person.transform.position = personPos;
                     GameObject.Instantiate(person);
                     BoidController.flockSize--;
-                } else if(Input.GetKeyDown(KeyCode.Space) && lanceTimer > 0 && weapon.index == 0)
+                } else if(Input.GetKeyDown(KeyCode.Space) && lanceTimer > 0)
                 {
                     lanceReady = true;
                 }
