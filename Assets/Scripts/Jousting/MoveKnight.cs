@@ -69,12 +69,18 @@ public class MoveKnight : MonoBehaviour {
                     if (healthTimer > 0.75f)
                     {
                         transform.Rotate(Vector3.right, -10f * Time.deltaTime * 4f);
-                        transform.Rotate(Vector3.up, -10f * Time.deltaTime * 4f);
+                        transform.Rotate(Vector3.up, -7.5f * Time.deltaTime * 4f);
                     }
                     else if (healthTimer < 0.75f && healthTimer > 0.5f)
                     {
-                        transform.Rotate(Vector3.right, 10f * Time.deltaTime * 8f);
-                        transform.Rotate(Vector3.up, 10f * Time.deltaTime * 8f);
+                        if(transform.eulerAngles.y < 0f || transform.eulerAngles.y > 330f)
+                        {
+                            transform.Rotate(Vector3.up, 7.5f * Time.deltaTime * 8f);
+                        }
+                        if(transform.eulerAngles.x < 0f || transform.eulerAngles.x > 330f)
+                        {
+                            transform.Rotate(Vector3.right, 10f * Time.deltaTime * 8f);
+                        }
                     } else
                     {
                         transform.eulerAngles = Vector3.zero;
@@ -166,7 +172,8 @@ public class MoveKnight : MonoBehaviour {
                 angle.y = 7.5f;
                 transform.eulerAngles = angle;
             }
-        } else
+        } else if(this.transform.position.x < pos.x+0.2f && this.transform.position.x > pos.x-0.2f &&
+            this.transform.position.x >= pos.x+0.1f && this.transform.position.x <= pos.x - 0.1f)
         {
             Vector3 angle = transform.eulerAngles;
             angle.y = 0;
