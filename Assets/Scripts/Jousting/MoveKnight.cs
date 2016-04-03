@@ -186,25 +186,29 @@ public class MoveKnight : MonoBehaviour {
 		// involved.
         if(col.gameObject.tag == "Enemy" && !lanceReady)
         {
-            hp_bar.GetComponent<HeartsScript>().decreaseHealth();
-            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
-            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
-            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
-            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
-            Vector3 v = rigid.velocity;
-            v.z = -5f;
-            rigid.velocity = v;
-            if (!grounded)
+            MoveEnemy x = col.gameObject.GetComponent<MoveEnemy>();
+            if(x.state == 1)
             {
-                Vector3 vel = rigid.velocity;
-                if (vel.y > 0)
+                hp_bar.GetComponent<HeartsScript>().decreaseHealth();
+                Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
+                Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
+                Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
+                Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
+                Vector3 v = rigid.velocity;
+                v.z = -5f;
+                rigid.velocity = v;
+                if (!grounded)
                 {
-                    vel.y = -1f;
+                    Vector3 vel = rigid.velocity;
+                    if (vel.y > 0)
+                    {
+                        vel.y = -1f;
+                    }
+                    rigid.velocity = vel;
                 }
-                rigid.velocity = vel;
+                tookDamage = true;
+                Destroy(col.gameObject);
             }
-            tookDamage = true;
-            Destroy(col.gameObject);
         }
         if(col.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
         {
@@ -227,7 +231,6 @@ public class MoveKnight : MonoBehaviour {
             }
             tookDamage = true;
         }
-        print(col.gameObject.tag);
         if(col.gameObject.tag == "Ground")
         {
             grounded = true;
@@ -275,7 +278,6 @@ public class MoveKnight : MonoBehaviour {
                 vel.y -= 1.5f;
                 rigid.velocity = vel;
             }
-            print(rigid.velocity.y);
             //Rotation Logic
             if (rigid.velocity.y < 0f)
             {
