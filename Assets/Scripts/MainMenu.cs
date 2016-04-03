@@ -17,4 +17,12 @@ public class MainMenu : MonoBehaviour {
 	public void StartGame() {
 		SceneManager.LoadScene ("JoustTutorial");
 	}
+
+	public void SelectLevel() {
+		SceneManager.LoadScene ("Menu_LevelSelect");
+	}
+
+	public void LoadMainMenu() {
+		SceneManager.LoadScene("Menu");
+	}
 }
