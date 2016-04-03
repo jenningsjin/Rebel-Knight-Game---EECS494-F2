@@ -30,7 +30,7 @@ public class MoveKnight : MonoBehaviour {
     void Start () {
         rigid = GetComponent<Rigidbody>();
 		state = 0;
-		hp_bar = GameObject.Find ("HP_Bar");
+		hp_bar = GameObject.Find ("Hearts");
         lane = 1;
         switchLanes();
         particle = GetComponent<ParticleSystem>();
@@ -190,7 +190,7 @@ public class MoveKnight : MonoBehaviour {
 		// involved.
         if(col.gameObject.tag == "Enemy" && !lanceReady)
         {
-            hp_bar.GetComponent<HealthBar>().decreaseHealth();
+            hp_bar.GetComponent<HeartsScript>().decreaseHealth();
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
@@ -216,7 +216,7 @@ public class MoveKnight : MonoBehaviour {
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
-            hp_bar.GetComponent<HealthBar>().decreaseHealth();
+            hp_bar.GetComponent<HeartsScript>().decreaseHealth();
             Vector3 v = rigid.velocity;
             v.z = -5f;
             rigid.velocity = v;
