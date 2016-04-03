@@ -286,7 +286,7 @@ public class MoveKnight : MonoBehaviour {
                 transform.Rotate(Vector3.right, -10f * Time.deltaTime * 4f);
             }
         }
-        else if (grounded && transform.eulerAngles.x > 0f && transform.eulerAngles.x < 30f)
+        else if (grounded && transform.eulerAngles.x > 0.5f && transform.eulerAngles.x < 30f)
         {
             //Gradually return rotation to 0
             transform.Rotate(Vector3.right, -10f * Time.deltaTime * 8f);
