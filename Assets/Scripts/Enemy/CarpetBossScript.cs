@@ -13,12 +13,7 @@ public class CarpetBossScript : MonoBehaviour {
 	public int bossPhase = 0;
 
 	[Header("Testing Flags")]
-	public bool spawnEnemies = false;
-
-	[Header("Attack Objects/Animation")]
-	public GameObject FireBall;
-	public GameObject WideBeam;
-	public GameObject VerticalBeam;
+	public bool spawnEnemies = true;
 
 	// Use this for initialization
 	void Start () {
@@ -67,51 +62,17 @@ public class CarpetBossScript : MonoBehaviour {
 		}
 		
 		this.transform.position = new Vector3(0, this.transform.position.y ,chaser.transform.position.z + chaserDistance);
-
-		if (Input.GetKey(KeyCode.A)) {
-			fireBall();
-        }	
-	
-		if (Input.GetKey(KeyCode.S)) {
-			wideBeam();
-        }	
-
-		if (Input.GetKey(KeyCode.D)) {
-			verticalBeam();
-        }	
+		
 
 
 	}
 
-	//Enemy attack functions
 	void spawnEnemy() {
 		//this.gameObject.transform.position;
 		Instantiate(spawnedEnemy, this.transform.position, Quaternion.identity);
 		return;
 	}
 
-	void fireBall() {
-		GameObject attack = Instantiate(FireBall, this.transform.position, Quaternion.identity) as GameObject;
-		attack.GetComponent<Rigidbody>().velocity = Vector3.back * 2;
-		return;
-	}
-
-	void verticalBeam() {
-		GameObject attack = Instantiate(VerticalBeam, this.transform.position, Quaternion.identity)  as GameObject;
-		return;
-	}
-
-	void wideBeam() {
-		Vector3 beamPos = new Vector3(this.transform.position.x, 1, this.transform.position.z  );
-		GameObject attack = Instantiate(WideBeam, beamPos, Quaternion.identity)  as GameObject;
-		return;
-	}
-
-	/*
-	void makeAttack( GameObject attack ) {
-		return
-	}
-	*/
 
 
 	void OnCollisionEnter(Collision col) {

@@ -11,6 +11,7 @@ public class MoveEnemy : MonoBehaviour {
 	public int state;
     float timer = 0.8f;
     float currentLane = 0f;
+    public GameObject eyes;
 	//public GameObject score;
 
     // Use this for initialization
@@ -22,7 +23,7 @@ public class MoveEnemy : MonoBehaviour {
 		//maincamera = GameObject.Find ("Main Camera");
 		state = 0;
 		speed = 7.0f;
-
+        eyes.SetActive(false);
         currentLane = MoveKnight.lanePosition();
     }
 
@@ -89,6 +90,7 @@ public class MoveEnemy : MonoBehaviour {
             if (MoveKnight.lanceReady)
             {
                 //Destroy(this.gameObject);
+                eyes.SetActive(true);
                 state = 2;
                 timer = 3f;
                 rigid.constraints = RigidbodyConstraints.None;

@@ -18,6 +18,7 @@ public class MoveKnight : MonoBehaviour {
 	bool sentMsg = false;
 	public bool grounded = true;
     public static bool lanceReady = false;
+    public GameObject lance;
     float lanceTimer = 1f;
     public GameObject person;
     public ParticleSystem particle;
@@ -34,6 +35,7 @@ public class MoveKnight : MonoBehaviour {
         switchLanes();
         particle = GetComponent<ParticleSystem>();
         particle.enableEmission = false;
+        lance.SetActive(false);
     }
 
 	public void BeginGame() {
@@ -47,11 +49,13 @@ public class MoveKnight : MonoBehaviour {
         {
             particle.enableEmission = true;
             lanceTimer -= Time.deltaTime;
+            
             if(lanceTimer < 0)
             {
                 particle.enableEmission = false;
                 lanceTimer = 1f;
                 lanceReady = false;
+                lance.SetActive(false);
             }
         }
         switch (state) {
@@ -130,6 +134,7 @@ public class MoveKnight : MonoBehaviour {
                 } else if(Input.GetKeyDown(KeyCode.Space) && lanceTimer > 0)
                 {
                     lanceReady = true;
+                    lance.SetActive(true);
                 }
 			break;
 		case 2: // After crossing the finish line
@@ -210,6 +215,10 @@ public class MoveKnight : MonoBehaviour {
                 Destroy(col.gameObject);
             }
         }
+        else if(col.gameObject.tag == "Enemy" && lanceReady)
+        {
+            lanceTimer = 0.2f;
+        }
         if(col.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
         {
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
@@ -230,6 +239,10 @@ public class MoveKnight : MonoBehaviour {
                 rigid.velocity = vel;
             }
             tookDamage = true;
+            if (lanceReady)
+            {
+                lanceTimer = 0;
+            }
         }
         if(col.gameObject.tag == "Ground")
         {
