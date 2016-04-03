@@ -54,6 +54,7 @@ public class MoveKnight : MonoBehaviour {
             {
                 particle.enableEmission = false;
                 lanceTimer = 1f;
+                //Time.timeScale = 1f;
                 lanceReady = false;
                 lance.SetActive(false);
             }
@@ -135,6 +136,7 @@ public class MoveKnight : MonoBehaviour {
                 {
                     lanceReady = true;
                     lance.SetActive(true);
+                    //Time.timeScale = 0.8f;
                 }
 			break;
 		case 2: // After crossing the finish line
