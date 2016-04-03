@@ -23,7 +23,7 @@ public class MoveKnight : MonoBehaviour {
     public ParticleSystem particle;
     float healthTimer = 1f;
     bool tookDamage = false;
-
+    bool left = false;
     public Weapons weapon;
 
     // Use this for initialization
@@ -101,12 +101,14 @@ public class MoveKnight : MonoBehaviour {
                     lane--;
                     switchLanes();
                     moveTimer = 0.1f;
+                    left = true;
                     //tmp.y -= 0.5f;
                 }
                 else if (Input.GetKeyDown (KeyCode.RightArrow) && moveTimer < 0 && lane < 2) {
                     lane++;
                     switchLanes();
                     moveTimer = 0.1f;
+                    left = false;
                     //tmp.y += 0.5f;
                 }
                 else if (Input.GetKeyDown (KeyCode.UpArrow) && grounded) {
@@ -151,9 +153,28 @@ public class MoveKnight : MonoBehaviour {
             case 2: pos.x = rightLane; break;
             default: pos.x = midLane; lane = 0; break;
         }
-        
+        if(this.transform.position.x > pos.x+1f || this.transform.position.x < pos.x-1f)
+        {
+            if (left)
+            {
+                Vector3 angle = transform.eulerAngles;
+                angle.y = -7.5f;
+                transform.eulerAngles = angle;
+            } else
+            {
+                Vector3 angle = transform.eulerAngles;
+                angle.y = 7.5f;
+                transform.eulerAngles = angle;
+            }
+        } else
+        {
+            Vector3 angle = transform.eulerAngles;
+            angle.y = 0;
+            transform.eulerAngles = angle;
+        }
         //rigid.MovePosition(pos);
         rigid.position = Vector3.MoveTowards(transform.position, pos, 1.5f);
+        //Rotation
     }
 
 	void OnCollisionEnter(Collision col) {
@@ -213,7 +234,7 @@ public class MoveKnight : MonoBehaviour {
 
     void changeSpeed()
     {
-        maxSpeed = (BoidController.flockSize * 5f) + 20f;
+        maxSpeed = (BoidController.flockSize * 4f) + 20f;
     }
 
 	//Groundedcheck
