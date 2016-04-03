@@ -118,7 +118,7 @@ public class MoveKnight : MonoBehaviour {
                     vel.y = jumpSpeed;
                     rigid.velocity = vel;
 				    grounded = false;
-                    rigid.transform.eulerAngles = Vector3.zero;
+                    //rigid.transform.eulerAngles = Vector3.zero;
 			}
                 else if (Input.GetKeyDown(KeyCode.DownArrow) && BoidController.flockSize > 0)
                 {
