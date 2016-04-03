@@ -22,7 +22,7 @@ public class MoveEnemy : MonoBehaviour {
 		//maincamera = GameObject.Find ("Main Camera");
 		state = 0;
 		speed = 7.0f;
-        transform.LookAt(player.transform);
+
         currentLane = MoveKnight.lanePosition();
     }
 
@@ -43,6 +43,9 @@ public class MoveEnemy : MonoBehaviour {
                 // in a given frame.
                 // On the other hand, if the frame rate is very slow, then Time.deltaTime is huge, and the enemy travels far
                 // in a given frame.
+				if (player.GetComponent<MoveKnight> ().grounded) {
+					transform.LookAt (player.transform);
+				}
                 timer -= Time.deltaTime;
 
                 Vector3 pos = transform.position;
