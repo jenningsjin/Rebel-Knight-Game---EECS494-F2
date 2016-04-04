@@ -6,6 +6,8 @@ public class AllyProjectile : MonoBehaviour {
 	public GameObject explosion;
 	public GameObject player;
 	public GameObject speedDial;
+    public AudioClip yay;
+    AudioSource audio;
 	// Use this for initialization
 	void Start () {
 		rigid = GetComponent<Rigidbody>();
@@ -15,7 +17,12 @@ public class AllyProjectile : MonoBehaviour {
 		rigid.velocity = vel;
 		player = GameObject.Find ("Knight");
 		speedDial = GameObject.Find ("Speed");
-	}
+        audio = GetComponent<AudioSource>();
+        if(Random.Range(0f, 2f) > 1f)
+        {
+            audio.PlayOneShot(yay, 0.5f);
+        }
+    }
 
 	// Update is called once per frame
 	void Update()
