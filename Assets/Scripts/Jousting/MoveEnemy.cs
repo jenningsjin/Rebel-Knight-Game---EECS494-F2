@@ -112,8 +112,13 @@ public class MoveEnemy : MonoBehaviour {
                     BoidController.flockSize += 1;
                 }
                 CarpetBossScript.bossHP -= 1;
+				// In the tutorial, we want to inform Fungus that the enemy is dead, so it
+				// can display a dialogue telling the user about his minions. The problem is that
+				// this object gets destroyed, so we can't use a timer to clear the dialogue after
+				// N seconds. Therefore, I use an empty game object with an attached script.
 				if (SceneManager.GetActiveScene ().name == "JoustTutorial") {
-					Fungus.Flowchart.BroadcastFungusMessage ("EnemyDead");
+					GameObject enemyDeadObj = GameObject.Find ("EnemyKilledState");
+					enemyDeadObj.GetComponent<EnemyKilledDialogue> ().TellFungusEnemyIsDead ();
 				}
             }
         } else if (state == 2 && timer < 2f)

@@ -8,7 +8,7 @@ public class KeepMusic : MonoBehaviour {
 	public enum Track {FragmentsOfTime, BattleCry, ThroughTheGates, OldEnglishMarch};
 	bool [] isCurrentlyPlaying;
 	public AudioSource audioSource;
-	public float fadeSpeed = 1.5f;
+	public float fadeSpeed = 50f;
 	public int state = 0;
 
 	void Awake() {
@@ -44,7 +44,7 @@ public class KeepMusic : MonoBehaviour {
 			break;
 		case 1: // Fading out a track
 			if (audioSource.volume > 0) {
-				Debug.Log ("Decreasing volume...");
+				//Debug.Log ("Decreasing volume...");
 				audioSource.volume -= fadeSpeed * Time.deltaTime;
 			} else {
 				++state;
