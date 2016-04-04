@@ -16,11 +16,19 @@ public class SpeedScript : MonoBehaviour {
 	
 	}
 
-	public void updateSpeedDial() {
-		Debug.Log ("Updating speed dial");
+	public void increaseSpeedDial() {
+		Debug.Log ("Increasing speed dial");
 		if (index < 11) {
 			++index;
 			gameObject.GetComponent<Image>().sprite = speedDials [index];
+		}
+	}
+
+	public void decreaseSpeedDial() {
+		Debug.Log ("Decreasing speed dial");
+		if (index > 0) {
+			--index;
+			gameObject.GetComponent<Image> ().sprite = speedDials [index];
 		}
 	}
 }

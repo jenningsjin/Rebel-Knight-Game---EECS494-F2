@@ -22,12 +22,18 @@ public class MoveKnight : MonoBehaviour {
     float lanceTimer = 0.5f;
     public GameObject person;
     public ParticleSystem particle;
-    float healthTimer = 1f;
+    float healthTimer = 1.5f;
     bool tookDamage = false;
     bool left = false;
     float attackDelay = 0.5f;
     bool lanceHit = false;
-    
+    public AudioClip neigh;
+    public AudioClip damaged;
+    public AudioClip jump;
+    public AudioClip land;
+    public AudioClip attack;
+    AudioSource audio;
+
     // Use this for initialization
     void Start () {
         rigid = GetComponent<Rigidbody>();
@@ -38,6 +44,8 @@ public class MoveKnight : MonoBehaviour {
         particle = GetComponent<ParticleSystem>();
         particle.enableEmission = false;
         lance.SetActive(false);
+        audio = GetComponent<AudioSource>();
+        audio.PlayOneShot(neigh, 0.25f);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), false);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), false);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), false);
@@ -63,7 +71,7 @@ public class MoveKnight : MonoBehaviour {
             if (lanceTimer < 0)
             {
                 particle.enableEmission = false;
-                lanceTimer = 0.2f;
+                lanceTimer = 0.5f;
                 Time.timeScale = 1f;
                 lanceReady = false;
                 lance.SetActive(false);
@@ -85,12 +93,12 @@ public class MoveKnight : MonoBehaviour {
                 if (tookDamage)
                 {
                     healthTimer -= Time.deltaTime;
-                    if (healthTimer > 0.75f)
+                    if (healthTimer > 1.25f)
                     {
                         transform.Rotate(Vector3.right, -10f * Time.deltaTime * 4f);
                         transform.Rotate(Vector3.up, -7.5f * Time.deltaTime * 4f);
                     }
-                    else if (healthTimer < 0.75f && healthTimer > 0.5f)
+                    else if (healthTimer < 1.25f && healthTimer > 1f)
                     {
                         if(transform.eulerAngles.y < 0f || transform.eulerAngles.y > 330f)
                         {
@@ -112,7 +120,7 @@ public class MoveKnight : MonoBehaviour {
                         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), false);
                         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), false);
                         tookDamage = false;
-                        healthTimer = 1f;
+                        healthTimer = 1.5f;
                         transform.eulerAngles = Vector3.zero;
                     }
                 }
@@ -141,6 +149,7 @@ public class MoveKnight : MonoBehaviour {
                     vel.y = jumpSpeed;
                     rigid.velocity = vel;
 				    grounded = false;
+                    audio.PlayOneShot(jump, 2f);
                     //rigid.transform.eulerAngles = Vector3.zero;
 			}
                 else if (Input.GetKeyDown(KeyCode.DownArrow) && BoidController.flockSize > 0)
@@ -232,12 +241,14 @@ public class MoveKnight : MonoBehaviour {
                     rigid.velocity = vel;
                 }
                 tookDamage = true;
+                audio.PlayOneShot(damaged, 0.5f);
                 Destroy(col.gameObject);
             }
         }
         else if(col.gameObject.tag == "Enemy" && lanceReady)
         {
             lanceHit = true;
+            audio.PlayOneShot(attack);
             lanceTimer = 0.2f;
             Time.timeScale = 0.25f;
         }
@@ -265,6 +276,7 @@ public class MoveKnight : MonoBehaviour {
             {
                 lanceTimer = 0;
             }
+            audio.PlayOneShot(damaged, 0.5f);
         }
         if(col.gameObject.tag == "Ground")
         {
@@ -282,6 +294,10 @@ public class MoveKnight : MonoBehaviour {
 	void OnTriggerEnter(Collider col) {
 		if (col.gameObject.tag == "Ground") {
             //print("GROUNDED");
+            if (!grounded)
+            {
+                audio.PlayOneShot(land, 1.5f);
+            }
 			grounded = true;
             //transform.eulerAngles = Vector3.zero;
         }

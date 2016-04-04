@@ -6,15 +6,18 @@ using System.Text.RegularExpressions;
 public class MoveEnemy : MonoBehaviour {
 
     Rigidbody rigid;
-    //public GameObject explosion;
+    public GameObject explosion;
 	GameObject player;
 	Transform target;
 	float speed;
 	public int state;
-    float timer = 0.8f;
+    float timer = 0.5f;
     float currentLane = 0f;
     public GameObject eyes;
 	public GameObject speedDial;
+    public AudioClip death1;
+    public AudioClip death2;
+    AudioSource audio;
 	//public GameObject score;
 
     // Use this for initialization
@@ -29,6 +32,7 @@ public class MoveEnemy : MonoBehaviour {
         eyes.SetActive(false);
         currentLane = MoveKnight.lanePosition();
 		speedDial = GameObject.Find ("Speed");
+        audio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -48,23 +52,25 @@ public class MoveEnemy : MonoBehaviour {
                 // in a given frame.
                 // On the other hand, if the frame rate is very slow, then Time.deltaTime is huge, and the enemy travels far
                 // in a given frame.
-				if (player.GetComponent<MoveKnight> ().grounded) {
-					transform.LookAt (player.transform);
-				}
-                timer -= Time.deltaTime;
+			if (player.GetComponent<MoveKnight> ().grounded) {
+				transform.LookAt (player.transform);
+			}
+			timer -= Time.deltaTime;
 
-                Vector3 pos = transform.position;
-                pos.x = currentLane;
-                transform.position = Vector3.MoveTowards(transform.position, pos, 1f);
-                if (timer < 0 && currentLane != MoveKnight.lanePosition())
-                {
-                    currentLane = MoveKnight.lanePosition();
-                    timer = 1f;
-                }
+			Vector3 pos = transform.position;
+			pos.x = currentLane;
+			if (Mathf.Abs (transform.position.z - MoveKnight.rigid.position.z) > 2f) {
+				transform.position = Vector3.MoveTowards (transform.position, pos, 1f);
+			}
+            if (timer < 0 && currentLane != MoveKnight.lanePosition())
+            {
+                currentLane = MoveKnight.lanePosition();
+                timer = 1f;
+            }
 
-                if (transform.position.z > target.position.z) {
-                    //Debug.Log ("CHANGING ENEMY's POSITION");
-                    transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * 1f);
+            if (transform.position.z > target.position.z) {
+                //Debug.Log ("CHANGING ENEMY's POSITION");
+                transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * 1f);
 			}
 			break;
             case 2:
@@ -101,13 +107,14 @@ public class MoveEnemy : MonoBehaviour {
 		} else if (nameContainsAllyProjectile.Success && state == 1) {
 			Debug.Log ("\nENEMY COLLIDED WITH AN ALLY\n");
 			FlamboyantDeathAnimation ();
-		} else if (state == 2 && timer < 2f) {
-            /*explosion.transform.position = this.transform.position;
-            if(Random.Range(0, 10.0F) > 6f)
+		}
+        if (state == 2 && timer < 2f) {
+            explosion.transform.position = this.transform.position;
+            if(Random.Range(0, 10.0F) > 7f)
             {
                 GameObject.Instantiate(explosion);
 
-            }*/
+            }
             Destroy(this.gameObject);
         }
 		//print ("Player body collided with something");
@@ -137,8 +144,20 @@ public class MoveEnemy : MonoBehaviour {
 		CarpetBossScript.bossHP -= 1;
 
 		// Update the speed dial to reflect player's success
-		speedDial.GetComponent<SpeedScript>().updateSpeedDial();
+		speedDial.GetComponent<SpeedScript>().increaseSpeedDial();
+        float decide = Random.Range(0f, 4f);
+        if(decide < 2f)
+        {
 
+        } else if(decide >= 2f && decide < 2.75f)
+        {
+            audio.PlayOneShot(death1, 0.4f);
+            timer = 2.873f + 0.7f;
+        } else if(decide >= 2.75f)
+        {
+            audio.PlayOneShot(death2, 1f);
+            //
+        }
 		// In the tutorial, we want to inform Fungus that the enemy is dead, so it
 		// can display a dialogue telling the user about his minions. The problem is that
 		// this object gets destroyed, so we can't use a timer to clear the dialogue after

@@ -67,7 +67,7 @@ public class CarpetBossScript : MonoBehaviour {
 			case 1:
 				if (attackChance < 2) {
 					int attackNum = Random.Range(1, 2);
-					makeAttack(attackNum);
+					//makeAttack(attackNum);
 				}
 				break;
 			case 2:
@@ -180,9 +180,10 @@ public class CarpetBossScript : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision col) {
-		bossHP-=1;
-		print("Boss has been hit");
-
+		if(col.gameObject.tag == "Weapon" ) {
+			bossHP-=1;
+			print("Boss has been hit");
+		}
 		if (bossHP == 0 ) {
 			spawnEnemies = false;
 			bossChangesLanes = false;
