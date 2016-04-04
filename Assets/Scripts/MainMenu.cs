@@ -26,6 +26,10 @@ public class MainMenu : MonoBehaviour {
 		SceneManager.LoadScene ("Menu_LevelSelect");
 	}
 
+	public void LoadGameOver() {
+		SceneManager.LoadScene ("GameOver");
+	}
+
 	public void LoadMainMenu() {
 		SceneManager.LoadScene("Menu");
 	}

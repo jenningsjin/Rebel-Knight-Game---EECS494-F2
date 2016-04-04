@@ -24,7 +24,7 @@ public class EnemyKilledDialogue : MonoBehaviour {
 	public void TellFungusEnemyIsDead() {
 		Debug.Log ("Tell fungus enemy is dead");
 		Fungus.Flowchart.BroadcastFungusMessage ("EnemyDead");
-		timer = 4.0f;
+		timer = 8.0f;
 		startTimer = true;
 	}
 }
