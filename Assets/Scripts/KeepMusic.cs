@@ -8,8 +8,11 @@ public class KeepMusic : MonoBehaviour {
 	public enum Track {FragmentsOfTime, BattleCry, ThroughTheGates, OldEnglishMarch};
 	bool [] isCurrentlyPlaying;
 	public AudioSource audioSource;
-	public float fadeSpeed = 50f;
+	//public float fadeSpeed = 50f;
+	public float fadeOutSpeed = 50f;
+	public float fadeInSpeed = 10f;
 	public int state = 0;
+	//public float timer = 3.0f;
 
 	void Awake() {
 		if (GameObject.FindGameObjectsWithTag("MenuAudio").Length > 1) {
@@ -34,7 +37,8 @@ public class KeepMusic : MonoBehaviour {
 		switch (state) {
 		case 0: // Playing a track
 			// If the right thing isn't playing, do something!
-			if (currentScene.name == "Prologue" && !isCurrentlyPlaying [(int)Track.BattleCry]) {
+			if ((currentScene.name == "Prologue" || currentScene.name == "JoustTutorial") &&
+				!isCurrentlyPlaying [(int)Track.BattleCry]) {
 				Debug.Log ("In the prologue, but not playing prologue theme!");
 				++state;
 			} else if ((currentScene.name == "Menu" || currentScene.name == "Menu_LevelSelect") &&
@@ -42,10 +46,10 @@ public class KeepMusic : MonoBehaviour {
 				++state;
 			}
 			break;
-		case 1: // Fading out a track
+		case 1: // Fading out a track (3s)
 			if (audioSource.volume > 0) {
 				//Debug.Log ("Decreasing volume...");
-				audioSource.volume -= fadeSpeed * Time.deltaTime;
+				audioSource.volume -= fadeOutSpeed * Time.deltaTime;
 			} else {
 				++state;
 			}
@@ -64,9 +68,9 @@ public class KeepMusic : MonoBehaviour {
 			}
 			++state;
 			break;
-		case 3: // Fading in the new track
+		case 3: // Fading in the new track (3s)
 			if (audioSource.volume < 1) {
-				audioSource.volume += fadeSpeed * Time.deltaTime;
+				audioSource.volume += fadeInSpeed * Time.deltaTime;
 			} else {
 				state = 0;
 			}
