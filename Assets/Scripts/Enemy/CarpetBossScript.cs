@@ -73,6 +73,20 @@ public class CarpetBossScript : MonoBehaviour {
 		
 
 
+		if (attackDebug) {
+			if (Input.GetKeyDown(KeyCode.A) ) {
+				fireBall();
+			}
+
+			if (Input.GetKeyDown(KeyCode.S) ) {
+				verticalBeam();
+			}			
+		
+			if (Input.GetKeyDown(KeyCode.D) ) {
+				wideBeam();
+			}
+
+		}
 	}
 
 	void spawnEnemy() {
@@ -83,7 +97,8 @@ public class CarpetBossScript : MonoBehaviour {
 
 	void fireBall() {
 		GameObject attack = Instantiate(FireBall, this.transform.position, Quaternion.identity) as GameObject;
-		attack.GetComponent<Rigidbody>().velocity = Vector3.back * 2;
+		attack.GetComponent<Rigidbody>().velocity = Vector3.back * 6;
+		//attack.GetComponent<Rigidbody>().AddForce(Vector3.back*40);
 		return;
 	}
 
