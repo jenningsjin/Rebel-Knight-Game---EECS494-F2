@@ -93,7 +93,11 @@ public class MoveEnemy : MonoBehaviour {
 		if (col.gameObject.name == "Knight" && state == 1) {
 			if (MoveKnight.lanceReady) {
 				FlamboyantDeathAnimation ();
-			}
+                if (BoidController.flockSize < 10)
+                {
+                    BoidController.flockSize += 1;
+                }
+            }
 		} else if (nameContainsAllyProjectile.Success && state == 1) {
 			Debug.Log ("\nENEMY COLLIDED WITH AN ALLY\n");
 			FlamboyantDeathAnimation ();
@@ -126,13 +130,10 @@ public class MoveEnemy : MonoBehaviour {
 		}
 		vel.y += 8f;
 		rigid.velocity = vel;
-		Vector3 angle = new Vector3(-1f, 2f, 0f);
+        float dir = (Random.Range(-2f, 2f));
+		Vector3 angle = new Vector3(-1f, dir, 0f);
 		rigid.angularVelocity = angle;
 
-		if (BoidController.flockSize < 10)
-		{
-			BoidController.flockSize += 1;
-		}
 		CarpetBossScript.bossHP -= 1;
 
 		// Update the speed dial to reflect player's success

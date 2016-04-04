@@ -19,13 +19,14 @@ public class MoveKnight : MonoBehaviour {
     public bool grounded = true;
     public static bool lanceReady = false;
     public GameObject lance;
-    float lanceTimer = 0.2f;
+    float lanceTimer = 0.5f;
     public GameObject person;
     public ParticleSystem particle;
     float healthTimer = 1f;
     bool tookDamage = false;
     bool left = false;
     float attackDelay = 0.5f;
+    bool lanceHit = false;
     
     // Use this for initialization
     void Start () {
@@ -52,7 +53,7 @@ public class MoveKnight : MonoBehaviour {
         {
             particle.enableEmission = true;
             lanceTimer -= Time.deltaTime;
-            if(lanceTimer < 0.2 && lanceTimer > 0)
+            if(lanceTimer < 0.2 && lanceTimer > 0 && lanceHit)
             {
                 Vector3 tmp = this.transform.eulerAngles;
                 tmp.y += 1f;
@@ -67,6 +68,7 @@ public class MoveKnight : MonoBehaviour {
                 lanceReady = false;
                 lance.SetActive(false);
                 this.transform.eulerAngles = Vector3.zero;
+                lanceHit = false;
             }
         }
     }
@@ -152,7 +154,6 @@ public class MoveKnight : MonoBehaviour {
                 {
                     lanceReady = true;
                     lance.SetActive(true);
-                    Time.timeScale = 0.25f;
                     attackDelay = 0.5f;
                 }
 			break;
@@ -236,7 +237,9 @@ public class MoveKnight : MonoBehaviour {
         }
         else if(col.gameObject.tag == "Enemy" && lanceReady)
         {
-            lanceTimer = 0.05f;
+            lanceHit = true;
+            lanceTimer = 0.2f;
+            Time.timeScale = 0.25f;
         }
         if(col.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
         {
