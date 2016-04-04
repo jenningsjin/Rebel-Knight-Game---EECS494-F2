@@ -137,7 +137,7 @@ public class MoveEnemy : MonoBehaviour {
 		CarpetBossScript.bossHP -= 1;
 
 		// Update the speed dial to reflect player's success
-		speedDial.GetComponent<SpeedScript>().updateSpeedDial();
+		speedDial.GetComponent<SpeedScript>().increaseSpeedDial();
 
 		// In the tutorial, we want to inform Fungus that the enemy is dead, so it
 		// can display a dialogue telling the user about his minions. The problem is that
