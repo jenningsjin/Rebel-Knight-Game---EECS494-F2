@@ -11,9 +11,13 @@ public class CarpetBossScript : MonoBehaviour {
 	static public int bossHP = 15;
 	public int chaserDistance = 30;
 	public int bossPhase = 0;
+	public float enemySpawnInterval = 7f;
+	public float laneChangeInterval = 5f;
+	public int currentLane = 0;
 
 	[Header("Testing Flags")]
-	public bool spawnEnemies = false;
+	public bool spawnEnemies = true;
+	public bool bossChangesLanes = true;
 	public bool attackDebug = true;
 
 	[Header("Attack Objects/Animation")]
@@ -23,11 +27,16 @@ public class CarpetBossScript : MonoBehaviour {
 
 
 	public enum attacks {fireBall = 1, wideBeam = 2, verticalBeam = 3};
+	public enum laneNum {left = -4, center = 0, right = 4}
+	int[] lanes = new int[3];
+
 	// Use this for initialization
 	void Start () {
-		if (spawnEnemies) {
-			InvokeRepeating("spawnEnemy", 9, 2.5f);
-		}
+		lanes[0] = -4;
+		lanes[1] = 0;
+		lanes[2] = 4;
+		StartCoroutine("spawnEnemyCoroutine");
+		StartCoroutine("changeLaneCoroutine");
 	}
 	
 	// Update is called once per frame
@@ -49,46 +58,80 @@ public class CarpetBossScript : MonoBehaviour {
 			Destroy(this.gameObject);
 		}
 
-
+		int attackChance = Random.Range(1, 150);		
 		switch (bossPhase){
 			case 0:
-				//chaserDistance = 30;
+				//neutral phase
+
 				break;
 			case 1:
-				chaserDistance = 22;
-				//CancelInvoke("spawnEnemy");
+				if (attackChance < 2) {
+					int attackNum = Random.Range(1, 2);
+					makeAttack(attackNum);
+				}
 				break;
 			case 2:
-				chaserDistance = 17;
+				if (attackChance < 2) {
+					int attackNum = Random.Range(1, 3);
+					makeAttack(attackNum);
+				}			
 				break;
 			case 3:
-				chaserDistance = 6;
+				if (attackChance < 2) {
+					int attackNum = Random.Range(1, 4);
+					makeAttack(attackNum);
+				}
 				break;
 			default:
 				print("We should never be here");
 				break;
 		}
 		
-		this.transform.position = new Vector3(0, this.transform.position.y ,chaser.transform.position.z + chaserDistance);
 		
 
 
 		if (attackDebug) {
-			if (Input.GetKeyDown(KeyCode.A) ) {
+			if (Input.GetKey(KeyCode.A) ) {
 				fireBall();
 			}
 
-			if (Input.GetKeyDown(KeyCode.S) ) {
+			if (Input.GetKey(KeyCode.S) ) {
 				verticalBeam();
 			}			
 		
-			if (Input.GetKeyDown(KeyCode.D) ) {
+			if (Input.GetKey(KeyCode.D) ) {
 				wideBeam();
 			}
 
 		}
+		
+
+
+
+		this.transform.position = new Vector3(currentLane, this.transform.position.y ,chaser.transform.position.z + chaserDistance);
 	}
 
+	//Coroutines
+	IEnumerator spawnEnemyCoroutine() {
+		while(spawnEnemies) {
+			spawnEnemy();
+			yield return new WaitForSeconds(enemySpawnInterval); 
+		}
+	}
+
+	IEnumerator changeLaneCoroutine() {
+		while(bossChangesLanes) {
+			int newPosition = Random.Range(0,3);
+			currentLane = lanes[newPosition];
+			yield return new WaitForSeconds(laneChangeInterval);
+		}
+	}
+
+	IEnumerator attackCoroutine() {
+		yield return new WaitForSeconds(12);
+	}
+
+	//Enemy attack functions
 	void spawnEnemy() {
 		//this.gameObject.transform.position;
 		Instantiate(spawnedEnemy, this.transform.position, Quaternion.identity);
@@ -97,8 +140,8 @@ public class CarpetBossScript : MonoBehaviour {
 
 	void fireBall() {
 		GameObject attack = Instantiate(FireBall, this.transform.position, Quaternion.identity) as GameObject;
-		attack.GetComponent<Rigidbody>().velocity = Vector3.back * 6;
-		//attack.GetComponent<Rigidbody>().AddForce(Vector3.back*40);
+		//attack.GetComponent<Rigidbody>().velocity = Vector3.back * 6;
+		attack.GetComponent<Rigidbody>().AddForce(Vector3.back*40);
 		return;
 	}
 
@@ -108,7 +151,7 @@ public class CarpetBossScript : MonoBehaviour {
 	}
 
 	void wideBeam() {
-		Vector3 beamPos = new Vector3(this.transform.position.x, 1, this.transform.position.z  );
+		Vector3 beamPos = new Vector3(0 , 1, this.transform.position.z  );
 		GameObject attack = Instantiate(WideBeam, beamPos, Quaternion.identity)  as GameObject;
 		return;
 	}
@@ -117,12 +160,15 @@ public class CarpetBossScript : MonoBehaviour {
 	void makeAttack( int attack) {
 		switch (attack){
 			case 0:
+				spawnEnemy();
+				break;			
+			case 1:
 				fireBall();
 				break;
-			case 1:
+			case 2:
 				wideBeam();
 				break;
-			case 2:
+			case 3:
 				verticalBeam();
 				break;
 			default:
@@ -134,7 +180,17 @@ public class CarpetBossScript : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision col) {
-		Destroy(this.gameObject);
+		bossHP-=1;
+		print("Boss has been hit");
+
+		if (bossHP == 0 ) {
+			spawnEnemies = false;
+			bossChangesLanes = false;
+		}
+	}
+
+	void OnTriggerEnter(Collider col) {
+
 	}
 
 	void enemyTestSpawn() {
