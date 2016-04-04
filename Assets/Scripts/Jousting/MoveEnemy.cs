@@ -11,7 +11,7 @@ public class MoveEnemy : MonoBehaviour {
 	Transform target;
 	float speed;
 	public int state;
-    float timer = 0.8f;
+    float timer = 0.5f;
     float currentLane = 0f;
     public GameObject eyes;
 	public GameObject speedDial;
@@ -52,23 +52,25 @@ public class MoveEnemy : MonoBehaviour {
                 // in a given frame.
                 // On the other hand, if the frame rate is very slow, then Time.deltaTime is huge, and the enemy travels far
                 // in a given frame.
-				if (player.GetComponent<MoveKnight> ().grounded) {
-					transform.LookAt (player.transform);
-				}
-                timer -= Time.deltaTime;
+			if (player.GetComponent<MoveKnight> ().grounded) {
+				transform.LookAt (player.transform);
+			}
+			timer -= Time.deltaTime;
 
-                Vector3 pos = transform.position;
-                pos.x = currentLane;
-                transform.position = Vector3.MoveTowards(transform.position, pos, 1f);
-                if (timer < 0 && currentLane != MoveKnight.lanePosition())
-                {
-                    currentLane = MoveKnight.lanePosition();
-                    timer = 1f;
-                }
+			Vector3 pos = transform.position;
+			pos.x = currentLane;
+			if (Mathf.Abs (transform.position.z - MoveKnight.rigid.position.z) > 2f) {
+				transform.position = Vector3.MoveTowards (transform.position, pos, 1f);
+			}
+            if (timer < 0 && currentLane != MoveKnight.lanePosition())
+            {
+                currentLane = MoveKnight.lanePosition();
+                timer = 1f;
+            }
 
-                if (transform.position.z > target.position.z) {
-                    //Debug.Log ("CHANGING ENEMY's POSITION");
-                    transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * 1f);
+            if (transform.position.z > target.position.z) {
+                //Debug.Log ("CHANGING ENEMY's POSITION");
+                transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * 1f);
 			}
 			break;
             case 2:

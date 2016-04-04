@@ -22,7 +22,7 @@ public class MoveKnight : MonoBehaviour {
     float lanceTimer = 0.5f;
     public GameObject person;
     public ParticleSystem particle;
-    float healthTimer = 1f;
+    float healthTimer = 1.5f;
     bool tookDamage = false;
     bool left = false;
     float attackDelay = 0.5f;
@@ -45,7 +45,7 @@ public class MoveKnight : MonoBehaviour {
         particle.enableEmission = false;
         lance.SetActive(false);
         audio = GetComponent<AudioSource>();
-        audio.PlayOneShot(neigh, 0.75f);
+        audio.PlayOneShot(neigh, 0.25f);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), false);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), false);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), false);
@@ -93,12 +93,12 @@ public class MoveKnight : MonoBehaviour {
                 if (tookDamage)
                 {
                     healthTimer -= Time.deltaTime;
-                    if (healthTimer > 0.75f)
+                    if (healthTimer > 1.25f)
                     {
                         transform.Rotate(Vector3.right, -10f * Time.deltaTime * 4f);
                         transform.Rotate(Vector3.up, -7.5f * Time.deltaTime * 4f);
                     }
-                    else if (healthTimer < 0.75f && healthTimer > 0.5f)
+                    else if (healthTimer < 1.25f && healthTimer > 1f)
                     {
                         if(transform.eulerAngles.y < 0f || transform.eulerAngles.y > 330f)
                         {
@@ -120,7 +120,7 @@ public class MoveKnight : MonoBehaviour {
                         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), false);
                         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), false);
                         tookDamage = false;
-                        healthTimer = 1f;
+                        healthTimer = 1.5f;
                         transform.eulerAngles = Vector3.zero;
                     }
                 }
