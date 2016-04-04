@@ -13,6 +13,7 @@ public class MoveEnemy : MonoBehaviour {
     float timer = 0.8f;
     float currentLane = 0f;
     public GameObject eyes;
+	public GameObject speedDial;
 	//public GameObject score;
 
     // Use this for initialization
@@ -26,6 +27,7 @@ public class MoveEnemy : MonoBehaviour {
 		speed = 7.0f;
         eyes.SetActive(false);
         currentLane = MoveKnight.lanePosition();
+		speedDial = GameObject.Find ("Speed");
     }
 
     // Update is called once per frame
@@ -106,12 +108,15 @@ public class MoveEnemy : MonoBehaviour {
                 Vector3 angle = new Vector3(-1f, 2f, 0f);
                 rigid.angularVelocity = angle;
 
-                //score.GetComponent<ScoreScript>().updateScore ();
                 if (BoidController.flockSize < 10)
                 {
                     BoidController.flockSize += 1;
                 }
                 CarpetBossScript.bossHP -= 1;
+
+				// Update the speed dial to reflect player's success
+				speedDial.GetComponent<SpeedScript>().updateSpeedDial();
+
 				// In the tutorial, we want to inform Fungus that the enemy is dead, so it
 				// can display a dialogue telling the user about his minions. The problem is that
 				// this object gets destroyed, so we can't use a timer to clear the dialogue after
