@@ -70,23 +70,11 @@ public class CarpetBossScript : MonoBehaviour {
 		}
 		
 		this.transform.position = new Vector3(0, this.transform.position.y ,chaser.transform.position.z + chaserDistance);
-
-		if (Input.GetKey(KeyCode.A)) {
-			fireBall();
-        }	
-	
-		if (Input.GetKey(KeyCode.S)) {
-			wideBeam();
-        }	
-
-		if (Input.GetKey(KeyCode.D)) {
-			verticalBeam();
-        }	
+		
 
 
 	}
 
-	//Enemy attack functions
 	void spawnEnemy() {
 		//this.gameObject.transform.position;
 		Instantiate(spawnedEnemy, this.transform.position, Quaternion.identity);
@@ -129,8 +117,6 @@ public class CarpetBossScript : MonoBehaviour {
 
 		return;
 	}
-	
-
 
 	void OnCollisionEnter(Collision col) {
 		Destroy(this.gameObject);

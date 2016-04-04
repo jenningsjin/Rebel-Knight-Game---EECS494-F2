@@ -11,6 +11,7 @@ public class MoveEnemy : MonoBehaviour {
 	public int state;
     float timer = 0.8f;
     float currentLane = 0f;
+    public GameObject eyes;
 	//public GameObject score;
 
     // Use this for initialization
@@ -22,7 +23,7 @@ public class MoveEnemy : MonoBehaviour {
 		//maincamera = GameObject.Find ("Main Camera");
 		state = 0;
 		speed = 7.0f;
-
+        eyes.SetActive(false);
         currentLane = MoveKnight.lanePosition();
     }
 
@@ -62,20 +63,48 @@ public class MoveEnemy : MonoBehaviour {
                     transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * 1f);
 			}
 			break;
+            case 2:
+                //Dead
+                timer -= Time.deltaTime;
+                if(timer < 0)
+                {
+                    Destroy(this.gameObject);
+                    /*Collider[] componentsList = this.gameObject.GetComponentsInChildren<Collider>();
+                    foreach (Collider collider in componentsList)
+                    {
+                        collider.enabled = false;
+                    }*/
+                }
+                break;
 		default:
 			Debug.Log("MoveEnemy: Undefined state");
 			break;
 		}
 
     }
-		
-	void OnCollisionEnter(Collision col) {
+
+    void OnCollisionEnter(Collision col) {
         //print(col.gameObject.name);
-        if(col.gameObject.name == "Knight")
+        if (col.gameObject.name == "Knight" && state == 1)
         {
             if (MoveKnight.lanceReady)
             {
-                Destroy(this.gameObject);
+                //Destroy(this.gameObject);
+                eyes.SetActive(true);
+                state = 2;
+                timer = 3f;
+                rigid.constraints = RigidbodyConstraints.None;
+                Vector3 vel = rigid.velocity;
+                vel.z = MoveKnight.rigid.velocity.z + 12f;
+                if(vel.z < 32)
+                {
+                    vel.z = 32f;
+                }
+                vel.y += 8f;
+                rigid.velocity = vel;
+                Vector3 angle = new Vector3(-1f, 2f, 0f);
+                rigid.angularVelocity = angle;
+
                 //score.GetComponent<ScoreScript>().updateScore ();
                 if (BoidController.flockSize < 10)
                 {
@@ -83,29 +112,18 @@ public class MoveEnemy : MonoBehaviour {
                 }
                 CarpetBossScript.bossHP -= 1;
             }
+        } else if (state == 2 && timer < 2f)
+        {
+            explosion.transform.position = this.transform.position;
+            if(Random.Range(0, 10.0F) > 6f)
+            {
+                GameObject.Instantiate(explosion);
+
+            }
+            Destroy(this.gameObject);
         }
 		//print ("Player body collided with something");
 		// Contact points: every contact stores a contact point and the two colliders
 		// involved.
-		/*foreach (ContactPoint c in col.contacts) {
-			//print ("Contact " + c.thisCollider.name + " hit " + c.otherCollider.name);
-			if (c.thisCollider.name == "VulnerableArea" && c.otherCollider.name == "KnightLance" ||
-				c.thisCollider.name == "KnightLance" && c.otherCollider.name == "VulnerableArea") {
-				print ("Contact " + c.thisCollider.name + " hit " + c.otherCollider.name);
-				rigid.constraints = RigidbodyConstraints.None;
-				rigid.AddExplosionForce (7.0f, this.gameObject.transform.position, 5.0f);
-				// disable all child colliders
-				Collider [] componentsList = this.gameObject.GetComponentsInChildren<Collider>();
-				foreach (Collider collider in componentsList) {
-					collider.enabled = false;
-				}
-				Destroy (this.gameObject);
-				//score.GetComponent<ScoreScript>().updateScore ();
-				if(BoidController.flockSize < 10) {
-					BoidController.flockSize+=1;
-				}
-				CarpetBossScript.bossHP-=1;
-			}
-		}*/
 	}
 }

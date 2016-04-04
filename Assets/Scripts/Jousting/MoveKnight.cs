@@ -5,26 +5,28 @@ using UnityEngine.SceneManagement;
 public class MoveKnight : MonoBehaviour {
     public static Rigidbody rigid;
     public GameObject explosion;
-	public int state;
-	public GameObject hp_bar;
-	public int jumpSpeed = 100;
-	public BoxCollider groundCollider;
+    public int state;
+    public GameObject hp_bar;
+    public int jumpSpeed = 100;
+    public BoxCollider groundCollider;
     private float moveTimer = 0.1f;
     public static int lane = 1;
     public static float leftLane = -4f;
     public static float rightLane = 4f;
     public static float midLane = 0f;
     private float maxSpeed = 20f;
-	bool sentMsg = false;
-	public bool grounded = true;
+    bool sentMsg = false;
+    public bool grounded = true;
     public static bool lanceReady = false;
-    float lanceTimer = 1f;
+    public GameObject lance;
+    float lanceTimer = 0.2f;
     public GameObject person;
     public ParticleSystem particle;
     float healthTimer = 1f;
     bool tookDamage = false;
     bool left = false;
-
+    float attackDelay = 0.5f;
+    
     // Use this for initialization
     void Start () {
         rigid = GetComponent<Rigidbody>();
@@ -34,30 +36,49 @@ public class MoveKnight : MonoBehaviour {
         switchLanes();
         particle = GetComponent<ParticleSystem>();
         particle.enableEmission = false;
+        lance.SetActive(false);
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), false);
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), false);
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), false);
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), false);
     }
 
 	public void BeginGame() {
 		++state;
 	}
-
-	// Update is called once per frame
-	void Update () {
-        moveTimer -= Time.deltaTime;
+    void FixedUpdate()
+    {
         if (lanceReady)
         {
             particle.enableEmission = true;
             lanceTimer -= Time.deltaTime;
-            if(lanceTimer < 0)
+            if(lanceTimer < 0.2 && lanceTimer > 0)
+            {
+                Vector3 tmp = this.transform.eulerAngles;
+                tmp.y += 1f;
+                tmp.x -= 0.5f;
+                this.transform.eulerAngles = tmp;
+            }
+            if (lanceTimer < 0)
             {
                 particle.enableEmission = false;
-                lanceTimer = 1f;
+                lanceTimer = 0.2f;
+                Time.timeScale = 1f;
                 lanceReady = false;
+                lance.SetActive(false);
+                this.transform.eulerAngles = Vector3.zero;
             }
         }
+    }
+	// Update is called once per frame
+	void Update () {
+        moveTimer -= Time.deltaTime;
+
         switch (state) {
 		case 0: // Before game start
 			break;
 		case 1: // Charge
+                attackDelay -= Time.deltaTime;
             changeSpeed();
                 if (tookDamage)
                 {
@@ -127,9 +148,12 @@ public class MoveKnight : MonoBehaviour {
                     person.transform.position = personPos;
                     GameObject.Instantiate(person);
                     BoidController.flockSize--;
-                } else if(Input.GetKeyDown(KeyCode.Space) && lanceTimer > 0)
+                } else if(Input.GetKeyDown(KeyCode.Space) && lanceTimer > 0 && attackDelay < 0)
                 {
                     lanceReady = true;
+                    lance.SetActive(true);
+                    Time.timeScale = 0.25f;
+                    attackDelay = 0.5f;
                 }
 			break;
 		case 2: // After crossing the finish line
@@ -186,25 +210,33 @@ public class MoveKnight : MonoBehaviour {
 		// involved.
         if(col.gameObject.tag == "Enemy" && !lanceReady)
         {
-            hp_bar.GetComponent<HeartsScript>().decreaseHealth();
-            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
-            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
-            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
-            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
-            Vector3 v = rigid.velocity;
-            v.z = -5f;
-            rigid.velocity = v;
-            if (!grounded)
+            MoveEnemy x = col.gameObject.GetComponent<MoveEnemy>();
+            if(x.state == 1)
             {
-                Vector3 vel = rigid.velocity;
-                if (vel.y > 0)
+                hp_bar.GetComponent<HeartsScript>().decreaseHealth();
+                Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
+                Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
+                Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
+                Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
+                Vector3 v = rigid.velocity;
+                v.z = -5f;
+                rigid.velocity = v;
+                if (!grounded)
                 {
-                    vel.y = -1f;
+                    Vector3 vel = rigid.velocity;
+                    if (vel.y > 0)
+                    {
+                        vel.y = -1f;
+                    }
+                    rigid.velocity = vel;
                 }
-                rigid.velocity = vel;
+                tookDamage = true;
+                Destroy(col.gameObject);
             }
-            tookDamage = true;
-            Destroy(col.gameObject);
+        }
+        else if(col.gameObject.tag == "Enemy" && lanceReady)
+        {
+            lanceTimer = 0.05f;
         }
         if(col.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
         {
@@ -226,8 +258,11 @@ public class MoveKnight : MonoBehaviour {
                 rigid.velocity = vel;
             }
             tookDamage = true;
+            if (lanceReady)
+            {
+                lanceTimer = 0;
+            }
         }
-        print(col.gameObject.tag);
         if(col.gameObject.tag == "Ground")
         {
             grounded = true;
@@ -275,7 +310,6 @@ public class MoveKnight : MonoBehaviour {
                 vel.y -= 1.5f;
                 rigid.velocity = vel;
             }
-            print(rigid.velocity.y);
             //Rotation Logic
             if (rigid.velocity.y < 0f)
             {
@@ -291,7 +325,7 @@ public class MoveKnight : MonoBehaviour {
             //Gradually return rotation to 0
             transform.Rotate(Vector3.right, -10f * Time.deltaTime * 8f);
         }
-        else if (transform.eulerAngles != Vector3.zero && !tookDamage)
+        else if (transform.eulerAngles != Vector3.zero && !tookDamage && !lanceReady)
         {
             transform.eulerAngles = Vector3.zero;
         }
