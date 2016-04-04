@@ -56,12 +56,12 @@ public class DetonatorSound : DetonatorComponent {
 			if (Vector3.Distance(Camera.main.transform.position, this.transform.position) < distanceThreshold)
 			{
 				_idx = (int)(Random.value * nearSounds.Length);
-				_soundComponent.PlayOneShot(nearSounds[_idx]);
+				_soundComponent.PlayOneShot(nearSounds[_idx], 0.5f);
 			}
 			else
 			{
 				_idx = (int)(Random.value * farSounds.Length);
-				_soundComponent.PlayOneShot(farSounds[_idx]);
+				_soundComponent.PlayOneShot(farSounds[_idx], 0.5f);
 			}	
 			_delayedExplosionStarted = false;
 			_explodeDelay = 0f;			

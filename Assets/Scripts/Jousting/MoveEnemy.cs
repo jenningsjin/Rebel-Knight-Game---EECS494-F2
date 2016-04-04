@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 public class MoveEnemy : MonoBehaviour {
 
     Rigidbody rigid;
-    //public GameObject explosion;
+    public GameObject explosion;
 	GameObject player;
 	Transform target;
 	float speed;
@@ -15,6 +15,9 @@ public class MoveEnemy : MonoBehaviour {
     float currentLane = 0f;
     public GameObject eyes;
 	public GameObject speedDial;
+    public AudioClip death1;
+    public AudioClip death2;
+    AudioSource audio;
 	//public GameObject score;
 
     // Use this for initialization
@@ -29,6 +32,7 @@ public class MoveEnemy : MonoBehaviour {
         eyes.SetActive(false);
         currentLane = MoveKnight.lanePosition();
 		speedDial = GameObject.Find ("Speed");
+        audio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -101,13 +105,14 @@ public class MoveEnemy : MonoBehaviour {
 		} else if (nameContainsAllyProjectile.Success && state == 1) {
 			Debug.Log ("\nENEMY COLLIDED WITH AN ALLY\n");
 			FlamboyantDeathAnimation ();
-		} else if (state == 2 && timer < 2f) {
-            /*explosion.transform.position = this.transform.position;
-            if(Random.Range(0, 10.0F) > 6f)
+		}
+        if (state == 2 && timer < 2f) {
+            explosion.transform.position = this.transform.position;
+            if(Random.Range(0, 10.0F) > 7f)
             {
                 GameObject.Instantiate(explosion);
 
-            }*/
+            }
             Destroy(this.gameObject);
         }
 		//print ("Player body collided with something");
@@ -138,7 +143,19 @@ public class MoveEnemy : MonoBehaviour {
 
 		// Update the speed dial to reflect player's success
 		speedDial.GetComponent<SpeedScript>().increaseSpeedDial();
+        float decide = Random.Range(0f, 4f);
+        if(decide < 2f)
+        {
 
+        } else if(decide >= 2f && decide < 2.75f)
+        {
+            audio.PlayOneShot(death1, 0.4f);
+            timer = 2.873f + 0.7f;
+        } else if(decide >= 2.75f)
+        {
+            audio.PlayOneShot(death2, 1f);
+            //
+        }
 		// In the tutorial, we want to inform Fungus that the enemy is dead, so it
 		// can display a dialogue telling the user about his minions. The problem is that
 		// this object gets destroyed, so we can't use a timer to clear the dialogue after

@@ -63,7 +63,7 @@ public class MoveKnight : MonoBehaviour {
             if (lanceTimer < 0)
             {
                 particle.enableEmission = false;
-                lanceTimer = 0.2f;
+                lanceTimer = 0.5f;
                 Time.timeScale = 1f;
                 lanceReady = false;
                 lance.SetActive(false);
