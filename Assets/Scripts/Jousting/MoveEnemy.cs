@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class MoveEnemy : MonoBehaviour {
 
@@ -109,6 +110,9 @@ public class MoveEnemy : MonoBehaviour {
                     BoidController.flockSize += 1;
                 }
                 CarpetBossScript.bossHP -= 1;
+				if (SceneManager.GetActiveScene ().name == "JoustTutorial") {
+					Fungus.Flowchart.BroadcastFungusMessage ("EnemyDead");
+				}
             }
         } else if (state == 2 && timer < 2f)
         {
