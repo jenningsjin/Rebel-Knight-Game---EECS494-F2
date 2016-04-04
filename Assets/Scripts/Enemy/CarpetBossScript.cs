@@ -14,12 +14,15 @@ public class CarpetBossScript : MonoBehaviour {
 
 	[Header("Testing Flags")]
 	public bool spawnEnemies = false;
+	public bool attackDebug = true;
 
 	[Header("Attack Objects/Animation")]
 	public GameObject FireBall;
 	public GameObject WideBeam;
 	public GameObject VerticalBeam;
 
+
+	public enum attacks {fireBall = 1, wideBeam = 2, verticalBeam = 3};
 	// Use this for initialization
 	void Start () {
 		if (spawnEnemies) {
@@ -107,11 +110,26 @@ public class CarpetBossScript : MonoBehaviour {
 		return;
 	}
 
-	/*
-	void makeAttack( GameObject attack ) {
-		return
+
+	void makeAttack( int attack) {
+		switch (attack){
+			case 0:
+				fireBall();
+				break;
+			case 1:
+				wideBeam();
+				break;
+			case 2:
+				verticalBeam();
+				break;
+			default:
+				print("You have entered the forbidden Zone");
+				break;
+		}
+
+		return;
 	}
-	*/
+	
 
 
 	void OnCollisionEnter(Collision col) {
