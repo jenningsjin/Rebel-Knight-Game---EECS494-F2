@@ -7,6 +7,7 @@ public class CarpetBossScript : MonoBehaviour {
 	public GameObject chaser;
 	public GameObject spawnedEnemy;
 	public GameObject childHolder;
+	public GameObject path; // The BaseTerrain
 
 
 	[Header("Boss Parameters")]
@@ -16,6 +17,9 @@ public class CarpetBossScript : MonoBehaviour {
 	public float enemySpawnInterval = 250f;
 	public float laneChangeInterval = 24f;
 	public int currentLane = 0;
+	public float distanceFromEdge;
+	public float minDist = 300f; // distance when we instantiate path
+	public int pathOffset = 1000; // Where to instantiate new path
 
 	[Header("Testing Flags")]
 	public bool spawnEnemies = true;
@@ -34,6 +38,7 @@ public class CarpetBossScript : MonoBehaviour {
 	[Header("Audio")]
 	public AudioSource audiosource;
 	public AudioClip evilLaugh;
+	public AudioClip spawnSound;
 
 
 	public enum attacks {fireBall = 1, wideBeam = 2, verticalBeam = 3};
@@ -42,6 +47,11 @@ public class CarpetBossScript : MonoBehaviour {
 
 	bool coroutineFlag = false;
 
+	void Awake() {
+		// TODO: Why would spawn enemy be called before Start()???
+		audiosource = gameObject.GetComponent<AudioSource> ();
+	}
+
 	// Use this for initialization
 	void Start () {
 		lanes[0] = -4;
@@ -49,8 +59,13 @@ public class CarpetBossScript : MonoBehaviour {
 		lanes[2] = 4;
 		StartCoroutine("spawnEnemyCoroutine");
 		StartCoroutine("changeLaneCoroutine");
-		audiosource = gameObject.GetComponent<AudioSource> ();
+		audiosource.pitch = 1;
 		audiosource.PlayOneShot (evilLaugh);
+		path = GameObject.Find ("BaseTerrain");
+		float edge = path.transform.position.z + pathOffset/2;
+		distanceFromEdge = Mathf.Abs (this.gameObject.transform.position.z - edge);
+		Debug.Log ("Path center: " + path.transform.position.z + ", Edge: " + edge +
+			", Distance from edge: " + distanceFromEdge);
 	}
 
 	public void changePhase() {
@@ -60,6 +75,19 @@ public class CarpetBossScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		// Terrain drawing logic
+		float edge = path.transform.position.z + pathOffset/2;
+		distanceFromEdge = Mathf.Abs (this.gameObject.transform.position.z - edge);
+		Debug.Log ("Path center: " + path.transform.position.z + ", Edge: " + edge +
+			", Distance from edge: " + distanceFromEdge);
+		if (distanceFromEdge < minDist) {
+			Debug.Log ("EXTENDING THE PATH");
+			Vector3 newpos = new Vector3 (path.transform.position.x,
+				                 path.transform.position.y, path.transform.position.z + pathOffset);
+			path = Instantiate<GameObject> (path);
+			path.transform.position = newpos;
+		}
+
 		phaseInterval -= Time.deltaTime;
 		if( (bossHP == 6) && phaseInterval < 0f) {
 			bossPhase = 0;
@@ -160,6 +188,8 @@ public class CarpetBossScript : MonoBehaviour {
 	//Enemy attack functions
 	void spawnEnemy() {
 		//this.gameObject.transform.position;
+		audiosource.pitch = 1;
+		audiosource.PlayOneShot(spawnSound);
 		Instantiate(spawnedEnemy, this.transform.position, Quaternion.identity);
 		return;
 	}
