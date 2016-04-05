@@ -26,6 +26,10 @@ public class MainMenu : MonoBehaviour {
 		SceneManager.LoadScene ("Level1");
 	}
 
+	public void LoadLevel1Cutscene() {
+		SceneManager.LoadScene("Level1Cutscene");
+	}
+
 	public void SelectLevel() {
 		SceneManager.LoadScene ("Menu_LevelSelect");
 	}
