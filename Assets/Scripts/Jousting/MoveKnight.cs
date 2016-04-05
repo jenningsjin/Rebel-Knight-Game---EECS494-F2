@@ -56,7 +56,7 @@ public class MoveKnight : MonoBehaviour {
     }
 
 	public void BeginGame() {
-		++state;
+		state = 1;
 	}
     void FixedUpdate()
     {

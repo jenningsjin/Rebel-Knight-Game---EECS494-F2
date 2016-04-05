@@ -109,7 +109,7 @@ public class CarpetBossScript : MonoBehaviour {
 			//Destroy(this.gameObject);
 //		}
 
-		int attackChance = Random.Range(1, 250);		
+		int attackChance = Random.Range(1, 400);		
 		switch (bossPhase){
 			case 0:
 				//neutral phase
@@ -251,11 +251,9 @@ public class CarpetBossScript : MonoBehaviour {
 			bossChangesLanes = false;
 			explosion.transform.position = this.transform.position;
 			GameObject.Instantiate(explosion);
+			Fungus.Flowchart.BroadcastFungusMessage ("LevelCleared");
 			Destroy(this.gameObject);
 			// load next scene here.
-
-			
-
 		}
 	}
 
