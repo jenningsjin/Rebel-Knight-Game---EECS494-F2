@@ -11,7 +11,7 @@ public class CarpetBossScript : MonoBehaviour {
 
 
 	[Header("Boss Parameters")]
-	public int bossHP = 6;
+	public int bossHP = 8;
 	public int chaserDistance = 20;
 	public int bossPhase = 0;
 	public float enemySpawnInterval = 250f;
@@ -57,8 +57,8 @@ public class CarpetBossScript : MonoBehaviour {
 		lanes[0] = -4;
 		lanes[1] = 0;
 		lanes[2] = 4;
-		StartCoroutine("spawnEnemyCoroutine");
-		StartCoroutine("changeLaneCoroutine");
+		//StartCoroutine("spawnEnemyCoroutine");
+		//StartCoroutine("changeLaneCoroutine");
 		audiosource.pitch = 1;
 		audiosource.PlayOneShot (evilLaugh);
 		path = GameObject.Find ("BaseTerrain");
@@ -69,7 +69,10 @@ public class CarpetBossScript : MonoBehaviour {
 	}
 
 	public void changePhase() {
+		StartCoroutine("spawnEnemyCoroutine");
+		StartCoroutine("changeLaneCoroutine");
 		bossPhase = 1;
+		bossHP-=1;
 	}
 
 	
@@ -89,16 +92,16 @@ public class CarpetBossScript : MonoBehaviour {
 		}
 
 		phaseInterval -= Time.deltaTime;
-		if( (bossHP == 6) && phaseInterval < 0f) {
+		if( (bossHP == 8) && phaseInterval < 0f) {
 			bossPhase = 0;
 		}
-		else if (bossHP == 5 && phaseInterval < 0) {
+		else if (bossHP == 7 && phaseInterval < 0) {
 			bossPhase = 1;
 		}
 		else if (bossHP == 4 && phaseInterval < 0) {
 			bossPhase = 2;
 		}
-		else if (bossHP == 1 && phaseInterval < 0)  {
+		else if (bossHP == 2 && phaseInterval < 0)  {
 			bossPhase = 3;
 		}
 
@@ -106,7 +109,7 @@ public class CarpetBossScript : MonoBehaviour {
 			//Destroy(this.gameObject);
 //		}
 
-		int attackChance = Random.Range(1, 200);		
+		int attackChance = Random.Range(1, 250);		
 		switch (bossPhase){
 			case 0:
 				//neutral phase
@@ -126,13 +129,13 @@ public class CarpetBossScript : MonoBehaviour {
 				break;
 			case 2:
 				if (attackChance < 2) {
-					int attackNum = Random.Range(1, 3);
+					int attackNum = Random.Range(1, 2);
 					makeAttack(attackNum);
 				}			
 				break;
 			case 3:
 				if (attackChance < 3) {
-					int attackNum = Random.Range(1, 4);
+					int attackNum = Random.Range(1, 3);
 					makeAttack(attackNum);
 				}
 				break;
@@ -249,6 +252,10 @@ public class CarpetBossScript : MonoBehaviour {
 			explosion.transform.position = this.transform.position;
 			GameObject.Instantiate(explosion);
 			Destroy(this.gameObject);
+			// load next scene here.
+
+			
+
 		}
 	}
 
