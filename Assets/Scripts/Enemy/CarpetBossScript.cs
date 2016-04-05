@@ -10,11 +10,11 @@ public class CarpetBossScript : MonoBehaviour {
 
 
 	[Header("Boss Parameters")]
-	static public int bossHP = 15;
-	public int chaserDistance = 30;
+	public int bossHP = 6;
+	public int chaserDistance = 20;
 	public int bossPhase = 0;
-	public float enemySpawnInterval = 7f;
-	public float laneChangeInterval = 5f;
+	public float enemySpawnInterval = 250f;
+	public float laneChangeInterval = 24f;
 	public int currentLane = 0;
 
 	[Header("Testing Flags")]
@@ -26,6 +26,10 @@ public class CarpetBossScript : MonoBehaviour {
 	public GameObject FireBall;
 	public GameObject WideBeam;
 	public GameObject VerticalBeam;
+
+	[Header("Auxillary")]
+	public GameObject explosion;
+	float phaseInterval = 1f;
 
 
 	public enum attacks {fireBall = 1, wideBeam = 2, verticalBeam = 3};
@@ -51,24 +55,25 @@ public class CarpetBossScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if( (bossHP <=15) && (bossHP > 11)) {
+		phaseInterval -= Time.deltaTime;
+		if( (bossHP == 6) && phaseInterval < 0f) {
 			bossPhase = 0;
 		}
-		else if (bossHP <=11 && bossHP > 7) {
+		else if (bossHP == 4 && phaseInterval < 0) {
 			bossPhase = 1;
 		}
-		else if (bossHP <= 7 && bossHP > 1) {
+		else if (bossHP == 2 && phaseInterval < 0) {
 			bossPhase = 2;
 		}
-		else if (bossHP == 1)  {
+		else if (bossHP == 1 && phaseInterval < 0)  {
 			bossPhase = 3;
 		}
 
-		else { // boss is dead
-			Destroy(this.gameObject);
-		}
+//		else { // boss is dead
+			//Destroy(this.gameObject);
+//		}
 
-		int attackChance = Random.Range(1, 150);		
+		int attackChance = Random.Range(1, 800);		
 		switch (bossPhase){
 			case 0:
 				//neutral phase
@@ -196,19 +201,22 @@ public class CarpetBossScript : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision col) {
-		if(col.gameObject.tag == "Weapon" ) {
+		print(col.gameObject.tag);
+		if(col.gameObject.tag == "Weapon" && phaseInterval < 0 ) {
 			bossHP-=1;
+			phaseInterval = 0.2f;
 			print("Boss has been hit");
 		}
 		if (bossHP == 0 ) {
+			print("HI");
 			spawnEnemies = false;
 			bossChangesLanes = false;
+			explosion.transform.position = this.transform.position;
+			GameObject.Instantiate(explosion);
+			Destroy(this.gameObject);
 		}
 	}
 
-	void OnTriggerEnter(Collider col) {
-
-	}
 
 	void enemyTestSpawn() {
 		if (Input.GetKey(KeyCode.Q) ) {

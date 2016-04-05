@@ -36,7 +36,8 @@ public class AllyProjectile : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision coll) {
-		if (coll.gameObject.CompareTag ("Obstacle") || coll.gameObject.CompareTag ("Enemy")) {
+		print(coll.gameObject.name);
+		if (coll.gameObject.CompareTag ("Obstacle") || coll.gameObject.CompareTag ("Enemy") || coll.gameObject.CompareTag("Boss")) {
 			speedDial.GetComponent<SpeedScript> ().decreaseSpeedDial ();
 			explosion.transform.position = this.transform.position;
 			GameObject.Instantiate (explosion);

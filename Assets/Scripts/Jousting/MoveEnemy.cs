@@ -141,7 +141,7 @@ public class MoveEnemy : MonoBehaviour {
 		Vector3 angle = new Vector3(-1f, dir, 0f);
 		rigid.angularVelocity = angle;
 
-		CarpetBossScript.bossHP -= 1;
+		//CarpetBossScript.bossHP -= 1;
 
 		// Update the speed dial to reflect player's success
 		speedDial.GetComponent<SpeedScript>().increaseSpeedDial();
