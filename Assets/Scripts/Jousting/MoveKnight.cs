@@ -32,6 +32,7 @@ public class MoveKnight : MonoBehaviour {
     public AudioClip jump;
     public AudioClip land;
     public AudioClip attack;
+    public AudioClip move;
     AudioSource audio;
 
     // Use this for initialization
@@ -40,7 +41,6 @@ public class MoveKnight : MonoBehaviour {
 		state = 0;
 		hp_bar = GameObject.Find ("Hearts");
         lane = 1;
-        switchLanes();
         particle = GetComponent<ParticleSystem>();
         particle.enableEmission = false;
         lance.SetActive(false);
@@ -48,6 +48,7 @@ public class MoveKnight : MonoBehaviour {
 		if (SceneManager.GetActiveScene ().name == "JoustTutorial") {
 			audio.PlayOneShot (neigh, 0.25f);
 		}
+        switchLanes();
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), false);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), false);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), false);
@@ -137,6 +138,7 @@ public class MoveKnight : MonoBehaviour {
                     switchLanes();
                     moveTimer = 0.1f;
                     left = true;
+                    audio.PlayOneShot(move);
                     //tmp.y -= 0.5f;
                 }
                 else if (Input.GetKeyDown (KeyCode.RightArrow) && moveTimer < 0 && lane < 2) {
@@ -144,6 +146,7 @@ public class MoveKnight : MonoBehaviour {
                     switchLanes();
                     moveTimer = 0.1f;
                     left = false;
+                    audio.PlayOneShot(move);
                     //tmp.y += 0.5f;
                 }
                 else if (Input.GetKeyDown (KeyCode.UpArrow) && grounded) {

@@ -11,6 +11,7 @@ public class HeartsScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		index = 0;
+        player = GameObject.Find("Knight");
 	}
 	
 	// Update is called once per frame

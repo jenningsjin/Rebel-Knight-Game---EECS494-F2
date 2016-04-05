@@ -92,10 +92,10 @@ public class CarpetBossScript : MonoBehaviour {
 		if( (bossHP == 6) && phaseInterval < 0f) {
 			bossPhase = 0;
 		}
-		else if (bossHP == 4 && phaseInterval < 0) {
+		else if (bossHP == 5 && phaseInterval < 0) {
 			bossPhase = 1;
 		}
-		else if (bossHP == 2 && phaseInterval < 0) {
+		else if (bossHP == 3 && phaseInterval < 0) {
 			bossPhase = 2;
 		}
 		else if (bossHP == 1 && phaseInterval < 0)  {
@@ -106,7 +106,7 @@ public class CarpetBossScript : MonoBehaviour {
 			//Destroy(this.gameObject);
 //		}
 
-		int attackChance = Random.Range(1, 800);		
+		int attackChance = Random.Range(1, 300);		
 		switch (bossPhase){
 			case 0:
 				//neutral phase
