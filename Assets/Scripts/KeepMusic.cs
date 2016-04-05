@@ -38,8 +38,10 @@ public class KeepMusic : MonoBehaviour {
 		case 0: // Playing a track
 			// If the right thing isn't playing, do something!
 			if ((currentScene.name == "Prologue" || currentScene.name == "JoustTutorial") &&
-				!isCurrentlyPlaying [(int)Track.BattleCry]) {
+			    !isCurrentlyPlaying [(int)Track.BattleCry]) {
 				Debug.Log ("In the prologue, but not playing prologue theme!");
+				++state;
+			} else if (currentScene.name == "BossLevel1Cutscene" && !isCurrentlyPlaying[(int)Track.OldEnglishMarch]) {
 				++state;
 			} else if ((currentScene.name == "Menu" || currentScene.name == "Menu_LevelSelect") &&
 			           !isCurrentlyPlaying [(int)Track.FragmentsOfTime]) {
@@ -55,14 +57,16 @@ public class KeepMusic : MonoBehaviour {
 			}
 			break;
 		case 2: // Selecting a new track
-			audioSource.Stop();
+			audioSource.Stop ();
+			setAllTracksToNotPlaying ();
 			if (currentScene.name == "Prologue") {
 				Debug.Log ("Choosing prologue track");
-				setAllTracksToNotPlaying();
 				isCurrentlyPlaying [(int)Track.BattleCry] = true;
-				audioSource.PlayOneShot (audioClips [1]);
+				audioSource.PlayOneShot (audioClips [(int)Track.BattleCry]);
+			} else if (currentScene.name == "BossLevel1Cutscene") {
+				isCurrentlyPlaying [(int)Track.OldEnglishMarch] = true;
+				audioSource.PlayOneShot (audioClips [(int)Track.OldEnglishMarch]);
 			} else if (currentScene.name == "Menu" || currentScene.name == "Menu_LevelSelect") {
-				setAllTracksToNotPlaying ();
 				isCurrentlyPlaying [(int)Track.FragmentsOfTime] = true;
 				audioSource.PlayOneShot (audioClips [(int)Track.FragmentsOfTime]);
 			}

@@ -31,6 +31,10 @@ public class CarpetBossScript : MonoBehaviour {
 	public GameObject explosion;
 	float phaseInterval = 1f;
 
+	[Header("Audio")]
+	public AudioSource audiosource;
+	public AudioClip evilLaugh;
+
 
 	public enum attacks {fireBall = 1, wideBeam = 2, verticalBeam = 3};
 	public enum laneNum {left = -4, center = 0, right = 4}
@@ -45,7 +49,8 @@ public class CarpetBossScript : MonoBehaviour {
 		lanes[2] = 4;
 		StartCoroutine("spawnEnemyCoroutine");
 		StartCoroutine("changeLaneCoroutine");
-
+		audiosource = gameObject.GetComponent<AudioSource> ();
+		audiosource.PlayOneShot (evilLaugh);
 	}
 
 	public void changePhase() {

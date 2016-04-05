@@ -45,4 +45,8 @@ public class MainMenu : MonoBehaviour {
 	public void LoadBossLevel1() {
 		SceneManager.LoadScene ("BossLevel1");
 	}
+
+	public void LoadBossLevel1Cutscene() {
+		SceneManager.LoadScene ("BossLevel1Cutscene");
+	}
 }

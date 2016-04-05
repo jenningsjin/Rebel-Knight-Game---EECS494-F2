@@ -20,8 +20,9 @@ public class FinishLineScript : MonoBehaviour {
 	void OnTriggerEnter(Collider col) {
 		Debug.Log ("FinishLine: Collision detected");
 		if (col.gameObject.CompareTag ("Knight")) {
-			Debug.Log ("FinishLine: Your gallant knight has crossed the finish line.");
-			player.GetComponent<MoveKnight> ().state++;
+			Debug.Log ("FinishLine: Your gallant knight has crossed the finish line, state " + player.GetComponent<MoveKnight>().state);
+			// This is safer than incrementing the state, because the player may possibly collide with this more than once?
+			player.GetComponent<MoveKnight> ().state = 2;
 		}
 	}
 }

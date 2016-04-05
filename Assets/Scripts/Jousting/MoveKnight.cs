@@ -45,7 +45,9 @@ public class MoveKnight : MonoBehaviour {
         particle.enableEmission = false;
         lance.SetActive(false);
         audio = GetComponent<AudioSource>();
-        audio.PlayOneShot(neigh, 0.25f);
+		if (SceneManager.GetActiveScene ().name == "JoustTutorial") {
+			audio.PlayOneShot (neigh, 0.25f);
+		}
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), false);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), false);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), false);
