@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Fungus;
 
 
 public class CarpetBossScript : MonoBehaviour {
@@ -11,7 +12,7 @@ public class CarpetBossScript : MonoBehaviour {
 
 
 	[Header("Boss Parameters")]
-	public int bossHP = 8;
+	public int bossHP = 5;
 	public int chaserDistance = 20;
 	public int bossPhase = 0;
 	public float enemySpawnInterval = 250f;
@@ -39,6 +40,9 @@ public class CarpetBossScript : MonoBehaviour {
 	public AudioSource audiosource;
 	public AudioClip evilLaugh;
 	public AudioClip spawnSound;
+
+	[Header("Dialogue Tree")]
+	public Flowchart endChart;
 
 
 	public enum attacks {fireBall = 1, wideBeam = 2, verticalBeam = 3};
@@ -92,16 +96,16 @@ public class CarpetBossScript : MonoBehaviour {
 		}
 
 		phaseInterval -= Time.deltaTime;
-		if( (bossHP == 8) && phaseInterval < 0f) {
+		if( (bossHP == 5) && phaseInterval < 0f) {
 			bossPhase = 0;
 		}
-		else if (bossHP == 7 && phaseInterval < 0) {
+		else if (bossHP == 4 && phaseInterval < 0) {
 			bossPhase = 1;
 		}
-		else if (bossHP == 4 && phaseInterval < 0) {
+		else if (bossHP == 2 && phaseInterval < 0) {
 			bossPhase = 2;
 		}
-		else if (bossHP == 2 && phaseInterval < 0)  {
+		else if (bossHP == 1 && phaseInterval < 0)  {
 			bossPhase = 3;
 		}
 
@@ -253,8 +257,10 @@ public class CarpetBossScript : MonoBehaviour {
 			GameObject.Instantiate(explosion);
 			Destroy(this.gameObject);
 			// load next scene here.
+			//endChart.ExecuteBlock("Defeat");
+			print("execute script?");
+			Application.LoadLevel("BossLevel1Cutscene");
 
-			
 
 		}
 	}
