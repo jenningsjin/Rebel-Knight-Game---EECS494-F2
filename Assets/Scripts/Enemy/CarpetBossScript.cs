@@ -6,6 +6,8 @@ public class CarpetBossScript : MonoBehaviour {
 	[Header("Related Game Objects")]
 	public GameObject chaser;
 	public GameObject spawnedEnemy;
+	public GameObject childHolder;
+
 
 	[Header("Boss Parameters")]
 	static public int bossHP = 15;
@@ -30,6 +32,8 @@ public class CarpetBossScript : MonoBehaviour {
 	public enum laneNum {left = -4, center = 0, right = 4}
 	int[] lanes = new int[3];
 
+	bool coroutineFlag = false;
+
 	// Use this for initialization
 	void Start () {
 		lanes[0] = -4;
@@ -37,7 +41,13 @@ public class CarpetBossScript : MonoBehaviour {
 		lanes[2] = 4;
 		StartCoroutine("spawnEnemyCoroutine");
 		StartCoroutine("changeLaneCoroutine");
+
 	}
+
+	public void changePhase() {
+		bossPhase = 1;
+	}
+
 	
 	// Update is called once per frame
 	void Update () {
@@ -62,9 +72,15 @@ public class CarpetBossScript : MonoBehaviour {
 		switch (bossPhase){
 			case 0:
 				//neutral phase
-
 				break;
 			case 1:
+			/*
+				if (!coroutineFlag) {
+					StartCoroutine("spawnEnemyCoroutine");
+					StartCoroutine("changeLaneCoroutine");
+					coroutineFlag = true;
+				}
+			*/
 				if (attackChance < 2) {
 					int attackNum = Random.Range(1, 2);
 					//makeAttack(attackNum);
