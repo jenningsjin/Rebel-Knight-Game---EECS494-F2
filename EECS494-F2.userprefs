@@ -1,20 +1,24 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/UI/SpeedScript.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/MainMenu.cs">
     <Files>
+      <File FileName="Assets/Scripts/Stampede.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/Jousting/Stampede/MoveIndividual.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Jousting/MoveEnemy.cs" Line="118" Column="61" />
-      <File FileName="Assets/Scripts/MainMenu.cs" Line="30" Column="39" />
-      <File FileName="Assets/Scripts/KeepMusic.cs" Line="11" Column="29" />
+      <File FileName="Assets/Scripts/Jousting/MoveEnemy.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/MainMenu.cs" Line="30" Column="44" />
+      <File FileName="Assets/Scripts/KeepMusic.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/Enemy/CarpetBossScript.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/UI/HeartsScript.cs" Line="10" Column="2" />
-      <File FileName="Assets/Scripts/UI/SpeedScript.cs" Line="7" Column="30" />
-      <File FileName="Assets/Scripts/Tutorial/JumpTutorial.cs" Line="5" Column="1" />
-      <File FileName="Assets/Scripts/Tutorial/ShiftTutorial.cs" Line="20" Column="1" />
-      <File FileName="Assets/Scripts/Tutorial/EnemyTutorial.cs" Line="26" Column="21" />
-      <File FileName="Assets/Flocking/BoidController.cs" Line="59" Column="25" />
-      <File FileName="Assets/Scripts/Jousting/MoveKnight.cs" Line="85" Column="42" />
-      <File FileName="Assets/Scripts/Tutorial/EnemyKilledDialogue.cs" Line="27" Column="12" />
+      <File FileName="Assets/Scripts/UI/HeartsScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/UI/SpeedScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Tutorial/JumpTutorial.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Tutorial/ShiftTutorial.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Tutorial/EnemyTutorial.cs" Line="1" Column="1" />
+      <File FileName="Assets/Flocking/BoidController.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Jousting/MoveKnight.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Tutorial/EnemyKilledDialogue.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Jousting/PersonProjectile.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Jousting/AllyProjectile.cs" Line="1" Column="1" />
+      <File FileName="Assets/Fungus/Flowchart/Editor/VariableEditor.cs" Line="276" Column="54" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
