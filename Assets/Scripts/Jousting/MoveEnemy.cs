@@ -109,12 +109,12 @@ public class MoveEnemy : MonoBehaviour {
 			FlamboyantDeathAnimation ();
 		}
         if (state == 2 && timer < 2f) {
-            explosion.transform.position = this.transform.position;
+            /*explosion.transform.position = this.transform.position;
             if(Random.Range(0, 10.0F) > 7f)
             {
                 GameObject.Instantiate(explosion);
 
-            }
+            }*/
             Destroy(this.gameObject);
         }
 		//print ("Player body collided with something");
