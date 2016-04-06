@@ -62,15 +62,16 @@ public class MoveEnemy : MonoBehaviour {
 			if (Mathf.Abs (transform.position.z - MoveKnight.rigid.position.z) > 2f) {
 				transform.position = Vector3.MoveTowards (transform.position, pos, 1f);
 			}
-            if (timer < 0 && currentLane != MoveKnight.lanePosition())
-            {
-                currentLane = MoveKnight.lanePosition();
-                timer = 1f;
-            }
+			if (timer < 0 && currentLane != MoveKnight.lanePosition ()) {
+				currentLane = MoveKnight.lanePosition ();
+				timer = 1f;
+			}
 
-            if (transform.position.z > target.position.z) {
-                ////////Debug.Log ("CHANGING ENEMY's POSITION");
-                transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * 1f);
+			if (transform.position.z > target.position.z) {
+				////////Debug.Log ("CHANGING ENEMY's POSITION");
+				transform.position = Vector3.MoveTowards (transform.position, target.position, Time.deltaTime * 1f);
+			} else if (transform.position.z < target.position.z - 20f) {
+				Destroy (this.gameObject);
 			}
 			break;
             case 2:
