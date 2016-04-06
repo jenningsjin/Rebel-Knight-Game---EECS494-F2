@@ -4,27 +4,35 @@ using System.Collections;
 public class Fireball : MonoBehaviour {
 	Rigidbody rigid;
 	public GameObject explosion;
-	//public AudioSource audiosource;
-	//public AudioClip clip;
+	public float timer = 5f;
 
 	// Use this for initialization
 	void Start () {
+		//Debug.Log ("Timer == " + timer);
 		rigid = GetComponent<Rigidbody> ();
-		//audiosource = GetComponent<AudioSource> ();
-		//audiosource.PlayOneShot (clip);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		Vector3 vel = rigid.velocity;
-		vel.z = -40f;
-		rigid.velocity = vel;
+
+	void Update() {
+		timer -= Time.deltaTime;
+		//Debug.Log ("Time.deltaTime == " + Time.deltaTime + ", timer == " + timer);
+		if (timer <= 0) {
+			explosion.transform.position = this.transform.position;
+			GameObject.Instantiate(explosion);
+			Destroy (this.gameObject);
+		}
+	}
+
+	void FixedUpdate () {
+		if (Mathf.Abs (rigid.velocity.z) < 30f) {
+			rigid.AddForce (Vector3.back * 5);
+		}
 	}
 
 	void OnCollisionEnter(Collision c) {
 		if (c.gameObject.name == "Knight") {
 			explosion.transform.position = this.transform.position;
 			GameObject.Instantiate(explosion);
+			Destroy (this.gameObject);
 		}
 	}
 }

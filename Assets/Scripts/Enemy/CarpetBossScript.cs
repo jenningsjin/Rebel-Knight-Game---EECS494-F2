@@ -64,8 +64,8 @@ public class CarpetBossScript : MonoBehaviour {
 		path = GameObject.Find ("BaseTerrain");
 		float edge = path.transform.position.z + pathOffset/2;
 		distanceFromEdge = Mathf.Abs (this.gameObject.transform.position.z - edge);
-		Debug.Log ("Path center: " + path.transform.position.z + ", Edge: " + edge +
-			", Distance from edge: " + distanceFromEdge);
+		//Debug.Log ("Path center: " + path.transform.position.z + ", Edge: " + edge +
+		//	", Distance from edge: " + distanceFromEdge);
 	}
 
 	public void changePhase() {
@@ -81,10 +81,10 @@ public class CarpetBossScript : MonoBehaviour {
 		// Terrain drawing logic
 		float edge = path.transform.position.z + pathOffset/2;
 		distanceFromEdge = Mathf.Abs (this.gameObject.transform.position.z - edge);
-		Debug.Log ("Path center: " + path.transform.position.z + ", Edge: " + edge +
-			", Distance from edge: " + distanceFromEdge);
+		//Debug.Log ("Path center: " + path.transform.position.z + ", Edge: " + edge +
+		//	", Distance from edge: " + distanceFromEdge);
 		if (distanceFromEdge < minDist) {
-			Debug.Log ("EXTENDING THE PATH");
+			//Debug.Log ("EXTENDING THE PATH");
 			Vector3 newpos = new Vector3 (path.transform.position.x,
 				                 path.transform.position.y, path.transform.position.z + pathOffset);
 			path = Instantiate<GameObject> (path);

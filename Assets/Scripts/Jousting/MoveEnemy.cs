@@ -41,7 +41,7 @@ public class MoveEnemy : MonoBehaviour {
 		switch (state) {
 		case 0:
 			if (player.GetComponent<MoveKnight>().state == 1) {
-				Debug.Log ("Chasing player");
+				//////Debug.Log ("Chasing player");
 				++state;
 			}
 			break;
@@ -69,7 +69,7 @@ public class MoveEnemy : MonoBehaviour {
             }
 
             if (transform.position.z > target.position.z) {
-                //Debug.Log ("CHANGING ENEMY's POSITION");
+                ////////Debug.Log ("CHANGING ENEMY's POSITION");
                 transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * 1f);
 			}
 			break;
@@ -87,7 +87,7 @@ public class MoveEnemy : MonoBehaviour {
                 }
                 break;
 		default:
-			Debug.Log("MoveEnemy: Undefined state");
+			//////Debug.Log("MoveEnemy: Undefined state");
 			break;
 		}
 
@@ -105,7 +105,7 @@ public class MoveEnemy : MonoBehaviour {
                 }
             }
 		} else if (nameContainsAllyProjectile.Success && state == 1) {
-			Debug.Log ("\nENEMY COLLIDED WITH AN ALLY\n");
+			//////Debug.Log ("\nENEMY COLLIDED WITH AN ALLY\n");
 			FlamboyantDeathAnimation ();
 		}
         if (state == 2 && timer < 2f) {
