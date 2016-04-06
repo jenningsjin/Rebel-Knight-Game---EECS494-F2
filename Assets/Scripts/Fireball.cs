@@ -23,9 +23,10 @@ public class Fireball : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-		if (Mathf.Abs (rigid.velocity.z) < 30f) {
+		/*if (Mathf.Abs (rigid.velocity.z) < 30f) {
 			rigid.AddForce (Vector3.back * 5);
-		}
+		}*/
+		rigid.velocity = Vector3.back * 20f; 
 	}
 
 	void OnCollisionEnter(Collision c) {

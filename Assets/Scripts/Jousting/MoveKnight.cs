@@ -257,7 +257,7 @@ public class MoveKnight : MonoBehaviour {
             lanceTimer = 0.2f;
             Time.timeScale = 0.25f;
         }
-        if(col.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+		if(col.gameObject.layer == LayerMask.NameToLayer("Obstacle") || col.gameObject.layer == LayerMask.NameToLayer("FireLayer"))
         {
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
