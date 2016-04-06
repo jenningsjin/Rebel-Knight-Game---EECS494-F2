@@ -30,7 +30,7 @@ public class Fireball : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision c) {
-		if (c.gameObject.name == "Knight") {
+		if (c.gameObject.name == "Knight" || c.gameObject.CompareTag("Obstacle") || c.gameObject.CompareTag("Weapon")) {
 			explosion.transform.position = this.transform.position;
 			GameObject.Instantiate(explosion);
 			Destroy (this.gameObject);
