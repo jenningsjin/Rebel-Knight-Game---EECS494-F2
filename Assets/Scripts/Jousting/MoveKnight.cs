@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class MoveKnight : MonoBehaviour {
+	bool godMode = false;
     public static Rigidbody rigid;
     public GameObject explosion;
     public int state;
@@ -85,6 +86,11 @@ public class MoveKnight : MonoBehaviour {
     }
 	// Update is called once per frame
 	void Update () {
+		if (Input.GetKeyDown (KeyCode.G) && !godMode) {
+			godMode = true;
+		} else if (Input.GetKeyDown(KeyCode.G)) {
+			godMode = false;
+		}
         moveTimer -= Time.deltaTime;
 
         switch (state) {
@@ -169,7 +175,7 @@ public class MoveKnight : MonoBehaviour {
                     lanceReady = true;
                     lance.SetActive(true);
                     attackDelay = 0.5f;
-                }
+			}
 			break;
 		case 2: // After crossing the finish line
 			rigid.constraints = RigidbodyConstraints.FreezeAll;
@@ -228,7 +234,9 @@ public class MoveKnight : MonoBehaviour {
             MoveEnemy x = col.gameObject.GetComponent<MoveEnemy>();
             if(x.state == 1)
             {
-                hp_bar.GetComponent<HeartsScript>().decreaseHealth();
+				if (!godMode) {
+					hp_bar.GetComponent<HeartsScript> ().decreaseHealth ();
+				}
                 Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
                 Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
                 Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
@@ -263,7 +271,10 @@ public class MoveKnight : MonoBehaviour {
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
-            hp_bar.GetComponent<HeartsScript>().decreaseHealth();
+			// Handle god mode
+			if (!godMode) {
+				hp_bar.GetComponent<HeartsScript> ().decreaseHealth ();
+			}
             Vector3 v = rigid.velocity;
             v.z = -5f;
             rigid.velocity = v;
