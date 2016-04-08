@@ -20,8 +20,9 @@ public class CarpetBossScript : MonoBehaviour {
 	public float distanceFromEdge;
 	public float minDist = 300f; // distance when we instantiate path
 	public int pathOffset = 1000; // Where to instantiate new path
+	public int bossAttackInverval = 6;
 
-	[Header("Testing Flags")]
+	[Header("Action Flags")]
 	public bool spawnEnemies = true;
 	public bool bossChangesLanes = true;
 	public bool attackDebug = true;
@@ -57,8 +58,7 @@ public class CarpetBossScript : MonoBehaviour {
 		lanes[0] = -4;
 		lanes[1] = 0;
 		lanes[2] = 4;
-		//StartCoroutine("spawnEnemyCoroutine");
-		//StartCoroutine("changeLaneCoroutine");
+
 		audiosource.pitch = 1;
 		audiosource.PlayOneShot (evilLaugh);
 		path = GameObject.Find ("BaseTerrain");
@@ -105,9 +105,6 @@ public class CarpetBossScript : MonoBehaviour {
 			bossPhase = 3;
 		}
 
-//		else { // boss is dead
-			//Destroy(this.gameObject);
-//		}
 
 		int attackChance = Random.Range(1, 400);		
 		switch (bossPhase){
@@ -115,13 +112,6 @@ public class CarpetBossScript : MonoBehaviour {
 				//neutral phase
 				break;
 			case 1:
-			/*
-				if (!coroutineFlag) {
-					StartCoroutine("spawnEnemyCoroutine");
-					StartCoroutine("changeLaneCoroutine");
-					coroutineFlag = true;
-				}
-			*/
 				if (attackChance < 2) {
 					int attackNum = Random.Range(1, 2);
 					//makeAttack(attackNum);
@@ -184,8 +174,39 @@ public class CarpetBossScript : MonoBehaviour {
 		}
 	}
 
+	//This Coroutine 
 	IEnumerator attackCoroutine() {
-		yield return new WaitForSeconds(12);
+		//We start the coroutine in the transition from state 0 -> 1.
+		//State 1: 8 - 5HP
+		int attackNum = 0;
+		while(bossHP > 4 ) {
+			attackNum = Random.Range(1, 2);
+			//We can do any kind of telegraphing and such here,
+
+			//This area 
+			makeAttack(attackNum);
+			yield return new WaitForSeconds(bossAttackInverval);
+		}
+
+		//State 2: 4 - 3 HP
+		while(bossHP > 2) {
+			attackNum = Random.Range(1, 3);
+			//telegraphing can be done here.
+
+			makeAttack(attackNum);
+			yield return new WaitForSeconds(bossAttackInverval);
+		}
+
+		//State 3: 2 - 1 HP
+		while(bossHP > 0) {
+			attackNum = Random.Range(1, 4);
+			//telegraphing can be done here.
+
+			makeAttack(attackNum);
+			yield return new WaitForSeconds(bossAttackInverval);
+		}
+
+		//Boss Dies here.
 	}
 
 	//Enemy attack functions
@@ -245,10 +266,12 @@ public class CarpetBossScript : MonoBehaviour {
 			phaseInterval = 0.2f;
 			print("Boss has been hit");
 		}
+
 		if (bossHP == 0 ) {
 			print("HI");
 			spawnEnemies = false;
 			bossChangesLanes = false;
+
 			explosion.transform.position = this.transform.position;
 			GameObject.Instantiate(explosion);
 			Fungus.Flowchart.BroadcastFungusMessage ("LevelCleared");
