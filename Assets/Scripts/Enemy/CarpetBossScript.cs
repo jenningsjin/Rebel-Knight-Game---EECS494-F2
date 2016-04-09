@@ -15,17 +15,19 @@ public class CarpetBossScript : MonoBehaviour {
 	public int chaserDistance = 20;
 	public int bossPhase = 0;
 	public float enemySpawnInterval = 250f;
-	public float laneChangeInterval = 24f;
+	public float laneChangeTimer = 3f;
 	public int currentLane = 0;
 	public float distanceFromEdge;
 	public float minDist = 300f; // distance when we instantiate path
 	public int pathOffset = 1000; // Where to instantiate new path
-	public int bossAttackInverval = 6;
+	public int bossAttackInterval = 6;
 
 	[Header("Action Flags")]
 	public bool spawnEnemies = true;
-	public bool bossChangesLanes = true;
+	public bool bossMayChangeLanes = true;
 	public bool attackDebug = true;
+	public bool fading = false;
+	public bool changingLanes = false;
 
 	[Header("Attack Objects/Animation")]
 	public GameObject FireBall;
@@ -35,6 +37,7 @@ public class CarpetBossScript : MonoBehaviour {
 	[Header("Auxillary")]
 	public GameObject explosion;
 	float phaseInterval = 1f;
+	public Renderer[] renderers; 
 
 	[Header("Audio")]
 	public AudioSource audiosource;
@@ -46,7 +49,7 @@ public class CarpetBossScript : MonoBehaviour {
 	public enum laneNum {left = -4, center = 0, right = 4}
 	int[] lanes = new int[3];
 
-	bool coroutineFlag = false;
+	//bool coroutineFlag = false;
 
 	void Awake() {
 		// TODO: Why would spawn enemy be called before Start()???
@@ -55,6 +58,9 @@ public class CarpetBossScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		// Obtain all child renderers.
+		renderers = this.gameObject.GetComponentsInChildren<Renderer> ();
+
 		lanes[0] = -4;
 		lanes[1] = 0;
 		lanes[2] = 4;
@@ -64,35 +70,33 @@ public class CarpetBossScript : MonoBehaviour {
 		path = GameObject.Find ("BaseTerrain");
 		float edge = path.transform.position.z + pathOffset/2;
 		distanceFromEdge = Mathf.Abs (this.gameObject.transform.position.z - edge);
-		//Debug.Log ("Path center: " + path.transform.position.z + ", Edge: " + edge +
-		//	", Distance from edge: " + distanceFromEdge);
+
+		this.transform.position = new Vector3(currentLane, this.transform.position.y, chaser.transform.position.z + chaserDistance);
 	}
 
+	// Fungus calls changePhase as soon as the user clicks through the dialogue.
 	public void changePhase() {
+		Debug.Log ("Called changePhase()");
 		StartCoroutine("spawnEnemyCoroutine");
-		StartCoroutine("changeLaneCoroutine");
 		bossPhase = 1;
 		bossHP-=1;
 	}
-
-	
+		
 	// Update is called once per frame
 	void Update () {
 		// Terrain drawing logic
 		float edge = path.transform.position.z + pathOffset/2;
 		distanceFromEdge = Mathf.Abs (this.gameObject.transform.position.z - edge);
-		//Debug.Log ("Path center: " + path.transform.position.z + ", Edge: " + edge +
-		//	", Distance from edge: " + distanceFromEdge);
 		if (distanceFromEdge < minDist) {
-			//Debug.Log ("EXTENDING THE PATH");
 			Vector3 newpos = new Vector3 (path.transform.position.x,
 				                 path.transform.position.y, path.transform.position.z + pathOffset);
 			path = Instantiate<GameObject> (path);
 			path.transform.position = newpos;
 		}
 
+		// Update the boss's state machine.
 		phaseInterval -= Time.deltaTime;
-		if( (bossHP == 8) && phaseInterval < 0f) {
+		if((bossHP == 8) && phaseInterval < 0) {
 			bossPhase = 0;
 		}
 		else if (bossHP == 7 && phaseInterval < 0) {
@@ -105,9 +109,9 @@ public class CarpetBossScript : MonoBehaviour {
 			bossPhase = 3;
 		}
 
-
+		// Boss selects an attack.
 		int attackChance = Random.Range(1, 400);		
-		switch (bossPhase){
+		switch (bossPhase) {
 			case 0:
 				//neutral phase
 				break;
@@ -133,29 +137,39 @@ public class CarpetBossScript : MonoBehaviour {
 				print("We should never be here");
 				break;
 		}
-		
-		
 
-
+		// Debugging
 		if (attackDebug) {
-			if (Input.GetKey(KeyCode.A) ) {
+			if (Input.GetKeyDown(KeyCode.A) ) {
 				fireBall();
 			}
 
-			if (Input.GetKey(KeyCode.S) ) {
+			if (Input.GetKeyDown(KeyCode.S) ) {
 				verticalBeam();
 			}			
 		
-			if (Input.GetKey(KeyCode.D) ) {
+			if (Input.GetKeyDown(KeyCode.D) ) {
 				wideBeam();
 			}
-
+			if (Input.GetKeyDown(KeyCode.F)) {
+				Debug.Log ("Calling fade in update");
+				currentLane = 1;
+				StartCoroutine (changeLanes ());
+				changingLanes = true;
+			}
 		}
-		
 
-
-
-		this.transform.position = new Vector3(currentLane, this.transform.position.y ,chaser.transform.position.z + chaserDistance);
+		if (laneChangeTimer >= 0) {
+			laneChangeTimer -= Time.deltaTime;
+			this.transform.position = new Vector3 (currentLane, this.transform.position.y, chaser.transform.position.z + chaserDistance);
+		} else {
+			int newPosition = Random.Range(0,3);
+			if (currentLane != lanes[newPosition] && !changingLanes) {
+				StartCoroutine (changeLanes ());
+				changingLanes = true;
+				currentLane = lanes [newPosition];
+			}
+		}
 	}
 
 	//Coroutines
@@ -166,12 +180,62 @@ public class CarpetBossScript : MonoBehaviour {
 		}
 	}
 
-	IEnumerator changeLaneCoroutine() {
-		while(bossChangesLanes) {
-			int newPosition = Random.Range(0,3);
-			currentLane = lanes[newPosition];
-			yield return new WaitForSeconds(laneChangeInterval);
+	// Move to a new lane
+	IEnumerator changeLanes() {
+		// Fade out the boss
+		Debug.Log ("Fading out");
+		fading = true;
+		yield return StartCoroutine (fadeCoroutine(false, 1f));
+		Debug.Log ("changeLanes(): disabling renderer");
+
+		// Disable all renderers
+		for (int i = 0; i < renderers.Length; ++i) {
+			renderers [i].enabled = false;
 		}
+
+		// Teleport
+		yield return new WaitForSeconds(1.0f);
+		this.transform.position = new Vector3(currentLane, this.transform.position.y, chaser.transform.position.z + chaserDistance);
+
+		// Enable all renderers
+		for (int i = 0; i < renderers.Length; ++i) {
+			renderers [i].enabled = true;
+		}
+
+		// Fade in the boss
+		Debug.Log("Fading in");
+		fading = true;
+		yield return StartCoroutine (fadeCoroutine (true, 1f)); // fade in
+
+		// Clean up
+		changingLanes = false;
+		laneChangeTimer = 3f;
+	}
+
+	// Fade the boss in or out
+	IEnumerator fadeCoroutine(bool fadeType, float multiplier) {
+		// In one frame, fade in/out all renderers by the same amount
+		// I assume that everything starts out opaque (alpha = 1).
+		while (fading) {
+			//Debug.Log ("Fading");
+			for (int i = 0; i < renderers.Length; ++i) {
+				Color c = renderers [i].material.color;
+				// Stop fading if we're fading out and alpha <= 0, or we're
+				// fading in and alpha >= 1.
+				if (c.a <= 0 && !fadeType || c.a >= 1 && fadeType) {
+					fading = false;
+					break;
+				}
+				if (!fadeType) { // Fading out
+					c.a -= 0.1f * multiplier; // For some reason, using Time.deltaTime causes the shadow to stick around. What???
+				} else { // Fading in
+					c.a += 0.1f * multiplier;
+				}
+				renderers [i].material.color = c;
+			}
+			yield return null;
+		}
+		Debug.Log ("Fading done");
 	}
 
 	//This Coroutine 
@@ -185,7 +249,7 @@ public class CarpetBossScript : MonoBehaviour {
 
 			//This area 
 			makeAttack(attackNum);
-			yield return new WaitForSeconds(bossAttackInverval);
+			yield return new WaitForSeconds(bossAttackInterval);
 		}
 
 		//State 2: 4 - 3 HP
@@ -194,7 +258,7 @@ public class CarpetBossScript : MonoBehaviour {
 			//telegraphing can be done here.
 
 			makeAttack(attackNum);
-			yield return new WaitForSeconds(bossAttackInverval);
+			yield return new WaitForSeconds(bossAttackInterval);
 		}
 
 		//State 3: 2 - 1 HP
@@ -203,7 +267,7 @@ public class CarpetBossScript : MonoBehaviour {
 			//telegraphing can be done here.
 
 			makeAttack(attackNum);
-			yield return new WaitForSeconds(bossAttackInverval);
+			yield return new WaitForSeconds(bossAttackInterval);
 		}
 
 		//Boss Dies here.
@@ -235,8 +299,7 @@ public class CarpetBossScript : MonoBehaviour {
 		GameObject attack = Instantiate(WideBeam, beamPos, Quaternion.identity)  as GameObject;
 		return;
 	}
-
-
+		
 	void makeAttack( int attack) {
 		switch (attack){
 			case 0:
@@ -270,7 +333,7 @@ public class CarpetBossScript : MonoBehaviour {
 		if (bossHP == 0 ) {
 			print("HI");
 			spawnEnemies = false;
-			bossChangesLanes = false;
+			bossMayChangeLanes = false;
 
 			explosion.transform.position = this.transform.position;
 			GameObject.Instantiate(explosion);
