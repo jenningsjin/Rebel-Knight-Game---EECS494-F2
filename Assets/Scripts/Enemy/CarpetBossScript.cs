@@ -11,23 +11,25 @@ public class CarpetBossScript : MonoBehaviour {
 
 
 	[Header("Boss Parameters")]
-	public int bossHP = 8;
+	public int maxHP = 10;
+	public int bossHP = 10;
 	public int chaserDistance = 20;
 	public int bossPhase = 0;
 	public float enemySpawnInterval = 250f;
-	public float laneChangeTimer = 3f;
+	public float laneChangeInterval = 30f;
 	public int currentLane = 0;
 	public float distanceFromEdge;
 	public float minDist = 300f; // distance when we instantiate path
 	public int pathOffset = 1000; // Where to instantiate new path
-	public int bossAttackInterval = 6;
+	public float attackInterval = 20f;
 
 	[Header("Action Flags")]
 	public bool spawnEnemies = true;
-	public bool bossMayChangeLanes = true;
+	//public bool bossMayChangeLanes = true;
 	public bool attackDebug = true;
 	public bool fading = false;
 	public bool changingLanes = false;
+	public bool attacking = false;
 
 	[Header("Attack Objects/Animation")]
 	public GameObject FireBall;
@@ -50,6 +52,14 @@ public class CarpetBossScript : MonoBehaviour {
 	int[] lanes = new int[3];
 
 	//bool coroutineFlag = false;
+
+	// Boss Phases:
+	// 0: The game hasn't started yet. Boss should idle.
+	// 1: Boss should move, teleport occasionally, and spawn enemies.
+	// 2: In addition to the above, the boss should teleport more frequently and shoot fireballs.
+	// 3: In addition to the above, the boss should teleport more frequently and create walls of flame.
+	// 4: In addition to the above, the boss should teleport more frequently and create pillars of fire.
+
 
 	void Awake() {
 		// TODO: Why would spawn enemy be called before Start()???
@@ -79,9 +89,52 @@ public class CarpetBossScript : MonoBehaviour {
 		Debug.Log ("Called changePhase()");
 		StartCoroutine("spawnEnemyCoroutine");
 		bossPhase = 1;
-		bossHP-=1;
+		// Set timer intervals
+		setLaneChangeInterval();
+		setAttackInterval ();
 	}
 		
+	void setLaneChangeInterval() {
+		switch (bossPhase) {
+		case 0:
+			break;
+		case 1:
+			laneChangeInterval = 30f;
+			break;
+		case 2:
+			laneChangeInterval = 20f;
+			break;
+		case 3:
+			laneChangeInterval = 10f;
+			break;
+		case 4:
+			laneChangeInterval = 5f;
+			break;
+		default:
+			break;
+		}
+	}
+
+	void setAttackInterval() {
+		switch (bossPhase) {
+		case 0:
+			break;
+		case 1:
+			break;
+		case 2:
+			attackInterval = 20f;
+			break;
+		case 3:
+			attackInterval = 15f;
+			break;
+		case 4:
+			attackInterval = 10f;
+			break;
+		default:
+			break;
+		}
+	}
+
 	// Update is called once per frame
 	void Update () {
 		// Terrain drawing logic
@@ -93,81 +146,71 @@ public class CarpetBossScript : MonoBehaviour {
 			path = Instantiate<GameObject> (path);
 			path.transform.position = newpos;
 		}
-
-		// Update the boss's state machine.
-		phaseInterval -= Time.deltaTime;
-		if((bossHP == 8) && phaseInterval < 0) {
-			bossPhase = 0;
-		}
-		else if (bossHP == 7 && phaseInterval < 0) {
-			bossPhase = 1;
-		}
-		else if (bossHP == 4 && phaseInterval < 0) {
-			bossPhase = 2;
-		}
-		else if (bossHP == 2 && phaseInterval < 0)  {
-			bossPhase = 3;
-		}
-
-		// Boss selects an attack.
-		int attackChance = Random.Range(1, 400);		
-		switch (bossPhase) {
-			case 0:
-				//neutral phase
-				break;
-			case 1:
-				if (attackChance < 2) {
-					int attackNum = Random.Range(1, 2);
-					//makeAttack(attackNum);
+			
+		// Lane changing and attacking are both affected by the boss's current health
+		// Lane changing
+		if (bossPhase > 0) {
+			if (laneChangeInterval >= 0) {
+				laneChangeInterval -= Time.deltaTime;
+				this.transform.position =
+					new Vector3 (currentLane, this.transform.position.y, chaser.transform.position.z + chaserDistance);
+			} else {
+				int newPosition = Random.Range (0, 3);
+				if (currentLane != lanes [newPosition] && !changingLanes) {
+					StartCoroutine (changeLanes ());
+					changingLanes = true;
+					currentLane = lanes [newPosition];
 				}
-				break;
-			case 2:
-				if (attackChance < 2) {
-					int attackNum = Random.Range(1, 2);
-					makeAttack(attackNum);
-				}			
-				break;
-			case 3:
-				if (attackChance < 3) {
-					int attackNum = Random.Range(1, 3);
-					makeAttack(attackNum);
+			}
+		}
+			
+		// Attacking
+		// Note: we don't want to teleport while telegraphing an attack. That wouldn't make sense.
+		if (bossPhase > 1) {
+			if (attackInterval >= 0) {
+				attackInterval -= Time.deltaTime;
+			} else {
+				if (!attacking && !changingLanes) {
+					int attackNum = 0;
+					switch (bossPhase) {
+					case 1:
+						attackNum = Random.Range (1, 2);
+						makeAttack (attackNum);
+						break;
+					case 2:
+						attackNum = Random.Range (1, 3);
+						makeAttack (attackNum);
+						break;
+					case 3:
+						attackNum = Random.Range(1, 4);
+						makeAttack(attackNum);
+						break;
+					default:
+						break;
+					}
+					attacking = true;
 				}
-				break;
-			default:
-				print("We should never be here");
-				break;
+			}
 		}
 
 		// Debugging
 		if (attackDebug) {
 			if (Input.GetKeyDown(KeyCode.A) ) {
-				fireBall();
+				StartCoroutine ("fireBall");
 			}
 
 			if (Input.GetKeyDown(KeyCode.S) ) {
-				verticalBeam();
+				StartCoroutine ("verticalBeam");
 			}			
 		
 			if (Input.GetKeyDown(KeyCode.D) ) {
-				wideBeam();
+				StartCoroutine ("wideBeam");
 			}
 			if (Input.GetKeyDown(KeyCode.F)) {
 				Debug.Log ("Calling fade in update");
 				currentLane = 1;
 				StartCoroutine (changeLanes ());
 				changingLanes = true;
-			}
-		}
-
-		if (laneChangeTimer >= 0) {
-			laneChangeTimer -= Time.deltaTime;
-			this.transform.position = new Vector3 (currentLane, this.transform.position.y, chaser.transform.position.z + chaserDistance);
-		} else {
-			int newPosition = Random.Range(0,3);
-			if (currentLane != lanes[newPosition] && !changingLanes) {
-				StartCoroutine (changeLanes ());
-				changingLanes = true;
-				currentLane = lanes [newPosition];
 			}
 		}
 	}
@@ -209,7 +252,7 @@ public class CarpetBossScript : MonoBehaviour {
 
 		// Clean up
 		changingLanes = false;
-		laneChangeTimer = 3f;
+		setLaneChangeInterval ();
 	}
 
 	// Fade the boss in or out
@@ -238,66 +281,30 @@ public class CarpetBossScript : MonoBehaviour {
 		Debug.Log ("Fading done");
 	}
 
-	//This Coroutine 
-	IEnumerator attackCoroutine() {
-		//We start the coroutine in the transition from state 0 -> 1.
-		//State 1: 8 - 5HP
-		int attackNum = 0;
-		while(bossHP > 4 ) {
-			attackNum = Random.Range(1, 2);
-			//We can do any kind of telegraphing and such here,
-
-			//This area 
-			makeAttack(attackNum);
-			yield return new WaitForSeconds(bossAttackInterval);
-		}
-
-		//State 2: 4 - 3 HP
-		while(bossHP > 2) {
-			attackNum = Random.Range(1, 3);
-			//telegraphing can be done here.
-
-			makeAttack(attackNum);
-			yield return new WaitForSeconds(bossAttackInterval);
-		}
-
-		//State 3: 2 - 1 HP
-		while(bossHP > 0) {
-			attackNum = Random.Range(1, 4);
-			//telegraphing can be done here.
-
-			makeAttack(attackNum);
-			yield return new WaitForSeconds(bossAttackInterval);
-		}
-
-		//Boss Dies here.
-	}
+	// Attack coroutines
 
 	//Enemy attack functions
 	void spawnEnemy() {
-		//this.gameObject.transform.position;
 		audiosource.pitch = 1;
 		audiosource.PlayOneShot(spawnSound);
 		Instantiate(spawnedEnemy, this.transform.position, Quaternion.identity);
 		return;
 	}
 
-	void fireBall() {
-		GameObject attack = Instantiate(FireBall, this.transform.position, Quaternion.identity) as GameObject;
-		//attack.GetComponent<Rigidbody>().velocity = Vector3.back * 6;
-		attack.GetComponent<Rigidbody>().AddForce(Vector3.back*40);
-		return;
+	IEnumerator fireBall() {
+		GameObject attack = Instantiate(FireBall, this.transform.position, Quaternion.identity)  as GameObject;
+		yield return null;
 	}
 
-	void verticalBeam() {
+	IEnumerator verticalBeam() {
 		GameObject attack = Instantiate(VerticalBeam, this.transform.position, Quaternion.identity)  as GameObject;
-		return;
+		yield return null;
 	}
 
-	void wideBeam() {
+	IEnumerator wideBeam() {
 		Vector3 beamPos = new Vector3(0 , 1, this.transform.position.z  );
 		GameObject attack = Instantiate(WideBeam, beamPos, Quaternion.identity)  as GameObject;
-		return;
+		yield return null;
 	}
 		
 	void makeAttack( int attack) {
@@ -306,19 +313,18 @@ public class CarpetBossScript : MonoBehaviour {
 				spawnEnemy();
 				break;			
 			case 1:
-				fireBall();
+				StartCoroutine ("fireBall");
 				break;
 			case 2:
-				wideBeam();
+				StartCoroutine ("wideBeam");
 				break;
 			case 3:
-				verticalBeam();
+				StartCoroutine ("verticalBeam");
 				break;
 			default:
 				print("You have entered the forbidden Zone");
 				break;
 		}
-
 		return;
 	}
 
@@ -333,7 +339,8 @@ public class CarpetBossScript : MonoBehaviour {
 		if (bossHP == 0 ) {
 			print("HI");
 			spawnEnemies = false;
-			bossMayChangeLanes = false;
+			//bossMayChangeLanes = false;
+			bossPhase = 0;
 
 			explosion.transform.position = this.transform.position;
 			GameObject.Instantiate(explosion);
@@ -346,7 +353,7 @@ public class CarpetBossScript : MonoBehaviour {
 
 	void enemyTestSpawn() {
 		if (Input.GetKey(KeyCode.Q) ) {
-			print("A was pressed");
+			Debug.Log("Q was pressed");
 			spawnEnemy();
 		}
 		return;
