@@ -257,8 +257,29 @@ public class MoveKnight : MonoBehaviour {
                 audio.PlayOneShot(damaged, 0.5f);
                 Destroy(col.gameObject);
             }
+        } else if (col.gameObject.tag == "Enemy" && !lanceReady)
+        {
+            hp_bar.GetComponent<HeartsScript>().decreaseHealth();
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
+            Vector3 v = rigid.velocity;
+            v.z = -5f;
+            rigid.velocity = v;
+            if (!grounded)
+            {
+                Vector3 vel = rigid.velocity;
+                if (vel.y > 0)
+                {
+                    vel.y = -1f;
+                }
+                rigid.velocity = vel;
+            }
+            tookDamage = true;
+            audio.PlayOneShot(damaged, 0.5f);
         }
-        else if(col.gameObject.tag == "Enemy" && lanceReady)
+        else if((col.gameObject.tag == "Enemy" || col.gameObject.tag == "Boss") && lanceReady)
         {
             lanceHit = true;
             audio.PlayOneShot(attack);
