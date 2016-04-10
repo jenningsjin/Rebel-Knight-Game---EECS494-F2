@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class orbit : MonoBehaviour {
+public class Orbit : MonoBehaviour {
 	public Transform target;
 	public float speed = 1000.0f;
 	// Use this for initialization
@@ -14,8 +14,9 @@ public class orbit : MonoBehaviour {
 		Vector3 relativePos = target.position - transform.position;
 		Quaternion rotation = Quaternion.LookRotation (relativePos);
 		Quaternion current = transform.localRotation;
-		transform.localRotation = Quaternion.Slerp (current, rotation, Time.deltaTime);
-		transform.Translate (0, 0, 3 * Time.deltaTime);
+		// Find a vector with a rotation between the last frame's rotation and our target.
+		transform.localRotation = Quaternion.Slerp (current, rotation, Time.deltaTime*3);
+		transform.Translate (0, 0, 30 * Time.deltaTime);
 		//Spin ();
 	}
 
