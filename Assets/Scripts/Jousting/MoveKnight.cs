@@ -54,6 +54,8 @@ public class MoveKnight : MonoBehaviour {
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), false);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), false);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), false);
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("Default"), false);
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("MainCamera"), false);
     }
 
 	public void BeginGame() {
@@ -128,6 +130,8 @@ public class MoveKnight : MonoBehaviour {
                         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), false);
                         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), false);
                         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), false);
+                        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("Default"), false);
+                        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("MainCamera"), false);
                         tookDamage = false;
                         healthTimer = 1.5f;
                         transform.eulerAngles = Vector3.zero;
@@ -241,6 +245,8 @@ public class MoveKnight : MonoBehaviour {
                 Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
                 Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
                 Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
+                Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("Default"), true);
+                Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("MainCamera"), true);
                 Vector3 v = rigid.velocity;
                 v.z = -5f;
                 rigid.velocity = v;
@@ -257,8 +263,31 @@ public class MoveKnight : MonoBehaviour {
                 audio.PlayOneShot(damaged, 0.5f);
                 Destroy(col.gameObject);
             }
+        } else if (col.gameObject.tag == "Boss" && !lanceReady)
+        {
+            hp_bar.GetComponent<HeartsScript>().decreaseHealth();
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("Default"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("MainCamera"), true);
+            Vector3 v = rigid.velocity;
+            v.z = -5f;
+            rigid.velocity = v;
+            if (!grounded)
+            {
+                Vector3 vel = rigid.velocity;
+                if (vel.y > 0)
+                {
+                    vel.y = -1f;
+                }
+                rigid.velocity = vel;
+            }
+            tookDamage = true;
+            audio.PlayOneShot(damaged, 0.5f);
         }
-        else if(col.gameObject.tag == "Enemy" && lanceReady)
+        else if((col.gameObject.tag == "Enemy" || col.gameObject.tag == "Boss") && lanceReady)
         {
             lanceHit = true;
             audio.PlayOneShot(attack);
@@ -271,8 +300,10 @@ public class MoveKnight : MonoBehaviour {
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
-			// Handle god mode
-			if (!godMode) {
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("Default"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("MainCamera"), true);
+            // Handle god mode
+            if (!godMode) {
 				hp_bar.GetComponent<HeartsScript> ().decreaseHealth ();
 			}
             Vector3 v = rigid.velocity;

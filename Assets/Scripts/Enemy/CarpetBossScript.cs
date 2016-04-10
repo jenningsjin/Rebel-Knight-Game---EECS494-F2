@@ -356,8 +356,8 @@ public class CarpetBossScript : MonoBehaviour {
 	IEnumerator fireBall() {
 		telegraphFireball.SetActive (true);
 		telegraphSmoke.SetActive (true);
-		yield return new WaitForSeconds (5f);
-		GameObject attack = Instantiate(FireBall, this.transform.position, Quaternion.identity)  as GameObject;
+		yield return new WaitForSeconds (2f);
+		Instantiate(FireBall, this.transform.position, Quaternion.identity);
 		telegraphFireball.SetActive (false);
 		telegraphSmoke.SetActive (false);
 		attacking = false;
@@ -367,8 +367,8 @@ public class CarpetBossScript : MonoBehaviour {
 	IEnumerator verticalBeam() {
 		telegraphFireball.SetActive (true);
 		telegraphSmoke.SetActive (true);
-		yield return new WaitForSeconds (5f);
-		GameObject attack = Instantiate(VerticalBeam, this.transform.position, Quaternion.identity)  as GameObject;
+		yield return new WaitForSeconds (2f);
+		Instantiate(VerticalBeam, this.transform.position, Quaternion.identity);
 		telegraphFireball.SetActive (false);
 		telegraphSmoke.SetActive (false);
 		attacking = false;
@@ -378,9 +378,9 @@ public class CarpetBossScript : MonoBehaviour {
 	IEnumerator wideBeam() {
 		telegraphFireball.SetActive (true);
 		telegraphSmoke.SetActive (true);
-		yield return new WaitForSeconds (5f);
+		yield return new WaitForSeconds (2f);
 		Vector3 beamPos = new Vector3(0 , 1, this.transform.position.z  );
-		GameObject attack = Instantiate(WideBeam, beamPos, Quaternion.identity)  as GameObject;
+		Instantiate(WideBeam, beamPos, Quaternion.identity);
 		telegraphFireball.SetActive (false);
 		telegraphSmoke.SetActive (false);
 		attacking = false;
