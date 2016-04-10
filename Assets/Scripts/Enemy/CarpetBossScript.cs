@@ -369,12 +369,15 @@ public class CarpetBossScript : MonoBehaviour {
 			yield return new WaitForSeconds (3.5f);
 			telegraphFireball.SetActive (false);
 			telegraphSmoke.SetActive (false);
-			Instantiate(FireBall, this.transform.position, Quaternion.identity);
+			for (int i = 0; i < 2; ++i) {
+				Instantiate (FireBall, this.transform.position, Quaternion.identity);
+				yield return StartCoroutine (changeLanes());
+			}
 		} else if (bossPhase == 3) {
 			yield return new WaitForSeconds (2.5f);
 			telegraphFireball.SetActive (false);
 			telegraphSmoke.SetActive (false);
-			for (int i = 0; i < 2; ++i) {
+			for (int i = 0; i < 4; ++i) {
 				Instantiate (FireBall, this.transform.position, Quaternion.identity);
 				yield return StartCoroutine (changeLanes());
 			}
@@ -382,7 +385,7 @@ public class CarpetBossScript : MonoBehaviour {
 			yield return new WaitForSeconds (1.5f);
 			telegraphFireball.SetActive (false);
 			telegraphSmoke.SetActive (false);
-			for (int i = 0; i < 3; ++i) {
+			for (int i = 0; i < 6; ++i) {
 				Instantiate (FireBall, this.transform.position, Quaternion.identity);
 				yield return StartCoroutine (changeLanes());
 			}
@@ -397,9 +400,13 @@ public class CarpetBossScript : MonoBehaviour {
 		telegraphFireball.SetActive (true);
 		telegraphSmoke.SetActive (true);
 		yield return new WaitForSeconds (1.5f);
-		Instantiate(VerticalBeam, this.transform.position, Quaternion.identity);
 		telegraphFireball.SetActive (false);
 		telegraphSmoke.SetActive (false);
+		for (int i = 0; i < 3; ++i) {
+			Instantiate (VerticalBeam, this.transform.position, Quaternion.identity);
+			yield return StartCoroutine (changeLanes());
+		}
+
 		attacking = false;
 		setAttackTimer ();
 	}

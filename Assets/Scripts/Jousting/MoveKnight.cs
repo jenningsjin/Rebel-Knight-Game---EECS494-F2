@@ -28,6 +28,8 @@ public class MoveKnight : MonoBehaviour {
     bool left = false;
     float attackDelay = 0.5f;
     bool lanceHit = false;
+
+	[Header("Audio")]
     public AudioClip neigh;
     public AudioClip damaged;
     public AudioClip jump;
