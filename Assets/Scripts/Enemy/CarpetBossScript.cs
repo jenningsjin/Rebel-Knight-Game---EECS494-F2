@@ -46,11 +46,15 @@ public class CarpetBossScript : MonoBehaviour {
 	public AudioSource audiosource;
 	public AudioClip evilLaugh;
 	public AudioClip spawnSound;
+	public AudioClip charging;
 
 	public enum attacks {fireBall = 1, wideBeam = 2, verticalBeam = 3};
 	public enum laneNum {left = -4, center = 0, right = 4}
 	int[] lanes = new int[3];
 
+	[Header("UI")]
+	public GameObject bossHearts;
+	public GameObject bossHearts1;
 	//bool coroutineFlag = false;
 
 	// Boss Phases:
@@ -84,6 +88,10 @@ public class CarpetBossScript : MonoBehaviour {
 		distanceFromEdge = Mathf.Abs (this.gameObject.transform.position.z - edge);
 
 		this.transform.position = new Vector3(currentLane, this.transform.position.y, chaser.transform.position.z + chaserDistance);
+	
+		// UI
+		bossHearts = GameObject.Find("BossHearts");
+		bossHearts1 = GameObject.Find ("BossHearts1");
 	}
 
 	// Fungus calls changePhase as soon as the user clicks through the dialogue.
@@ -354,6 +362,7 @@ public class CarpetBossScript : MonoBehaviour {
 	}
 
 	IEnumerator fireBall() {
+		//audiosource.PlayOneShot (charging);
 		telegraphFireball.SetActive (true);
 		telegraphSmoke.SetActive (true);
 		if (bossPhase == 2) {
@@ -441,6 +450,13 @@ public class CarpetBossScript : MonoBehaviour {
 			} else if (bossHP < 4 && bossHP >= 1) {
 				bossPhase = 4;
 			}
+
+			if (bossHP >= 5) {
+				bossHearts1.GetComponent<HeartsScriptBoss> ().decreaseHealth ();
+			} else {
+				bossHearts.GetComponent<HeartsScriptBoss> ().decreaseHealth ();
+			}
+
 			print("Boss has been hit");
 		}
 
