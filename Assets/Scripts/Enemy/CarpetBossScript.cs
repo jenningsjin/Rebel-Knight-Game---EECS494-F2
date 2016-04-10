@@ -8,23 +8,24 @@ public class CarpetBossScript : MonoBehaviour {
 	public GameObject spawnedEnemy;
 	public GameObject childHolder;
 	public GameObject path; // The BaseTerrain
-
+	public GameObject telegraphFireball;
+	public GameObject telegraphSmoke;
 
 	[Header("Boss Parameters")]
 	public int maxHP = 10;
 	public int bossHP = 10;
 	public int chaserDistance = 20;
 	public int bossPhase = 0;
-	public float enemySpawnInterval = 250f;
-	public float laneChangeInterval = 30f;
+	public float enemySpawnInterval = 6f;
+	public float laneChangeTimer = 30f;
 	public int currentLane = 0;
 	public float distanceFromEdge;
 	public float minDist = 300f; // distance when we instantiate path
 	public int pathOffset = 1000; // Where to instantiate new path
-	public float attackInterval = 20f;
+	public float attackTimer = 20f;
 
 	[Header("Action Flags")]
-	public bool spawnEnemies = true;
+	//public bool spawnEnemies = true;
 	//public bool bossMayChangeLanes = true;
 	public bool attackDebug = true;
 	public bool fading = false;
@@ -38,14 +39,13 @@ public class CarpetBossScript : MonoBehaviour {
 
 	[Header("Auxillary")]
 	public GameObject explosion;
-	float phaseInterval = 1f;
+	//float phaseInterval = 1f;
 	public Renderer[] renderers; 
 
 	[Header("Audio")]
 	public AudioSource audiosource;
 	public AudioClip evilLaugh;
 	public AudioClip spawnSound;
-
 
 	public enum attacks {fireBall = 1, wideBeam = 2, verticalBeam = 3};
 	public enum laneNum {left = -4, center = 0, right = 4}
@@ -70,6 +70,8 @@ public class CarpetBossScript : MonoBehaviour {
 	void Start () {
 		// Obtain all child renderers.
 		renderers = this.gameObject.GetComponentsInChildren<Renderer> ();
+		attacking = false;
+		changingLanes = false;
 
 		lanes[0] = -4;
 		lanes[1] = 0;
@@ -87,48 +89,50 @@ public class CarpetBossScript : MonoBehaviour {
 	// Fungus calls changePhase as soon as the user clicks through the dialogue.
 	public void changePhase() {
 		Debug.Log ("Called changePhase()");
-		StartCoroutine("spawnEnemyCoroutine");
 		bossPhase = 1;
-		// Set timer intervals
-		setLaneChangeInterval();
-		setAttackInterval ();
+		laneChangeTimer = 10f;
+		attackTimer = 11f;
+		StartCoroutine("spawnEnemyCoroutine");
+		setLaneChangeTimer();
+		setAttackTimer();
 	}
 		
-	void setLaneChangeInterval() {
+	void setLaneChangeTimer() {
+		Debug.Log ("Setting the lane change timer");
 		switch (bossPhase) {
 		case 0:
 			break;
 		case 1:
-			laneChangeInterval = 30f;
+			laneChangeTimer = 10f;
 			break;
 		case 2:
-			laneChangeInterval = 20f;
+			laneChangeTimer = 7f;
 			break;
 		case 3:
-			laneChangeInterval = 10f;
+			laneChangeTimer = 5f;
 			break;
 		case 4:
-			laneChangeInterval = 5f;
+			laneChangeTimer = 3f;
 			break;
 		default:
 			break;
 		}
 	}
 
-	void setAttackInterval() {
+	void setAttackTimer() {
 		switch (bossPhase) {
 		case 0:
 			break;
 		case 1:
 			break;
 		case 2:
-			attackInterval = 20f;
+			attackTimer = 11f;
 			break;
 		case 3:
-			attackInterval = 15f;
+			attackTimer = 8f;
 			break;
 		case 4:
-			attackInterval = 10f;
+			attackTimer = 6f;
 			break;
 		default:
 			break;
@@ -150,16 +154,12 @@ public class CarpetBossScript : MonoBehaviour {
 		// Lane changing and attacking are both affected by the boss's current health
 		// Lane changing
 		if (bossPhase > 0) {
-			if (laneChangeInterval >= 0) {
-				laneChangeInterval -= Time.deltaTime;
-				this.transform.position =
-					new Vector3 (currentLane, this.transform.position.y, chaser.transform.position.z + chaserDistance);
+			if (laneChangeTimer >= 0) {
+				laneChangeTimer -= Time.deltaTime;
 			} else {
-				int newPosition = Random.Range (0, 3);
-				if (currentLane != lanes [newPosition] && !changingLanes) {
+				if (!changingLanes && !attacking) {
 					StartCoroutine (changeLanes ());
 					changingLanes = true;
-					currentLane = lanes [newPosition];
 				}
 			}
 		}
@@ -167,22 +167,26 @@ public class CarpetBossScript : MonoBehaviour {
 		// Attacking
 		// Note: we don't want to teleport while telegraphing an attack. That wouldn't make sense.
 		if (bossPhase > 1) {
-			if (attackInterval >= 0) {
-				attackInterval -= Time.deltaTime;
+			if (attackTimer >= 0) {
+				attackTimer -= Time.deltaTime;
 			} else {
 				if (!attacking && !changingLanes) {
 					int attackNum = 0;
 					switch (bossPhase) {
+					case 0:
+						break;
 					case 1:
-						attackNum = Random.Range (1, 2);
-						makeAttack (attackNum);
 						break;
 					case 2:
-						attackNum = Random.Range (1, 3);
+						attackNum = 0;
 						makeAttack (attackNum);
 						break;
 					case 3:
-						attackNum = Random.Range(1, 4);
+						attackNum = Random.Range ((int)0, (int)2);
+						makeAttack (attackNum);
+						break;
+					case 4:
+						attackNum = Random.Range ((int)0, (int)3);
 						makeAttack(attackNum);
 						break;
 					default:
@@ -192,6 +196,12 @@ public class CarpetBossScript : MonoBehaviour {
 				}
 			}
 		}
+
+		// Because update is called frequently and I have a 1.5s
+		// delay in the coroutine, I expect the position to change before the
+		// coroutine begins the fade-in animation.
+		this.transform.position =
+			new Vector3 (currentLane, this.transform.position.y, chaser.transform.position.z + chaserDistance);
 
 		// Debugging
 		if (attackDebug) {
@@ -209,7 +219,7 @@ public class CarpetBossScript : MonoBehaviour {
 			if (Input.GetKeyDown(KeyCode.F)) {
 				Debug.Log ("Calling fade in update");
 				currentLane = 1;
-				StartCoroutine (changeLanes ());
+				StartCoroutine (changeLanes());
 				changingLanes = true;
 			}
 		}
@@ -217,7 +227,8 @@ public class CarpetBossScript : MonoBehaviour {
 
 	//Coroutines
 	IEnumerator spawnEnemyCoroutine() {
-		while(spawnEnemies) {
+		while (bossPhase > 0) {
+			Debug.Log ("Spawning enemy");
 			spawnEnemy();
 			yield return new WaitForSeconds(enemySpawnInterval); 
 		}
@@ -228,17 +239,44 @@ public class CarpetBossScript : MonoBehaviour {
 		// Fade out the boss
 		Debug.Log ("Fading out");
 		fading = true;
-		yield return StartCoroutine (fadeCoroutine(false, 1f));
-		Debug.Log ("changeLanes(): disabling renderer");
+		yield return StartCoroutine (fadeCoroutine (false, 1f));
+		Debug.Log ("changeLanesPart1(): disabling renderer");
 
 		// Disable all renderers
 		for (int i = 0; i < renderers.Length; ++i) {
 			renderers [i].enabled = false;
 		}
 
-		// Teleport
-		yield return new WaitForSeconds(1.0f);
-		this.transform.position = new Vector3(currentLane, this.transform.position.y, chaser.transform.position.z + chaserDistance);
+		// Set the current lane
+		int coinToss = Random.Range((int)0, (int)2);	
+		Debug.Log ("Chose value: " + coinToss);
+		int newPosition = 0;
+		if (currentLane == lanes[0]) {
+			Debug.Log ("Current lane == 0");
+			if (coinToss == 0) {
+				newPosition = 1;
+			} else {
+				newPosition = 2;
+			}
+		} else if (currentLane == lanes[1]) {
+			Debug.Log ("Current lane == 1");
+			if (coinToss == 0) {
+				newPosition = 0;
+			} else {
+				newPosition = 2;
+			}
+		} else if (currentLane == lanes[2]) {
+			Debug.Log ("Current lane == 2");
+			if (coinToss == 0) {
+				newPosition = 0;
+			} else {
+				newPosition = 1;
+			}
+		} else {
+			Debug.Log ("Current lane == " + currentLane);
+		}
+		currentLane = lanes [newPosition];
+		yield return new WaitForSeconds(1.5f);
 
 		// Enable all renderers
 		for (int i = 0; i < renderers.Length; ++i) {
@@ -252,7 +290,7 @@ public class CarpetBossScript : MonoBehaviour {
 
 		// Clean up
 		changingLanes = false;
-		setLaneChangeInterval ();
+		setLaneChangeTimer ();
 	}
 
 	// Fade the boss in or out
@@ -262,19 +300,21 @@ public class CarpetBossScript : MonoBehaviour {
 		while (fading) {
 			//Debug.Log ("Fading");
 			for (int i = 0; i < renderers.Length; ++i) {
-				Color c = renderers [i].material.color;
-				// Stop fading if we're fading out and alpha <= 0, or we're
-				// fading in and alpha >= 1.
-				if (c.a <= 0 && !fadeType || c.a >= 1 && fadeType) {
-					fading = false;
-					break;
+				if (renderers[i].material.HasProperty("_Color")) {
+					Color c = renderers [i].material.color;
+					// Stop fading if we're fading out and alpha <= 0, or we're
+					// fading in and alpha >= 1.
+					if (c.a <= 0 && !fadeType || c.a >= 1 && fadeType) {
+						fading = false;
+						break;
+					}
+					if (!fadeType) { // Fading out
+						c.a -= 0.1f * multiplier; // For some reason, using Time.deltaTime causes the shadow to stick around. What???
+					} else { // Fading in
+						c.a += 0.1f * multiplier;
+					}
+					renderers [i].material.color = c;
 				}
-				if (!fadeType) { // Fading out
-					c.a -= 0.1f * multiplier; // For some reason, using Time.deltaTime causes the shadow to stick around. What???
-				} else { // Fading in
-					c.a += 0.1f * multiplier;
-				}
-				renderers [i].material.color = c;
 			}
 			yield return null;
 		}
@@ -282,43 +322,80 @@ public class CarpetBossScript : MonoBehaviour {
 	}
 
 	// Attack coroutines
-
 	//Enemy attack functions
 	void spawnEnemy() {
 		audiosource.pitch = 1;
 		audiosource.PlayOneShot(spawnSound);
-		Instantiate(spawnedEnemy, this.transform.position, Quaternion.identity);
+		Vector3 spawnLocation = this.transform.position;
+		int coinToss = Random.Range ((int)0, (int)2);
+		if (currentLane == lanes [0]) {
+			if (coinToss == 0) {
+				spawnLocation.x = lanes [1];
+			} else {
+				spawnLocation.x = lanes [2];
+			}
+		} else if (currentLane == lanes [1]) {
+			if (coinToss == 0) {
+				spawnLocation.x = lanes [0];
+			} else {
+				spawnLocation.x = lanes [2];
+			}
+		} else if (currentLane == lanes [2]) {
+			if (coinToss == 0) {
+				spawnLocation.x = lanes [0];
+			} else {
+				spawnLocation.x = lanes [1];
+			}
+		} else {
+			Debug.Log ("Spawning enemy in an unknown lane");
+		}
+		Instantiate (spawnedEnemy, spawnLocation, Quaternion.identity);
 		return;
 	}
 
 	IEnumerator fireBall() {
+		telegraphFireball.SetActive (true);
+		telegraphSmoke.SetActive (true);
+		yield return new WaitForSeconds (5f);
 		GameObject attack = Instantiate(FireBall, this.transform.position, Quaternion.identity)  as GameObject;
-		yield return null;
+		telegraphFireball.SetActive (false);
+		telegraphSmoke.SetActive (false);
+		attacking = false;
+		setAttackTimer ();
 	}
 
 	IEnumerator verticalBeam() {
+		telegraphFireball.SetActive (true);
+		telegraphSmoke.SetActive (true);
+		yield return new WaitForSeconds (5f);
 		GameObject attack = Instantiate(VerticalBeam, this.transform.position, Quaternion.identity)  as GameObject;
-		yield return null;
+		telegraphFireball.SetActive (false);
+		telegraphSmoke.SetActive (false);
+		attacking = false;
+		setAttackTimer ();
 	}
 
 	IEnumerator wideBeam() {
+		telegraphFireball.SetActive (true);
+		telegraphSmoke.SetActive (true);
+		yield return new WaitForSeconds (5f);
 		Vector3 beamPos = new Vector3(0 , 1, this.transform.position.z  );
 		GameObject attack = Instantiate(WideBeam, beamPos, Quaternion.identity)  as GameObject;
-		yield return null;
+		telegraphFireball.SetActive (false);
+		telegraphSmoke.SetActive (false);
+		attacking = false;
+		setAttackTimer ();
 	}
 		
 	void makeAttack( int attack) {
 		switch (attack){
 			case 0:
-				spawnEnemy();
-				break;			
-			case 1:
 				StartCoroutine ("fireBall");
 				break;
-			case 2:
+			case 1:
 				StartCoroutine ("wideBeam");
 				break;
-			case 3:
+			case 2:
 				StartCoroutine ("verticalBeam");
 				break;
 			default:
@@ -330,15 +407,22 @@ public class CarpetBossScript : MonoBehaviour {
 
 	void OnCollisionEnter(Collision col) {
 		print(col.gameObject.tag);
-		if(col.gameObject.tag == "Weapon" && phaseInterval < 0 ) {
+		if(col.gameObject.tag == "Weapon") { // && phaseInterval < 0 ) {
 			bossHP-=1;
-			phaseInterval = 0.2f;
+			//phaseInterval = 0.2f;
+			if (bossHP < 10 && bossHP >= 7) {
+				bossPhase = 2;
+			} else if (bossHP < 7 && bossHP >= 4) {
+				bossPhase = 3;
+			} else if (bossHP < 4 && bossHP >= 1) {
+				bossPhase = 4;
+			}
 			print("Boss has been hit");
 		}
 
 		if (bossHP == 0 ) {
 			print("HI");
-			spawnEnemies = false;
+			//spawnEnemies = false;
 			//bossMayChangeLanes = false;
 			bossPhase = 0;
 
