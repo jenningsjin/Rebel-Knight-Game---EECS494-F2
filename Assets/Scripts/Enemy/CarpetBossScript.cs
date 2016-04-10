@@ -356,10 +356,30 @@ public class CarpetBossScript : MonoBehaviour {
 	IEnumerator fireBall() {
 		telegraphFireball.SetActive (true);
 		telegraphSmoke.SetActive (true);
-		yield return new WaitForSeconds (2f);
-		Instantiate(FireBall, this.transform.position, Quaternion.identity);
-		telegraphFireball.SetActive (false);
-		telegraphSmoke.SetActive (false);
+		if (bossPhase == 2) {
+			yield return new WaitForSeconds (3.5f);
+			telegraphFireball.SetActive (false);
+			telegraphSmoke.SetActive (false);
+			Instantiate(FireBall, this.transform.position, Quaternion.identity);
+		} else if (bossPhase == 3) {
+			yield return new WaitForSeconds (2.5f);
+			telegraphFireball.SetActive (false);
+			telegraphSmoke.SetActive (false);
+			for (int i = 0; i < 2; ++i) {
+				Instantiate (FireBall, this.transform.position, Quaternion.identity);
+				yield return StartCoroutine (changeLanes());
+			}
+		} else if (bossPhase == 4) {
+			yield return new WaitForSeconds (1.5f);
+			telegraphFireball.SetActive (false);
+			telegraphSmoke.SetActive (false);
+			for (int i = 0; i < 3; ++i) {
+				Instantiate (FireBall, this.transform.position, Quaternion.identity);
+				yield return StartCoroutine (changeLanes());
+			}
+		}
+
+
 		attacking = false;
 		setAttackTimer ();
 	}
@@ -367,7 +387,7 @@ public class CarpetBossScript : MonoBehaviour {
 	IEnumerator verticalBeam() {
 		telegraphFireball.SetActive (true);
 		telegraphSmoke.SetActive (true);
-		yield return new WaitForSeconds (2f);
+		yield return new WaitForSeconds (1.5f);
 		Instantiate(VerticalBeam, this.transform.position, Quaternion.identity);
 		telegraphFireball.SetActive (false);
 		telegraphSmoke.SetActive (false);
@@ -378,7 +398,11 @@ public class CarpetBossScript : MonoBehaviour {
 	IEnumerator wideBeam() {
 		telegraphFireball.SetActive (true);
 		telegraphSmoke.SetActive (true);
-		yield return new WaitForSeconds (2f);
+		if (bossPhase == 3) {
+			yield return new WaitForSeconds (3f);
+		} else if (bossPhase == 4) {
+			yield return new WaitForSeconds (2f);
+		}
 		Vector3 beamPos = new Vector3(0 , 1, this.transform.position.z  );
 		Instantiate(WideBeam, beamPos, Quaternion.identity);
 		telegraphFireball.SetActive (false);
