@@ -9,7 +9,6 @@ public class MoveKnight : MonoBehaviour {
 	[Header("General Controls")]
     public static Rigidbody rigid;
     public int state;
-    public int jumpSpeed = 100;
     public BoxCollider groundCollider;
     private float moveTimer = 0.1f;
     public static int lane = 1;
@@ -17,7 +16,6 @@ public class MoveKnight : MonoBehaviour {
     public static float rightLane = 4f;
     public static float midLane = 0f;
     private float maxSpeed = 20f;
-    public bool grounded = true;
     public static bool lanceReady = false;
     public GameObject lance;
     float lanceTimer = 0.5f;
@@ -27,6 +25,12 @@ public class MoveKnight : MonoBehaviour {
     //bool left = false;
     float attackDelay = 0.5f;
     bool lanceHit = false;
+
+	[Header("Jumping")]
+	public bool grounded = true;
+	public int jumpSpeed = 100;
+	public float maxHeight;
+	public float jumpOffset = 3.85f;
 
 	[Header("UI")]
 	public GameObject hp_bar;
@@ -166,6 +170,7 @@ public class MoveKnight : MonoBehaviour {
                 vel.y = jumpSpeed;
                 rigid.velocity = vel;
 			    grounded = false;
+				maxHeight = this.transform.position.y + jumpOffset;
                 audioSrc.PlayOneShot(jump, 2f);
 			} else if (Input.GetKeyDown(KeyCode.DownArrow) && BoidController.flockSize > 0) {
                 Vector3 personPos = this.transform.position;
@@ -365,7 +370,7 @@ public class MoveKnight : MonoBehaviour {
         if (!grounded)
         {
             Vector3 vel = rigid.velocity;
-            if (this.transform.position.y > 5.5f) // TODO: The ground's height shouldn't be hard-coded like this.
+            if (this.transform.position.y > maxHeight) // TODO: The ground's height shouldn't be hard-coded like this.
             {
                 vel.y -= 1.5f;
                 rigid.velocity = vel;
