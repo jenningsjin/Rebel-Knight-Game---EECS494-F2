@@ -4,6 +4,8 @@ using System.Collections;
 public class Boss2Script : MonoBehaviour {
     public GameObject knight;
     public GameObject fireball;
+    public GameObject fallingObject;
+    public GameObject rollingObject;
     public float chaseDistance = 10f;
     Rigidbody rigid;
     public int stage = 0;
@@ -15,6 +17,18 @@ public class Boss2Script : MonoBehaviour {
     float fireInterval = 0.5f;
     float laneInterval = 5f;
     float stage6Timer = 10f;
+    float rollingInterval = 0.5f;
+    float stage7Timer = 10f;
+    float fallingInterval = 0.5f;
+    float stage8Timer = 10f;
+    float stage9Timer = 15f;
+    float attackTimer = 0.5f;
+    int attackStage = 6;
+    float stage10Timer = 5f;
+    public int hp = 5;
+    public GameObject column;
+    public GameObject beam;
+    public GameObject explosion;
     // Use this for initialization
     void Start() {
         rigid = GetComponent<Rigidbody>();
@@ -41,14 +55,14 @@ public class Boss2Script : MonoBehaviour {
                 }
                 break;
             case 2: charge();
-                if(this.transform.position.z < MoveKnight.rigid.position.z)
+                if (this.transform.position.z < MoveKnight.rigid.position.z)
                 {
                     stage = 3;
                 }
                 break;
             case 3:
                 stage3Timer -= Time.deltaTime;
-                if(stage3Timer < 0)
+                if (stage3Timer < 0)
                 {
                     stage3Timer = 3f;
                     stage = 4;
@@ -69,11 +83,11 @@ public class Boss2Script : MonoBehaviour {
             case 5:  //Return boss to original position
                 chase();
                 rigid.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionX | rigid.constraints;
-                if(this.transform.position.z - MoveKnight.rigid.position.z >= chaseDistance)
+                if (this.transform.position.z - MoveKnight.rigid.position.z >= chaseDistance)
                 {
                     laneTimer = -1f;
                     switchLane();
-                    stage = 6;
+                    stage = attackStage;
                 }
                 break;
             case 6: //Bullet Hell Attack
@@ -83,13 +97,108 @@ public class Boss2Script : MonoBehaviour {
                 laneInterval = 1f;
                 laneTimer -= Time.deltaTime;
                 switchLane();
-                if(stage6Timer < 0)
+                if (stage6Timer < 0)
                 {
                     stage6Timer = 10f;
+                    attackStage = 7;
+                    laneTimer = 0.5f;
                     stage = 1;
                 }
                 break;
-            case 7:
+            case 7: //Falling Obstacle Attack
+                stage7Timer -= Time.deltaTime;
+                fallingInterval -= Time.deltaTime;
+                fallingObstacle();
+                laneInterval = 1f;
+                laneTimer -= Time.deltaTime;
+                switchLane();
+                if (stage7Timer < 0)
+                {
+                    stage7Timer = 10f;
+                    attackStage = 8;
+                    laneTimer = 0.5f;
+                    stage = 1;
+                }
+                break;
+            case 8: //Rolling ball attack
+                stage8Timer -= Time.deltaTime;
+                rollingInterval -= Time.deltaTime;
+                rollingBall();
+                laneInterval = 1f;
+                laneTimer -= Time.deltaTime;
+                switchLane();
+                if (stage8Timer < 0)
+                {
+                    stage8Timer = 10f;
+                    attackStage = 6;
+                    laneTimer = 0.5f;
+                    stage = 1;
+                }
+                break;
+            case 9: //Final hell stage and death
+                stage9Timer -= Time.deltaTime;
+                laneInterval = 0.3f;
+                laneTimer -= Time.deltaTime;
+                switchLane();
+                attackTimer -= Time.deltaTime;
+                if(attackTimer < 0)
+                {
+                    float decide = Random.Range(0, 3);
+                    if(decide >= 0 && decide < 1)
+                    {
+                        Vector3 pos1 = this.transform.position;
+                        pos1.z -= 2f;
+                        pos1.y = 2f;
+                        knight.transform.position = pos1;
+                        Instantiate(knight);
+                        attackTimer = 0.8f;
+                    }
+                    else if(decide >= 1 && decide < 2)
+                    {
+                        Vector3 pos1 = this.transform.position;
+                        pos1.z += 20f;
+                        pos1.y = 1f;
+                        column.transform.position = pos1;
+                        Instantiate(column);
+                        attackTimer = 1.2f;
+                    } else
+                    {
+                        Vector3 pos1 = this.transform.position;
+                        pos1.z += 20f;
+                        pos1.y = 1f;
+                        beam.transform.position = pos1;
+                        Instantiate(beam);
+                        attackTimer = 1.2f;
+                    }
+                }
+                if (stage9Timer < 0)
+                {
+                    stage9Timer = 10f;
+                    stage = 10;
+
+                }
+                break;
+            case 10: //Death
+                chase();
+                this.transform.Rotate(new Vector3(20f, 20f, 20f));
+                laneInterval = 0.7f;
+                laneTimer -= Time.deltaTime;
+                switchLane();
+                stage10Timer -= Time.deltaTime;
+                if(stage10Timer < 0)
+                {
+                    stage = 11;
+                }
+                break;
+            case 11: //Instantiate Explosions and Die
+                explosion.transform.position = this.transform.position;
+                Instantiate(explosion);
+                Vector3 p = explosion.transform.position;
+                p.x -= 1f;
+                Instantiate(explosion);
+                p.x += 2f;
+                Instantiate(explosion);
+                Destroy(this.gameObject);
                 break;
         }
 
@@ -106,7 +215,7 @@ public class Boss2Script : MonoBehaviour {
         else if(this.transform.position.z - MoveKnight.rigid.position.z > chaseDistance + 1 )
         {
             Vector3 vel = MoveKnight.rigid.velocity;
-            vel.z -= 2f;
+            vel.z -= 20f;
             rigid.velocity = vel;
         } else
         {
@@ -170,6 +279,11 @@ public class Boss2Script : MonoBehaviour {
                 float dir = (Random.Range(-2f, 2f));
                 Vector3 angle = new Vector3(-1f, dir, 0f);
                 rigid.angularVelocity = angle;
+                hp--;
+                if(hp <= 0)
+                {
+                    attackStage = 9;
+                }
             } else
             {
                 stage = 3;
@@ -186,6 +300,33 @@ public class Boss2Script : MonoBehaviour {
             fireball.transform.position = pos;
             Instantiate(fireball);
             fireInterval = 0.7f;
+        }
+    }
+
+    void rollingBall()
+    {
+        if (rollingInterval < 0)
+        {
+            Vector3 pos = this.transform.position;
+            pos.z += 15f;
+            pos.y = 1f;
+            pos.x = Random.Range(-7f, 6f);
+            rollingObject.transform.position = pos;
+            Instantiate(rollingObject);
+            rollingInterval = 0.7f;
+        }
+    }
+
+    void fallingObstacle()
+    {
+        if (fallingInterval < 0)
+        {
+            Vector3 pos = this.transform.position;
+            pos.z += 10f;
+            pos.y = 1f;
+            fallingObject.transform.position = pos;
+            Instantiate(fallingObject);
+            fallingInterval = 0.7f;
         }
     }
 }
