@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Tiling : MonoBehaviour {
+public class TileObstacleLevel : MonoBehaviour {
 
 	public GameObject [] groundInstances;
 
@@ -10,7 +10,7 @@ public class Tiling : MonoBehaviour {
 		groundInstances = GameObject.FindGameObjectsWithTag ("Ground");
 		for (int i = 0; i < groundInstances.Length; ++i) {
 			groundInstances[i].GetComponent<Renderer> ().material.mainTextureScale =
-				new Vector2 (transform.localScale.x, transform.localScale.z);
+				new Vector2 (groundInstances[i].transform.localScale.x, groundInstances[i].transform.localScale.z);
 		}
 	}
 	

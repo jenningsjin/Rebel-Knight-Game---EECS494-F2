@@ -39,7 +39,7 @@ public class Boss2Script : MonoBehaviour {
     // Use this for initialization
     void Start() {
         rigid = GetComponent<Rigidbody>();
-		path = GameObject.Find ("BaseTerrain");
+		path = GameObject.Find ("BossLevelTerrain");
     }
 
     // Update is called once per frame
