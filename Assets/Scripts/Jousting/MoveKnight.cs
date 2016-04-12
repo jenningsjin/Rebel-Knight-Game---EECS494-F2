@@ -220,7 +220,7 @@ public class MoveKnight : MonoBehaviour {
             transform.eulerAngles = angle;
         }
         */
-		this.transform.position = Vector3.MoveTowards(transform.position, pos, 0.4f);
+		this.transform.position = Vector3.MoveTowards(transform.position, pos, 0.2f);
     }
 
 	void OnCollisionEnter(Collision col) {
