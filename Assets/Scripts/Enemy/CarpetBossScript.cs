@@ -83,7 +83,7 @@ public class CarpetBossScript : MonoBehaviour {
 
 		audiosource.pitch = 1;
 		audiosource.PlayOneShot (evilLaugh);
-		path = GameObject.Find ("BaseTerrain");
+		path = GameObject.Find ("BossLevelTerrain");
 		float edge = path.transform.position.z + pathOffset/2;
 		distanceFromEdge = Mathf.Abs (this.gameObject.transform.position.z - edge);
 
