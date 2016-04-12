@@ -29,13 +29,31 @@ public class Boss2Script : MonoBehaviour {
     public GameObject column;
     public GameObject beam;
     public GameObject explosion;
+
+	[Header("Terrain")]
+	public float distanceFromEdge;
+	public float minDist = 300f; // distance when we instantiate path
+	public int pathOffset = 1000; // Where to instantiate new path
+	public GameObject path; // The BaseTerrain
+
     // Use this for initialization
     void Start() {
         rigid = GetComponent<Rigidbody>();
+		path = GameObject.Find ("BaseTerrain");
     }
 
     // Update is called once per frame
     void Update() {
+		// Terrain drawing logic
+		float edge = path.transform.position.z + pathOffset/2;
+		distanceFromEdge = Mathf.Abs (this.gameObject.transform.position.z - edge);
+		if (distanceFromEdge < minDist) {
+			Vector3 newpos = new Vector3 (path.transform.position.x,
+				path.transform.position.y, path.transform.position.z + pathOffset);
+			path = Instantiate<GameObject> (path);
+			path.transform.position = newpos;
+		}
+
         //Chasing Logic
         switch (stage)
         {
@@ -237,7 +255,7 @@ public class Boss2Script : MonoBehaviour {
         if(knightTimer < 0)
         {
             Vector3 pos = this.transform.position;
-            pos.z -= 2f;
+            pos.z += 10f;
             pos.y = 2f;
             knight.transform.position = pos;
             Instantiate(knight);
