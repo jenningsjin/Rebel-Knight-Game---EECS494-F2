@@ -34,6 +34,7 @@ public class MoveKnight : MonoBehaviour {
 
 	[Header("Aesthetics")]
 	public ParticleSystem particle;
+	public Animator animator;
 
 	[Header("Audio")]
     public AudioClip neigh;
@@ -53,6 +54,7 @@ public class MoveKnight : MonoBehaviour {
         particle = GetComponent<ParticleSystem>();
 		ParticleSystem.EmissionModule em = particle.emission;
 		em.enabled = false;
+		animator = GameObject.Find ("RiderController").GetComponent<Animator> ();
         lance.SetActive(false);
         audioSrc = GetComponent<AudioSource>();
 		if (SceneManager.GetActiveScene ().name == "JoustTutorial") {
@@ -71,6 +73,7 @@ public class MoveKnight : MonoBehaviour {
 	// you want to start the game.
 	public void BeginGame() {
 		state = 1;
+		animator.SetBool ("isRunning", true);
 	}
 
 	// Fixed update is called at fixed time intervals. After fixed update, any
