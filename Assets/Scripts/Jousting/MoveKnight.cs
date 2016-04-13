@@ -37,7 +37,7 @@ public class MoveKnight : MonoBehaviour {
 	public Animator animator;
 	public GameObject[] knightAndHorse; // for rendering
 	public Renderer [] renderers; // for rendering
-	public float damageFlashSpeed = 3.0f;
+	public float damageFlashSpeed = 6.0f;
 	public int numFlashes = 2;
 
 	[Header("Audio")]
@@ -417,9 +417,9 @@ public class MoveKnight : MonoBehaviour {
 				// Update each renderer's red value to a max of 1.
 				for (int i = 0; i < renderers.Length; ++i) {
 					Color c = renderers [i].material.color;
-					c.r += 0.1f * multiplier;
-					c.g -= 0.1f * multiplier;
-					c.b -= 0.1f * multiplier;
+					c.r += multiplier * Time.deltaTime;
+					c.g -= multiplier * Time.deltaTime;
+					c.b -= multiplier * Time.deltaTime;
 					if (c.r > 1) {
 						c.r = 1;
 					}
@@ -449,9 +449,9 @@ public class MoveKnight : MonoBehaviour {
 				// Decrease each renderer's red value
 				for (int i = 0; i < renderers.Length; ++i) {
 					Color c = renderers [i].material.color;
-					c.r -= 0.1f * multiplier;
-					c.g += 0.1f * multiplier;
-					c.b += 0.1f * multiplier;
+					c.r -= multiplier * Time.deltaTime;
+					c.g += multiplier * Time.deltaTime;
+					c.b += multiplier * Time.deltaTime;
 					if (c.r < originalColors[i].r) {
 						c.r = originalColors[i].r;
 					}
