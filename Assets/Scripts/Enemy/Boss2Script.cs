@@ -40,6 +40,7 @@ public class Boss2Script : MonoBehaviour {
     void Start() {
         rigid = GetComponent<Rigidbody>();
 		path = GameObject.Find ("BossLevelTerrain");
+        attackStage = 7;
     }
 
     // Update is called once per frame
@@ -120,7 +121,7 @@ public class Boss2Script : MonoBehaviour {
                     stage6Timer = 10f;
                     attackStage = 7;
                     laneTimer = 0.5f;
-                    stage = 1;
+                    stage = 0;
                 }
                 break;
             case 7: //Falling Obstacle Attack
@@ -135,7 +136,7 @@ public class Boss2Script : MonoBehaviour {
                     stage7Timer = 10f;
                     attackStage = 8;
                     laneTimer = 0.5f;
-                    stage = 1;
+                    stage = 0;
                 }
                 break;
             case 8: //Rolling ball attack
@@ -150,7 +151,7 @@ public class Boss2Script : MonoBehaviour {
                     stage8Timer = 10f;
                     attackStage = 6;
                     laneTimer = 0.5f;
-                    stage = 1;
+                    stage = 0;
                 }
                 break;
             case 9: //Final hell stage and death
@@ -341,7 +342,7 @@ public class Boss2Script : MonoBehaviour {
         {
             Vector3 pos = this.transform.position;
             pos.z += 10f;
-            pos.y = 1f;
+            pos.y = 6f;
             fallingObject.transform.position = pos;
             Instantiate(fallingObject);
             fallingInterval = 0.7f;
