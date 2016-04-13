@@ -14,7 +14,7 @@ public class MoveEnemy : MonoBehaviour {
     float timer = 0.5f;
     float currentLane = 0f;
     public GameObject eyes;
-	public GameObject speedDial;
+	//public GameObject speedDial;
     public AudioClip death1;
     public AudioClip death2;
     AudioSource audio;
@@ -31,7 +31,7 @@ public class MoveEnemy : MonoBehaviour {
 		speed = 7.0f;
         eyes.SetActive(false);
         currentLane = MoveKnight.lanePosition();
-		speedDial = GameObject.Find ("Speed");
+		//speedDial = GameObject.Find ("Speed");
         audio = GetComponent<AudioSource>();
     }
 
@@ -145,7 +145,7 @@ public class MoveEnemy : MonoBehaviour {
 		//CarpetBossScript.bossHP -= 1;
 
 		// Update the speed dial to reflect player's success
-		speedDial.GetComponent<SpeedScript>().increaseSpeedDial();
+		//speedDial.GetComponent<SpeedScript>().increaseSpeedDial();
         float decide = Random.Range(0f, 4f);
         if(decide < 2f)
         {

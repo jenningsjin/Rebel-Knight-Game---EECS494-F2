@@ -127,7 +127,7 @@ public class MoveKnight : MonoBehaviour {
 			break;
 		case 1: // Charge
         	attackDelay -= Time.deltaTime;
-            updateSpeed();
+            //updateSpeed();
             if (tookDamage) {
                 healthTimer -= Time.deltaTime;
                 if (healthTimer > 1.25f) {
