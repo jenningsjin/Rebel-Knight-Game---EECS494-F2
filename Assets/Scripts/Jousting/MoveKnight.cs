@@ -35,6 +35,10 @@ public class MoveKnight : MonoBehaviour {
 	[Header("Aesthetics")]
 	public ParticleSystem particle;
 	public Animator animator;
+	public GameObject[] knightAndHorse; // for rendering
+	public Renderer [] renderers; // for rendering
+	public float damageFlashSpeed = 3.0f;
+	public int numFlashes = 2;
 
 	[Header("Audio")]
     public AudioClip neigh;
@@ -55,6 +59,10 @@ public class MoveKnight : MonoBehaviour {
 		ParticleSystem.EmissionModule em = particle.emission;
 		em.enabled = false;
 		animator = GameObject.Find ("RiderController").GetComponent<Animator> ();
+		renderers = new Renderer[2];
+		for (int i = 0; i < 2; ++i) {
+			renderers [i] = knightAndHorse [i].GetComponent<Renderer> ();
+		}
         lance.SetActive(false);
         audioSrc = GetComponent<AudioSource>();
 		if (SceneManager.GetActiveScene ().name == "JoustTutorial") {
@@ -232,6 +240,8 @@ public class MoveKnight : MonoBehaviour {
 		// involved.
         if(col.gameObject.tag == "Enemy" && !lanceReady)
         {
+			// Player has been damaged. Play 'flash red' animation.
+			StartCoroutine(flashRedCoroutine(damageFlashSpeed, numFlashes));
             MoveEnemy x = col.gameObject.GetComponent<MoveEnemy>();
             if(x.state == 1)
             {
@@ -262,6 +272,7 @@ public class MoveKnight : MonoBehaviour {
             }
         } else if (col.gameObject.tag == "Boss" && !lanceReady)
         {
+			StartCoroutine(flashRedCoroutine(damageFlashSpeed, numFlashes));
             hp_bar.GetComponent<HeartsScript>().decreaseHealth();
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
@@ -293,6 +304,7 @@ public class MoveKnight : MonoBehaviour {
         }
 		if(col.gameObject.layer == LayerMask.NameToLayer("Obstacle") || col.gameObject.layer == LayerMask.NameToLayer("FireLayer"))
         {
+			StartCoroutine(flashRedCoroutine(damageFlashSpeed, numFlashes));
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
@@ -329,29 +341,24 @@ public class MoveKnight : MonoBehaviour {
         }
 	}
 
+	//Groundedcheck
+	void OnTriggerEnter(Collider col) {
+		if (col.gameObject.tag == "Ground") {
+			//print("GROUNDED");
+			if (!grounded)
+			{
+				audioSrc.PlayOneShot(land, 1.5f);
+			}
+			grounded = true;
+			//transform.eulerAngles = Vector3.zero;
+		}
+	}
+
     void updateSpeed()
     {
         maxSpeed = (BoidController.flockSize * 4f) + 20f;
     }
-
-	//Groundedcheck
-	void OnTriggerEnter(Collider col) {
-		if (col.gameObject.tag == "Ground") {
-            //print("GROUNDED");
-            if (!grounded)
-            {
-                audioSrc.PlayOneShot(land, 1.5f);
-            }
-			grounded = true;
-            //transform.eulerAngles = Vector3.zero;
-        }
-    }
-
-	// TODO: consider moving this elsewhere
-	public void LoadMenu() {
-		SceneManager.LoadScene ("Menu");
-	}
-
+		
     public static float lanePosition()
     {
         switch (lane)
@@ -393,4 +400,86 @@ public class MoveKnight : MonoBehaviour {
             transform.eulerAngles = Vector3.zero;
         }
     }
+
+	public IEnumerator flashRedCoroutine(float multiplier, int numFlashes)
+	{
+		// Save the original colors of the horse and knight.
+		Color[] originalColors = new Color[2];
+		for (int i = 0; i < 2; ++i) {
+			originalColors [i] = renderers [i].material.color;
+		}
+
+		for (int counter = 0; counter < numFlashes; ++counter) {
+			// Increment the red to max
+			Debug.Log("1: Flashing red");
+			bool flashingRed = true;
+			while (flashingRed) {
+				// Update each renderer's red value to a max of 1.
+				for (int i = 0; i < renderers.Length; ++i) {
+					Color c = renderers [i].material.color;
+					c.r += 0.1f * multiplier;
+					c.g -= 0.1f * multiplier;
+					c.b -= 0.1f * multiplier;
+					if (c.r > 1) {
+						c.r = 1;
+					}
+					if (c.g < 0) {
+						c.g = 0;
+					}
+					if (c.b < 0) {
+						c.b = 0;
+					}
+					renderers [i].material.color = c;
+				}
+				// Stop looping when all renderers have a red value of 1.
+				flashingRed = false;
+				for (int i = 0; i < renderers.Length; ++i) {
+					if (renderers[i].material.color.r < 1 || 
+						renderers[i].material.color.g > 0 ||
+						renderers[i].material.color.b > 0) {
+						flashingRed = true;
+						break;
+					}
+				}
+				yield return null;
+			}
+			// Return knight and horse to their original colors
+			Debug.Log ("2: Flashing back to original colors");
+			while (!flashingRed) {
+				// Decrease each renderer's red value
+				for (int i = 0; i < renderers.Length; ++i) {
+					Color c = renderers [i].material.color;
+					c.r -= 0.1f * multiplier;
+					c.g += 0.1f * multiplier;
+					c.b += 0.1f * multiplier;
+					if (c.r < originalColors[i].r) {
+						c.r = originalColors[i].r;
+					}
+					if (c.g > originalColors[i].g) {
+						c.g = originalColors[i].g;
+					}
+					if (c.b > originalColors[i].b) {
+						c.b = originalColors[i].b;
+					}
+					renderers[i].material.color = c;
+				}
+				flashingRed = true;
+				for (int i = 0; i < renderers.Length; ++i) {
+					if (renderers [i].material.color.r > originalColors [i].r ||
+						renderers[i].material.color.g < originalColors[i].g ||
+						renderers[i].material.color.b < originalColors[i].b) {
+						flashingRed = false;
+						break;
+					}
+				}
+				yield return null;
+			}
+			Debug.Log ("Done with flashing red");
+		}
+	}
+
+	// TODO: consider moving this elsewhere
+	public void LoadMenu() {
+		SceneManager.LoadScene ("Menu");
+	}
 }
