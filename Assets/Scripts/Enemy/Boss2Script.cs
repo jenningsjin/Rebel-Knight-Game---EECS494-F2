@@ -32,6 +32,7 @@ public class Boss2Script : MonoBehaviour {
     public GameObject explosion;
     public GameObject signal;
     public GameObject signal2;
+
 	[Header("Terrain")]
 	public float distanceFromEdge;
 	public float minDist = 300f; // distance when we instantiate path
