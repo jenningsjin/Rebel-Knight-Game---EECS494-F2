@@ -25,11 +25,13 @@ public class Boss2Script : MonoBehaviour {
     float attackTimer = 0.5f;
     int attackStage = 6;
     float stage10Timer = 5f;
+    float signalTimer = 2f;
     public int hp = 5;
     public GameObject column;
     public GameObject beam;
     public GameObject explosion;
-
+    public GameObject signal;
+    public GameObject signal2;
 	[Header("Terrain")]
 	public float distanceFromEdge;
 	public float minDist = 300f; // distance when we instantiate path
@@ -40,7 +42,6 @@ public class Boss2Script : MonoBehaviour {
     void Start() {
         rigid = GetComponent<Rigidbody>();
 		path = GameObject.Find ("BossLevelTerrain");
-        attackStage = 7;
     }
 
     // Update is called once per frame
@@ -105,8 +106,19 @@ public class Boss2Script : MonoBehaviour {
                 if (this.transform.position.z - MoveKnight.rigid.position.z >= chaseDistance)
                 {
                     laneTimer = -1f;
+                    signalTimer -= Time.deltaTime;
                     switchLane();
-                    stage = attackStage;
+                    if (signalTimer < 0)
+                    {
+                        signal.SetActive(false);
+                        signal2.SetActive(false);
+                        signalTimer = 2f;
+                        stage = attackStage;
+                    } else
+                    {
+                        signal.SetActive(true);
+                        signal2.SetActive(true);
+                    }
                 }
                 break;
             case 6: //Bullet Hell Attack
@@ -163,7 +175,7 @@ public class Boss2Script : MonoBehaviour {
                 if(attackTimer < 0)
                 {
                     float decide = Random.Range(0, 3);
-                    if(decide >= 0 && decide < 1)
+                    if(decide >= 0 && decide < 1)//Generate Knight
                     {
                         Vector3 pos1 = this.transform.position;
                         pos1.z -= 2f;
@@ -172,19 +184,20 @@ public class Boss2Script : MonoBehaviour {
                         Instantiate(knight);
                         attackTimer = 0.8f;
                     }
-                    else if(decide >= 1 && decide < 2)
+                    else if(decide >= 1 && decide < 2)//Generate Column
                     {
                         Vector3 pos1 = this.transform.position;
-                        pos1.z += 20f;
-                        pos1.y = 1f;
+                        pos1.z += 30f;
                         column.transform.position = pos1;
+                        print(column.transform.position);
                         Instantiate(column);
                         attackTimer = 1.2f;
                     } else
                     {
                         Vector3 pos1 = this.transform.position;
-                        pos1.z += 20f;
-                        pos1.y = 1f;
+                        pos1.z += 30f;
+                        pos1.y = 0.8f;
+                        pos1.x = 0;
                         beam.transform.position = pos1;
                         Instantiate(beam);
                         attackTimer = 1.2f;
@@ -315,7 +328,7 @@ public class Boss2Script : MonoBehaviour {
         if(fireInterval < 0)
         {
             Vector3 pos = this.transform.position;
-            pos.y = 1f;
+            pos.y = 2f;
             fireball.transform.position = pos;
             Instantiate(fireball);
             fireInterval = 0.7f;
@@ -328,11 +341,10 @@ public class Boss2Script : MonoBehaviour {
         {
             Vector3 pos = this.transform.position;
             pos.z += 15f;
-            pos.y = 1f;
-            pos.x = Random.Range(-7f, 6f);
+            pos.y = 1.5f;
             rollingObject.transform.position = pos;
             Instantiate(rollingObject);
-            rollingInterval = 0.7f;
+            rollingInterval = 0.9f;
         }
     }
 
