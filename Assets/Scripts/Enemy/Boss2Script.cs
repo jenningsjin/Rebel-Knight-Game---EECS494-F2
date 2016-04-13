@@ -103,6 +103,12 @@ public class Boss2Script : MonoBehaviour {
             case 5:  //Return boss to original position
                 chase();
                 rigid.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionX | rigid.constraints;
+                if (transform.position.x < MoveKnight.rigid.position.x + 1.5f && !(this.transform.position.z - MoveKnight.rigid.position.z >= chaseDistance))
+                {
+                    Vector3 pos1 = transform.position;
+                    pos1.x = MoveKnight.rigid.position.x + 1.5f;
+                    transform.position = pos1;
+                }
                 if (this.transform.position.z - MoveKnight.rigid.position.z >= chaseDistance)
                 {
                     laneTimer = -1f;
