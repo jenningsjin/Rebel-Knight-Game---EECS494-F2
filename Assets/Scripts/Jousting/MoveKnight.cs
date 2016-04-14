@@ -16,7 +16,7 @@ public class MoveKnight : MonoBehaviour {
     public static float leftLane = -4f;
     public static float rightLane = 4f;
     public static float midLane = 0f;
-    private float maxSpeed = 20f;
+    static float maxSpeed = 20f;
     public bool grounded = true;
     public static bool lanceReady = false;
     public GameObject lance;
@@ -27,6 +27,8 @@ public class MoveKnight : MonoBehaviour {
     //bool left = false;
     float attackDelay = 0.5f;
     bool lanceHit = false;
+    static public bool powerUp = false;
+    float powerUpTimer = 3f;
 
 	[Header("UI")]
 	public GameObject hp_bar;
@@ -127,7 +129,7 @@ public class MoveKnight : MonoBehaviour {
 			break;
 		case 1: // Charge
         	attackDelay -= Time.deltaTime;
-            //updateSpeed();
+            updateSpeed();
             if (tookDamage) {
                 healthTimer -= Time.deltaTime;
                 if (healthTimer > 1.25f) {
@@ -212,25 +214,6 @@ public class MoveKnight : MonoBehaviour {
             case 2: pos.x = rightLane; break;
             default: pos.x = midLane; lane = 0; break;
         }
-		/* // This logic causes jerkiness. Why are we rotating during
-		// the lane change anyway?
-        if (this.transform.position.x > pos.x+1f || this.transform.position.x < pos.x-1f) {
-            if (left) {
-                Vector3 angle = transform.eulerAngles;
-                angle.y = -7.5f;
-                transform.eulerAngles = angle;
-            } else {
-                Vector3 angle = transform.eulerAngles;
-                angle.y = 7.5f;
-                transform.eulerAngles = angle;
-            }
-        } else if(this.transform.position.x < pos.x+0.2f && this.transform.position.x > pos.x-0.2f &&
-            this.transform.position.x >= pos.x+0.1f && this.transform.position.x <= pos.x - 0.1f) {
-            Vector3 angle = transform.eulerAngles;
-            angle.y = 0;
-            transform.eulerAngles = angle;
-        }
-        */
 		this.transform.position = Vector3.MoveTowards(transform.position, pos, 0.35f);
     }
 
@@ -356,7 +339,34 @@ public class MoveKnight : MonoBehaviour {
 
     void updateSpeed()
     {
-        maxSpeed = (BoidController.flockSize * 4f) + 20f;
+        if (powerUp && powerUpTimer > 0)
+        {
+            powerUpTimer -= Time.deltaTime;
+            maxSpeed = 50f;
+            Vector3 vel = rigid.velocity;
+            vel.z = maxSpeed;
+            rigid.velocity = vel;
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("Default"), true);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("MainCamera"), true);
+        } else if(powerUp && powerUpTimer < 0)
+        {
+            powerUpTimer = 3f;
+            powerUp = false;
+            maxSpeed = 20f;
+            Vector3 vel = rigid.velocity;
+            vel.z = maxSpeed;
+            rigid.velocity = vel;
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), false);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("MainCamera"), false);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), false);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), false);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("Default"), false);
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("MainCamera"), false);
+        }
     }
 		
     public static float lanePosition()
