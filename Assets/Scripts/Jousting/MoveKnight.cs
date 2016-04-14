@@ -339,6 +339,9 @@ public class MoveKnight : MonoBehaviour {
             grounded = true;
             //transform.eulerAngles = Vector3.zero;
         }
+        if (col.gameObject.tag == "Barrel") {
+            col.gameObject.GetComponent<WallExplode>().Explode();
+        }
 	}
 
 	//Groundedcheck

@@ -59,7 +59,6 @@ public class GE_ToggleFullScreenUI : MonoBehaviour
 			// Show Toogle Full Screen button when player is Unity Web, WebGL, Standalone
 			if (Application.platform == RuntimePlatform.OSXWebPlayer || 
 				Application.platform == RuntimePlatform.WindowsWebPlayer ||
-				Application.platform == RuntimePlatform.WebGLPlayer ||
 				Application.platform == RuntimePlatform.WindowsPlayer ||
 				Application.platform == RuntimePlatform.OSXPlayer ||
 				Application.platform == RuntimePlatform.LinuxPlayer)
