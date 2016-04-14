@@ -59,7 +59,7 @@ public class MoveEnemy : MonoBehaviour {
 
 			Vector3 pos = transform.position;
 			pos.x = currentLane;
-			if (Mathf.Abs (transform.position.z - MoveKnight.rigid.position.z) > 2f) {
+			if (Mathf.Abs (transform.position.z - MoveKnight.rigid.position.z) > 4f) {
 				transform.position = Vector3.MoveTowards (transform.position, pos, 1f);
 			}
 			if (timer < 0 && currentLane != MoveKnight.lanePosition ()) {
@@ -69,7 +69,7 @@ public class MoveEnemy : MonoBehaviour {
 
 			if (transform.position.z > target.position.z) {
 				////////Debug.Log ("CHANGING ENEMY's POSITION");
-				transform.position = Vector3.MoveTowards (transform.position, target.position, Time.deltaTime * 1f);
+				//transform.position = Vector3.MoveTowards (transform.position, target.position, Time.deltaTime * 1f);
 			} else if (transform.position.z < target.position.z - 20f) {
 				Destroy (this.gameObject);
 			}
