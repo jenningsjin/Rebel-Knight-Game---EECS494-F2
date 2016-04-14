@@ -14,7 +14,7 @@ Use Demo Scenes
 	• C#
 
 		1) Add new resolution to the Game tab.
-		
+
 			1.1) Click on dropdown-list below the tab of Game tab.
 			1.2) Click on the small plus button.
 			1.3) Add 960x600px resolutions.
@@ -45,7 +45,7 @@ Use Demo Scenes
 	• JavaScript
 
 		1) Add new resolution to the Game tab.
-		
+
 			1.1) Click on dropdown-list below the tab of Game tab.
 			1.2) Click on the small plus button.
 			1.3) Add 960x600px resolutions.

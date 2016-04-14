@@ -39,10 +39,13 @@ public class Boss2Script : MonoBehaviour {
 	public int pathOffset = 1000; // Where to instantiate new path
 	public GameObject path; // The BaseTerrain
 
+    public GameObject bossHearts;
+
     // Use this for initialization
     void Start() {
         rigid = GetComponent<Rigidbody>();
 		path = GameObject.Find ("BossLevelTerrain");
+        bossHearts = GameObject.Find("BossHearts");
     }
 
     // Update is called once per frame
@@ -319,7 +322,11 @@ public class Boss2Script : MonoBehaviour {
                 Vector3 angle = new Vector3(-1f, dir, 0f);
                 rigid.angularVelocity = angle;
                 hp--;
-                if(hp <= 0)
+                if(hp >= 0)
+                {
+                    bossHearts.GetComponent<HeartsScriptBoss>().decreaseHealth();
+                }
+                if (hp <= 0)
                 {
                     attackStage = 9;
                 }
