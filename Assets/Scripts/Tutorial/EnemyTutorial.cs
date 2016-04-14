@@ -15,7 +15,7 @@ public class EnemyTutorial : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider c) {
-		if (c.gameObject.CompareTag("Knight") && !printingMsg) {
+		if (c.gameObject.name == "Knight" && !printingMsg) {
 			Debug.Log ("Knight entered tutorial enemy area");
 			Fungus.Flowchart.BroadcastFungusMessage ("EnemyTutorial");
 			printingMsg = true;

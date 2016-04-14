@@ -15,7 +15,7 @@ public class JumpTutorial : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider c) {
-		if (c.gameObject.CompareTag("Knight") && !printingMsg) {
+		if (c.gameObject.name == "Knight" && !printingMsg) {
 			Debug.Log ("Knight entered tutorial jump area");
 			Fungus.Flowchart.BroadcastFungusMessage ("JumpTutorial");
 			printingMsg = true;
