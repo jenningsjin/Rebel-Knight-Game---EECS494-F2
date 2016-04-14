@@ -111,26 +111,26 @@ public class MainMenu : MonoBehaviour {
 
     public void LoadLevel2Cutscene()
     {
-
+        SceneManager.LoadScene("Level2Cutscene");
     }
 
     public void LoadLevel2()
     {
-
+        SceneManager.LoadScene("Level2");
     }
 
     public void LoadBossLevel2Cutscene()
     {
-
+        SceneManager.LoadScene("BossLevel2Cutscene");
     }
 
     public void LoadBossLevel2()
     {
-
+        SceneManager.LoadScene("BossLevel2");
     }
 
     public void LoadEndScene()
     {
-
+        SceneManager.LoadScene("EndCutscene");
     }
 }

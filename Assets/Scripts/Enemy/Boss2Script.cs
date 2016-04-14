@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class Boss2Script : MonoBehaviour {
     public GameObject knight;
@@ -240,7 +241,9 @@ public class Boss2Script : MonoBehaviour {
                 Instantiate(explosion);
                 p.x += 2f;
                 Instantiate(explosion);
+                Fungus.Flowchart.BroadcastFungusMessage("LevelCleared");
                 Destroy(this.gameObject);
+
                 break;
         }
 
