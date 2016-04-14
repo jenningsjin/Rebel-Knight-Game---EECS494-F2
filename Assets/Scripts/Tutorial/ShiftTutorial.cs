@@ -15,7 +15,9 @@ public class ShiftTutorial : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider c) {
-		if (c.gameObject.CompareTag("Knight") && !printingMsg) {
+		if (c.gameObject.name == "Knight" && !printingMsg) {
+			Debug.Log(c.gameObject.transform.position);
+			Debug.Log(c.gameObject.name);
 			Debug.Log ("Knight entered tutorial shift area");
 			Fungus.Flowchart.BroadcastFungusMessage ("ShiftTutorial");
 			printingMsg = true;

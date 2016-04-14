@@ -36,7 +36,7 @@ public class MainMenu : MonoBehaviour {
 		currentSceneName = SceneManager.GetActiveScene ().name;
 		// All levels that can be paused are guaranteed to have a knight
 		knight = GameObject.Find ("Knight"); // returns null if not found
-		if (currentSceneName == "JoustTutorial" || currentSceneName == "Level1" ||
+		if (currentSceneName == "JoustTutorial" || currentSceneName == "Level1-buildings" ||
 		    currentSceneName == "BossLevel1" || currentSceneName == "Level2" ||
 		    currentSceneName == "BossLevel2") {
 			knight.GetComponent<MoveKnight> ().state = 0;
@@ -82,7 +82,7 @@ public class MainMenu : MonoBehaviour {
 	}
 
 	public void LoadLevel1() {
-		SceneManager.LoadScene ("Level1");
+		SceneManager.LoadScene ("Level1-buildings");
 	}
 
 	public void LoadLevel1Cutscene() {
@@ -108,4 +108,29 @@ public class MainMenu : MonoBehaviour {
 	public void LoadBossLevel1Cutscene() {
 		SceneManager.LoadScene ("BossLevel1Cutscene");
 	}
+
+    public void LoadLevel2Cutscene()
+    {
+
+    }
+
+    public void LoadLevel2()
+    {
+
+    }
+
+    public void LoadBossLevel2Cutscene()
+    {
+
+    }
+
+    public void LoadBossLevel2()
+    {
+
+    }
+
+    public void LoadEndScene()
+    {
+
+    }
 }

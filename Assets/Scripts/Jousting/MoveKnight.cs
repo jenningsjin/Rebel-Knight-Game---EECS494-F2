@@ -181,12 +181,14 @@ public class MoveKnight : MonoBehaviour {
 			    grounded = false;
                 audioSrc.PlayOneShot(jump, 2f);
 			} else if (Input.GetKeyDown(KeyCode.DownArrow) && BoidController.flockSize > 0) {
-                Vector3 personPos = this.transform.position;
+                Vector3 personPos = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
                 personPos.z += 0.5f;
                 person.transform.position = personPos;
                 GameObject.Instantiate(person);
                 BoidController.flockSize--;
             } else if(Input.GetKeyDown(KeyCode.Space) && lanceTimer > 0 && attackDelay < 0) {
+                
+                //Arm.transform.Rotate(40, 10, 0);
                 lanceReady = true;
                 lance.SetActive(true);
                 attackDelay = 0.5f;
