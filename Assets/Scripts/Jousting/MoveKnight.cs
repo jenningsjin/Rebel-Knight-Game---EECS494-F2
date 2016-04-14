@@ -187,6 +187,8 @@ public class MoveKnight : MonoBehaviour {
                 GameObject.Instantiate(person);
                 BoidController.flockSize--;
             } else if(Input.GetKeyDown(KeyCode.Space) && lanceTimer > 0 && attackDelay < 0) {
+                
+                //Arm.transform.Rotate(40, 10, 0);
                 lanceReady = true;
                 lance.SetActive(true);
                 attackDelay = 0.5f;
