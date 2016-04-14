@@ -41,7 +41,7 @@ public class MoveKnight : MonoBehaviour {
 	public Renderer [] renderers; // for rendering
 	public float damageFlashSpeed = 6.0f;
 	public int numFlashes = 2;
-
+    Color horse;
 	[Header("Audio")]
     public AudioClip neigh;
     public AudioClip damaged;
@@ -77,6 +77,7 @@ public class MoveKnight : MonoBehaviour {
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), false);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("Default"), false);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("MainCamera"), false);
+        horse = knightAndHorse[1].GetComponent<SkinnedMeshRenderer>().material.color;
     }
 
 	// Called once user clicks through Fungus dialogue, or whenever
@@ -322,9 +323,6 @@ public class MoveKnight : MonoBehaviour {
             grounded = true;
             //transform.eulerAngles = Vector3.zero;
         }
-        if (col.gameObject.tag == "Barrel") {
-            col.gameObject.GetComponent<WallExplode>().Explode();
-        }
 	}
 
 	//Groundedcheck
@@ -344,6 +342,7 @@ public class MoveKnight : MonoBehaviour {
     {
         if (powerUp && powerUpTimer > 0)
         {
+            knightAndHorse[1].GetComponent<SkinnedMeshRenderer>().material.color = Color.cyan;
             powerUpTimer -= Time.deltaTime;
             maxSpeed = 50f;
             Vector3 vel = rigid.velocity;
@@ -357,6 +356,7 @@ public class MoveKnight : MonoBehaviour {
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("MainCamera"), true);
         } else if(powerUp && powerUpTimer < 0)
         {
+            knightAndHorse[1].GetComponent<SkinnedMeshRenderer>().material.color = horse;
             powerUpTimer = 3f;
             powerUp = false;
             maxSpeed = 20f;
@@ -491,8 +491,8 @@ public class MoveKnight : MonoBehaviour {
 		}
 	}
 
-	// TODO: consider moving this elsewhere
-	public void LoadMenu() {
+    // TODO: consider moving this elsewhere
+    public void LoadMenu() {
 		SceneManager.LoadScene ("Menu");
 	}
 }
