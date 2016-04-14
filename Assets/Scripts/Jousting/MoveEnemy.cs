@@ -100,7 +100,7 @@ public class MoveEnemy : MonoBehaviour {
 		if (col.gameObject.name == "Knight" && state == 1) {
 			if (MoveKnight.lanceReady) {
 				FlamboyantDeathAnimation ();
-                if (BoidController.flockSize < 12)
+                if (BoidController.flockSize < 4)
                 {
                     BoidController.flockSize += 1;
                 }
