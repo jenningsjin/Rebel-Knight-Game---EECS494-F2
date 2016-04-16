@@ -14,7 +14,9 @@ public class MainMenu : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		instructions = GameObject.Find ("InstructionsCanvas");
-		instructions.SetActive (false);
+		if (instructions) {
+			instructions.SetActive (false);
+		}
 	}
 	
 	// Update is called once per frame
@@ -73,8 +75,25 @@ public class MainMenu : MonoBehaviour {
 	}
 
 	// Scene loading
+	public void LoadMainMenu() {
+		SceneManager.LoadScene("Menu");
+	}
+
+	public void SelectLevel() {
+		SceneManager.LoadScene ("Menu_LevelSelect");
+	}
+
+
+	public void LoadGameOver() {
+		SceneManager.LoadScene ("GameOver");
+	}
+		
 	public void ReadPrologue() {
 		SceneManager.LoadScene ("Prologue");
+	}
+
+	public void DisplayInstructions() {
+		SceneManager.LoadScene ("Instructions");
 	}
 
 	public void StartTutorial() {
@@ -87,18 +106,6 @@ public class MainMenu : MonoBehaviour {
 
 	public void LoadLevel1Cutscene() {
 		SceneManager.LoadScene("Level1Cutscene");
-	}
-
-	public void SelectLevel() {
-		SceneManager.LoadScene ("Menu_LevelSelect");
-	}
-
-	public void LoadGameOver() {
-		SceneManager.LoadScene ("GameOver");
-	}
-
-	public void LoadMainMenu() {
-		SceneManager.LoadScene("Menu");
 	}
 		
 	public void LoadBossLevel1() {
