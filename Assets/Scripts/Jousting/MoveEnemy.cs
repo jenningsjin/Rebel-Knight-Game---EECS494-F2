@@ -159,11 +159,13 @@ public class MoveEnemy : MonoBehaviour {
             audio.PlayOneShot(death2, 1f);
             //
         }
-		// In the tutorial, we want to inform Fungus that the enemy is dead, so it
+		// In the tutorial, we want to inform Fungus that the first enemy is dead, so it
 		// can display a dialogue telling the user about his minions. The problem is that
 		// this object gets destroyed, so we can't use a timer to clear the dialogue after
 		// N seconds. Therefore, I use an empty game object with an attached script.
-		if (SceneManager.GetActiveScene ().name == "JoustTutorial") {
+		Debug.Log("col.gameObject.name == " + this.gameObject.name);
+		if (SceneManager.GetActiveScene ().name == "JoustTutorial" &&
+			this.gameObject.name == "SpecialEnemy") {
 			GameObject enemyDeadObj = GameObject.Find ("EnemyKilledState");
 			enemyDeadObj.GetComponent<EnemyKilledDialogue> ().TellFungusEnemyIsDead ();
 		}

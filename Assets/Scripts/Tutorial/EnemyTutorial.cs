@@ -24,6 +24,8 @@ public class EnemyTutorial : MonoBehaviour {
 
 	void OnTriggerExit(Collider c) {
 		if (printingMsg) {
+			// This kills the active say dialogue. Must guarantee that it is the enemy dialogue
+			// it kills.
 			Debug.Log ("Enemy dialogue done");
 			Debug.Log (Fungus.SayDialog.activeSayDialog.storyText.text);
 			Fungus.SayDialog.activeSayDialog.Stop();
