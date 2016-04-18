@@ -42,11 +42,18 @@ public class Boss2Script : MonoBehaviour {
 
     public GameObject bossHearts;
 
+    public AudioClip moo;
+    public AudioClip godzilla;
+    public AudioClip dying;
+    AudioSource audioSrc;
+
     // Use this for initialization
     void Start() {
+        audioSrc = GetComponent<AudioSource>();
         rigid = GetComponent<Rigidbody>();
 		path = GameObject.Find ("BossLevelTerrain");
         bossHearts = GameObject.Find("BossHearts");
+        audioSrc.PlayOneShot(godzilla, 0.25f);
     }
 
     // Update is called once per frame
@@ -218,6 +225,7 @@ public class Boss2Script : MonoBehaviour {
                 {
                     stage9Timer = 10f;
                     stage = 10;
+                    audioSrc.PlayOneShot(dying);
 
                 }
                 break;
@@ -315,6 +323,7 @@ public class Boss2Script : MonoBehaviour {
         {
             if (MoveKnight.lanceReady)
             {
+                audioSrc.PlayOneShot(moo);
                 stage = 3;
                 rigid.constraints = RigidbodyConstraints.None;
                 Vector3 vel = rigid.velocity;
