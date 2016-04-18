@@ -43,5 +43,8 @@ public class AllyProjectile : MonoBehaviour {
 			GameObject.Instantiate (explosion);
 			Destroy (this.gameObject);
 		}
+        if (coll.gameObject.tag == "Barrel") {
+            coll.gameObject.GetComponent<WallExplode>().Explode();
+        }
 	}
 }
