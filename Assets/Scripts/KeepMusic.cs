@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class KeepMusic : MonoBehaviour {
 	public AudioClip [] audioClips;
-	public enum Track {FragmentsOfTime, BattleCry, ThroughTheGates, OldEnglishMarch};
+	public enum Track {FragmentsOfTime, BattleCry, ThroughTheGates, OldEnglishMarch, ExtraCredit, Maelstrom};
 	bool [] isCurrentlyPlaying;
 	public AudioSource audioSource;
 	//public float fadeSpeed = 50f;
@@ -21,7 +21,7 @@ public class KeepMusic : MonoBehaviour {
 		}
 		DontDestroyOnLoad (this.gameObject);
 		audioSource = this.gameObject.GetComponent<AudioSource> ();
-		isCurrentlyPlaying = new bool[4];
+		isCurrentlyPlaying = new bool[audioClips.Length];
 		setAllTracksToNotPlaying ();
 	}
 		
@@ -41,10 +41,12 @@ public class KeepMusic : MonoBehaviour {
 			    !isCurrentlyPlaying [(int)Track.BattleCry]) {
 				Debug.Log ("In the prologue, but not playing prologue theme!");
 				++state;
-			} else if (currentScene.name == "BossLevel1Cutscene" && !isCurrentlyPlaying[(int)Track.OldEnglishMarch]) {
+			} else if (currentScene.name == "BossLevel1Cutscene" && !isCurrentlyPlaying [(int)Track.OldEnglishMarch]) {
 				++state;
 			} else if ((currentScene.name == "Menu" || currentScene.name == "Menu_LevelSelect") &&
 			           !isCurrentlyPlaying [(int)Track.FragmentsOfTime]) {
+				++state;
+			} else if (currentScene.name == "BossLevel2" && !isCurrentlyPlaying [(int)Track.Maelstrom]) {
 				++state;
 			}
 			break;
@@ -69,6 +71,12 @@ public class KeepMusic : MonoBehaviour {
 			} else if (currentScene.name == "Menu" || currentScene.name == "Menu_LevelSelect") {
 				isCurrentlyPlaying [(int)Track.FragmentsOfTime] = true;
 				audioSource.PlayOneShot (audioClips [(int)Track.FragmentsOfTime]);
+			} else if (currentScene.name == "BossLevel2") {
+				GameObject boss = GameObject.Find ("Boss");
+				if (boss.GetComponent<Boss2Script> ().doneWithOpening) {
+					isCurrentlyPlaying [(int)Track.Maelstrom] = true;
+					audioSource.PlayOneShot (audioClips [(int)Track.Maelstrom]);
+				}
 			}
 			++state;
 			break;

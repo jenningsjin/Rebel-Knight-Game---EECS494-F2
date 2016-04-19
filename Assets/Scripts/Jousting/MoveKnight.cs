@@ -187,7 +187,7 @@ public class MoveKnight : MonoBehaviour {
                 GameObject.Instantiate(person);
                 BoidController.flockSize--;
             } else if(Input.GetKeyDown(KeyCode.Space) && lanceTimer > 0 && attackDelay < 0) {
-                
+				audioSrc.PlayOneShot(attack);
                 //Arm.transform.Rotate(40, 10, 0);
                 lanceReady = true;
                 lance.SetActive(true);
@@ -283,7 +283,7 @@ public class MoveKnight : MonoBehaviour {
         else if((col.gameObject.tag == "Enemy" || col.gameObject.tag == "Boss") && lanceReady)
         {
             lanceHit = true;
-            audioSrc.PlayOneShot(attack);
+
             lanceTimer = 0.2f;
             Time.timeScale = 0.25f;
         }
