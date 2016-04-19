@@ -7,7 +7,6 @@ public class HeartsScript : MonoBehaviour {
 	public GameObject player;
 	public bool sentMsg = false;
 	public Sprite [] hp_sprites;
-
 	// Use this for initialization
 	void Start () {
 		index = 0;
