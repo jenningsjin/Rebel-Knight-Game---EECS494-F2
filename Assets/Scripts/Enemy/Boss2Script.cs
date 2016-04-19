@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityStandardAssets.ImageEffects;
 
 public class Boss2Script : MonoBehaviour {
     public GameObject knight;
@@ -8,6 +9,7 @@ public class Boss2Script : MonoBehaviour {
     public GameObject fireball;
     public GameObject fallingObject;
     public GameObject rollingObject;
+	public GameObject maincamera;
     public float chaseDistance = 10f;
     Rigidbody rigid;
     public int stage = -1;
@@ -40,7 +42,6 @@ public class Boss2Script : MonoBehaviour {
 	public float minDist = 300f; // distance when we instantiate path
 	public int pathOffset = 1000; // Where to instantiate new path
 	public GameObject path; // The BaseTerrain
-
     public GameObject bossHearts;
 
 	[Header("Audio")]
@@ -65,6 +66,7 @@ public class Boss2Script : MonoBehaviour {
 		godzillaAudioSrc = GameObject.Find ("GodzillaAudio").GetComponent<AudioSource> ();
 		godzillaClip = godzillaAudioSrc.clip;
 		player = GameObject.Find ("Knight");
+		maincamera = GameObject.Find ("Main Camera");
     }
 
     // Update is called once per frame
@@ -87,6 +89,7 @@ public class Boss2Script : MonoBehaviour {
 				// seconds = (samples) * (seconds/sample)
 				if (dramaticOpeningAudioSrc.timeSamples / dramaticOpeningClip.frequency > 12 && !godzillaAudioSrc.isPlaying) {
 					godzillaAudioSrc.Play ();
+					Fungus.Flowchart.BroadcastFungusMessage ("ShakeCamera");
 				}
 				if (godzillaAudioSrc.timeSamples / godzillaClip.frequency > 4) {
 					doneWithOpening = true;
