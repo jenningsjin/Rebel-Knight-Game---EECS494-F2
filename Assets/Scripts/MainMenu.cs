@@ -9,6 +9,7 @@ public class MainMenu : MonoBehaviour {
 	GameObject knight;
 	GameObject boss;
 	int oldBossPhase;
+	int oldKnightPhase;
 	GameObject instructions;
 
 	// Use this for initialization
@@ -48,6 +49,7 @@ public class MainMenu : MonoBehaviour {
 		if (currentSceneName == "JoustTutorial" || currentSceneName == "Level1" ||
 		    currentSceneName == "BossLevel1" || currentSceneName == "Level2" ||
 		    currentSceneName == "BossLevel2") {
+			oldKnightPhase = knight.GetComponent<MoveKnight> ().state;
 			knight.GetComponent<MoveKnight> ().state = 0;
 			knight.GetComponent<Rigidbody> ().velocity = Vector3.zero;
 			knight.GetComponent<MoveKnight> ().animator.SetBool ("isRunning", false);
@@ -78,7 +80,7 @@ public class MainMenu : MonoBehaviour {
 		if (currentSceneName == "JoustTutorial" || currentSceneName == "Level1" ||
 			currentSceneName == "BossLevel1" || currentSceneName == "Level2" ||
 			currentSceneName == "BossLevel2") {
-			knight.GetComponent<MoveKnight> ().state = 1;
+			knight.GetComponent<MoveKnight> ().state = oldKnightPhase;
 			knight.GetComponent<MoveKnight> ().animator.SetBool ("isRunning", true);
 		}
 		if (currentSceneName == "BossLevel1") {
