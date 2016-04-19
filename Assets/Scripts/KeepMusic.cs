@@ -51,6 +51,8 @@ public class KeepMusic : MonoBehaviour {
 				++state;
 			} else if (currentScene.name == "Level2" && !isCurrentlyPlaying [(int)Track.Warhammer]) {
 				++state;
+			} else if (currentScene.name == "Level2Cutscene" && !isCurrentlyPlaying [(int)Track.ExtraCredit]) {
+				++state;
 			}
 			break;
 		case 1: // Fading out a track (3s)
@@ -83,6 +85,9 @@ public class KeepMusic : MonoBehaviour {
 			} else if (currentScene.name == "Level2") {
 				isCurrentlyPlaying [(int)Track.Warhammer] = true;
 				audioSource.PlayOneShot (audioClips [(int)Track.Warhammer]);
+			} else if (currentScene.name == "Level2Cutscene") {
+				isCurrentlyPlaying [(int)Track.ExtraCredit] = true;
+				audioSource.PlayOneShot (audioClips [(int)Track.ExtraCredit]);
 			}
 			++state;
 			break;
