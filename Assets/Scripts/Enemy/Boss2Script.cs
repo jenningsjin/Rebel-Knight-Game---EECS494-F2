@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityStandardAssets.ImageEffects;
 
 public class Boss2Script : MonoBehaviour {
     public GameObject knight;
+	public GameObject player;
     public GameObject fireball;
     public GameObject fallingObject;
     public GameObject rollingObject;
+	public GameObject maincamera;
     public float chaseDistance = 10f;
     Rigidbody rigid;
-    public int stage = 0;
+    public int stage = -1;
     public float enemyInterval = 5f;
     public float knightTimer = 5f;
     float laneTimer = 5f;
@@ -39,14 +42,31 @@ public class Boss2Script : MonoBehaviour {
 	public float minDist = 300f; // distance when we instantiate path
 	public int pathOffset = 1000; // Where to instantiate new path
 	public GameObject path; // The BaseTerrain
-
     public GameObject bossHearts;
+
+	[Header("Audio")]
+    public AudioClip moo;
+    public AudioClip dying;
+    AudioSource audioSrc;
+	AudioSource dramaticOpeningAudioSrc;
+	public AudioClip dramaticOpeningClip;
+	AudioSource godzillaAudioSrc;
+	public AudioClip godzillaClip;
+	public bool doneWithOpening = false;
 
     // Use this for initialization
     void Start() {
+        audioSrc = GetComponent<AudioSource>();
         rigid = GetComponent<Rigidbody>();
 		path = GameObject.Find ("BossLevelTerrain");
         bossHearts = GameObject.Find("BossHearts");
+		dramaticOpeningAudioSrc = GameObject.Find ("DramaticOpeningAudio").GetComponent<AudioSource> ();
+		dramaticOpeningClip = dramaticOpeningAudioSrc.clip;
+		dramaticOpeningAudioSrc.Play ();
+		godzillaAudioSrc = GameObject.Find ("GodzillaAudio").GetComponent<AudioSource> ();
+		godzillaClip = godzillaAudioSrc.clip;
+		player = GameObject.Find ("Knight");
+		maincamera = GameObject.Find ("Main Camera");
     }
 
     // Update is called once per frame
@@ -64,6 +84,20 @@ public class Boss2Script : MonoBehaviour {
         //Chasing Logic
         switch (stage)
         {
+			case -1:
+				//Debug.Log (dramaticOpeningAudioSrc.timeSamples / dramaticOpeningClip.frequency);
+				// seconds = (samples) * (seconds/sample)
+				if (dramaticOpeningAudioSrc.timeSamples / dramaticOpeningClip.frequency > 12 && !godzillaAudioSrc.isPlaying) {
+					godzillaAudioSrc.Play ();
+					Fungus.Flowchart.BroadcastFungusMessage ("ShakeCamera");
+				}
+				if (godzillaAudioSrc.timeSamples / godzillaClip.frequency > 4) {
+					doneWithOpening = true;
+					Fungus.SayDialog.activeSayDialog.Stop ();
+					player.GetComponent<MoveKnight> ().BeginGame ();
+					stage = 0;
+				}
+				break;
             case 0: chase();
                 laneInterval = 5f;
                 rigid.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionX | rigid.constraints;
@@ -218,6 +252,7 @@ public class Boss2Script : MonoBehaviour {
                 {
                     stage9Timer = 10f;
                     stage = 10;
+                    audioSrc.PlayOneShot(dying);
 
                 }
                 break;
@@ -315,6 +350,7 @@ public class Boss2Script : MonoBehaviour {
         {
             if (MoveKnight.lanceReady)
             {
+                audioSrc.PlayOneShot(moo);
                 stage = 3;
                 rigid.constraints = RigidbodyConstraints.None;
                 Vector3 vel = rigid.velocity;

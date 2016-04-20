@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class MoveKnight : MonoBehaviour {
 	[Header("Debug")]
-	bool godMode = false;
+	public bool godMode = false;
 
 	[Header("General Controls")]
     public static Rigidbody rigid;
@@ -23,7 +23,7 @@ public class MoveKnight : MonoBehaviour {
     float lanceTimer = 0.5f;
     public GameObject person;
     float healthTimer = 1.5f;
-    bool tookDamage = false;
+    public bool tookDamage = false;
     //bool left = false;
     float attackDelay = 0.5f;
     bool lanceHit = false;
@@ -187,7 +187,7 @@ public class MoveKnight : MonoBehaviour {
                 GameObject.Instantiate(person);
                 BoidController.flockSize--;
             } else if(Input.GetKeyDown(KeyCode.Space) && lanceTimer > 0 && attackDelay < 0) {
-                
+				audioSrc.PlayOneShot(attack);
                 //Arm.transform.Rotate(40, 10, 0);
                 lanceReady = true;
                 lance.SetActive(true);
@@ -230,7 +230,8 @@ public class MoveKnight : MonoBehaviour {
             MoveEnemy x = col.gameObject.GetComponent<MoveEnemy>();
             if(x.state == 1)
             {
-				if (!godMode) {
+				if (!godMode && !tookDamage) {
+					//Debug.Log ("Damaging player");
 					hp_bar.GetComponent<HeartsScript> ().decreaseHealth ();
 				}
                 Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
@@ -258,7 +259,9 @@ public class MoveKnight : MonoBehaviour {
         } else if (col.gameObject.tag == "Boss" && !lanceReady)
         {
 			StartCoroutine(flashRedCoroutine(damageFlashSpeed, numFlashes));
-            hp_bar.GetComponent<HeartsScript>().decreaseHealth();
+			if (!godMode && !tookDamage) {
+				hp_bar.GetComponent<HeartsScript> ().decreaseHealth ();
+			}
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Default"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("MainCamera"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Obstacle"), LayerMask.NameToLayer("Default"), true);
@@ -283,7 +286,7 @@ public class MoveKnight : MonoBehaviour {
         else if((col.gameObject.tag == "Enemy" || col.gameObject.tag == "Boss") && lanceReady)
         {
             lanceHit = true;
-            audioSrc.PlayOneShot(attack);
+
             lanceTimer = 0.2f;
             Time.timeScale = 0.25f;
         }
@@ -297,7 +300,7 @@ public class MoveKnight : MonoBehaviour {
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("Default"), true);
             Physics.IgnoreLayerCollision(LayerMask.NameToLayer("FireLayer"), LayerMask.NameToLayer("MainCamera"), true);
             // Handle god mode
-            if (!godMode) {
+			if (!godMode && !tookDamage) {
 				hp_bar.GetComponent<HeartsScript> ().decreaseHealth ();
 			}
             Vector3 v = rigid.velocity;
