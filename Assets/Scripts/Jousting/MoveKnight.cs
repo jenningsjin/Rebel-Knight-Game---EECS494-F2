@@ -51,6 +51,11 @@ public class MoveKnight : MonoBehaviour {
     public AudioClip move;
     AudioSource audioSrc;
 
+    [Header("Stampede")]
+    public GameObject[] Stampede;
+    public static int stampedeSize = 0;
+    public Animator[] stampedeAnimators;
+
     // Use this for initialization
     void Start () {
         rigid = GetComponent<Rigidbody>();
@@ -60,7 +65,7 @@ public class MoveKnight : MonoBehaviour {
         particle = GetComponent<ParticleSystem>();
 		ParticleSystem.EmissionModule em = particle.emission;
 		em.enabled = false;
-		animator = GameObject.Find ("RiderController").GetComponent<Animator> ();
+		//animator = GameObject.Find ("RiderController").GetComponent<Animator> ();
 		renderers = new Renderer[2];
 		for (int i = 0; i < 2; ++i) {
 			renderers [i] = knightAndHorse [i].GetComponent<Renderer> ();
@@ -84,6 +89,11 @@ public class MoveKnight : MonoBehaviour {
 	public void BeginGame() {
 		state = 1;
 		animator.SetBool ("isRunning", true);
+        stampedeAnimators[0].SetBool ("isRunning", true);
+        stampedeAnimators[1].SetBool ("isRunning", true);
+        stampedeAnimators[2].SetBool ("isRunning", true);
+        stampedeAnimators[3].SetBool ("isRunning", true);
+        stampedeAnimators[4].SetBool ("isRunning", true);               
 	}
 
 	// Fixed update is called at fixed time intervals. After fixed update, any
@@ -180,12 +190,16 @@ public class MoveKnight : MonoBehaviour {
                 rigid.velocity = vel;
 			    grounded = false;
                 audioSrc.PlayOneShot(jump, 2f);
-			} else if (Input.GetKeyDown(KeyCode.DownArrow) && BoidController.flockSize > 0) {
+			} else if (Input.GetKeyDown(KeyCode.DownArrow) && stampedeSize > 0) {
                 Vector3 personPos = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
                 personPos.z += 0.5f;
                 person.transform.position = personPos;
                 GameObject.Instantiate(person);
-                BoidController.flockSize--;
+
+                Stampede[stampedeSize - 1].SetActive(false);
+                stampedeSize-=1;
+
+
             } else if(Input.GetKeyDown(KeyCode.Space) && lanceTimer > 0 && attackDelay < 0) {
 				audioSrc.PlayOneShot(attack);
                 //Arm.transform.Rotate(40, 10, 0);
