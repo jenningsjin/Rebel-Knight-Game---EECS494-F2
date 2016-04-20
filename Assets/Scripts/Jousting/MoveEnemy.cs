@@ -100,10 +100,16 @@ public class MoveEnemy : MonoBehaviour {
 		if (col.gameObject.name == "Knight" && state == 1) {
 			if (MoveKnight.lanceReady) {
 				FlamboyantDeathAnimation ();
-                if (BoidController.flockSize < 4)
-                {
-                    BoidController.flockSize += 1;
+
+                if(MoveKnight.stampedeSize <5) {
+
+                	MoveKnight.stampedeSize+=1;
+                	player.GetComponent<MoveKnight>().Stampede[MoveKnight.stampedeSize - 1].SetActive(true);
+                	player.GetComponent<MoveKnight>().stampedeAnimators[MoveKnight.stampedeSize - 1].SetBool ("isRunning", true);
+                	//print("Increment stampedeSize");
+                	//print (MoveKnight.stampedeSize);
                 }
+
             }
 		} else if (nameContainsAllyProjectile.Success && state == 1) {
 			//////Debug.Log ("\nENEMY COLLIDED WITH AN ALLY\n");
