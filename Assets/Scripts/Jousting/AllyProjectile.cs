@@ -44,6 +44,7 @@ public class AllyProjectile : MonoBehaviour {
 			Destroy (this.gameObject);
 		}
         if (coll.gameObject.tag == "Barrel") {
+            coll.gameObject.GetComponent<BoxCollider>().enabled = false;
             coll.gameObject.GetComponent<WallExplode>().Explode();
         }
 	}
