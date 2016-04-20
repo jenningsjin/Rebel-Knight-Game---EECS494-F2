@@ -29,7 +29,7 @@ public class MoveKnight : MonoBehaviour {
     bool lanceHit = false;
     static public bool powerUp = false;
     float powerUpTimer = 3f;
-
+    float groundTimer = 1f;
 	[Header("UI")]
 	public GameObject hp_bar;
 	bool sentMsg = false;
@@ -101,6 +101,7 @@ public class MoveKnight : MonoBehaviour {
 	// rigid bodies.
     void FixedUpdate()
     {
+        groundTimer -= Time.deltaTime;
         if (lanceReady) {
 			ParticleSystem.EmissionModule em = particle.emission;
 			em.enabled = true;
@@ -356,6 +357,7 @@ public class MoveKnight : MonoBehaviour {
 				audioSrc.PlayOneShot(land, 1.5f);
 			}
 			grounded = true;
+            groundTimer = 1f;
 			//transform.eulerAngles = Vector3.zero;
 		}
 	}
@@ -431,6 +433,13 @@ public class MoveKnight : MonoBehaviour {
         else if (transform.eulerAngles != Vector3.zero && !tookDamage && !lanceReady)
         {
             transform.eulerAngles = Vector3.zero;
+        }
+
+        if(grounded && transform.position.y > 2f && groundTimer < 0)
+        {
+            Vector3 vel = rigid.velocity;
+            vel.y = -4f;
+            rigid.velocity = vel;
         }
     }
 
