@@ -12,7 +12,7 @@ public class Boss2Script : MonoBehaviour {
 	public GameObject maincamera;
     public float chaseDistance = 10f;
     Rigidbody rigid;
-    public int stage = -1;
+    public int stage = 0;
     public float enemyInterval = 5f;
     public float knightTimer = 5f;
     float laneTimer = 5f;
@@ -47,11 +47,11 @@ public class Boss2Script : MonoBehaviour {
 	[Header("Audio")]
     public AudioClip moo;
     public AudioClip dying;
-    AudioSource audioSrc;
-	AudioSource dramaticOpeningAudioSrc;
-	public AudioClip dramaticOpeningClip;
-	AudioSource godzillaAudioSrc;
 	public AudioClip godzillaClip;
+    AudioSource audioSrc;
+	//AudioSource dramaticOpeningAudioSrc;
+	//public AudioClip dramaticOpeningClip;
+	//AudioSource godzillaAudioSrc;
 	public bool doneWithOpening = false;
 
     // Use this for initialization
@@ -60,13 +60,14 @@ public class Boss2Script : MonoBehaviour {
         rigid = GetComponent<Rigidbody>();
 		path = GameObject.Find ("BossLevelTerrain");
         bossHearts = GameObject.Find("BossHearts");
-		dramaticOpeningAudioSrc = GameObject.Find ("DramaticOpeningAudio").GetComponent<AudioSource> ();
-		dramaticOpeningClip = dramaticOpeningAudioSrc.clip;
-		dramaticOpeningAudioSrc.Play ();
-		godzillaAudioSrc = GameObject.Find ("GodzillaAudio").GetComponent<AudioSource> ();
-		godzillaClip = godzillaAudioSrc.clip;
+		//dramaticOpeningAudioSrc = GameObject.Find ("DramaticOpeningAudio").GetComponent<AudioSource> ();
+		//dramaticOpeningClip = dramaticOpeningAudioSrc.clip;
+		//dramaticOpeningAudioSrc.Play ();
+		//godzillaAudioSrc = GameObject.Find ("GodzillaAudio").GetComponent<AudioSource> ();
+		//godzillaClip = godzillaAudioSrc.clip;
 		player = GameObject.Find ("Knight");
 		maincamera = GameObject.Find ("Main Camera");
+		audioSrc.PlayOneShot (godzillaClip, 0.25f);
     }
 
     // Update is called once per frame
@@ -84,7 +85,7 @@ public class Boss2Script : MonoBehaviour {
         //Chasing Logic
         switch (stage)
         {
-			case -1:
+			/*case -1:
 				//Debug.Log (dramaticOpeningAudioSrc.timeSamples / dramaticOpeningClip.frequency);
 				// seconds = (samples) * (seconds/sample)
 				if (dramaticOpeningAudioSrc.timeSamples / dramaticOpeningClip.frequency > 12 && !godzillaAudioSrc.isPlaying) {
@@ -98,6 +99,7 @@ public class Boss2Script : MonoBehaviour {
 					stage = 0;
 				}
 				break;
+				*/
             case 0: chase();
                 laneInterval = 5f;
                 rigid.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionX | rigid.constraints;

@@ -77,11 +77,15 @@ public class KeepMusic : MonoBehaviour {
 				isCurrentlyPlaying [(int)Track.FragmentsOfTime] = true;
 				audioSource.PlayOneShot (audioClips [(int)Track.FragmentsOfTime]);
 			} else if (currentScene.name == "BossLevel2") {
+				isCurrentlyPlaying [(int)Track.Maelstrom] = true;
+				audioSource.PlayOneShot (audioClips [(int)Track.Maelstrom]);
+				/*
 				GameObject boss = GameObject.Find ("Boss");
 				if (boss.GetComponent<Boss2Script> ().doneWithOpening) {
 					isCurrentlyPlaying [(int)Track.Maelstrom] = true;
 					audioSource.PlayOneShot (audioClips [(int)Track.Maelstrom]);
 				}
+				*/
 			} else if (currentScene.name == "Level2") {
 				isCurrentlyPlaying [(int)Track.Warhammer] = true;
 				audioSource.PlayOneShot (audioClips [(int)Track.Warhammer]);
