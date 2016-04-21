@@ -37,7 +37,8 @@ public class KeepMusic : MonoBehaviour {
 		switch (state) {
 		case 0: // Playing a track
 			// If the right thing isn't playing, do something!
-			if ((currentScene.name == "Prologue" || currentScene.name == "JoustTutorial") &&
+			if ((currentScene.name == "Prologue" || currentScene.name == "JoustTutorial" || currentScene.name == "Level1Cutscene"
+				|| currentScene.name == "Level1") &&
 			    !isCurrentlyPlaying [(int)Track.BattleCry]) {
 				Debug.Log ("In the prologue, but not playing prologue theme!");
 				++state;
@@ -47,7 +48,8 @@ public class KeepMusic : MonoBehaviour {
 			} else if ((currentScene.name == "Menu" || currentScene.name == "Menu_LevelSelect") &&
 				!isCurrentlyPlaying [(int)Track.MenuMusic]) {
 				++state;
-			} else if (currentScene.name == "BossLevel2" && !isCurrentlyPlaying [(int)Track.Maelstrom]) {
+			} else if ((currentScene.name == "BossLevel2Cutscene" || currentScene.name == "BossLevel2") && !isCurrentlyPlaying [(int)Track.Maelstrom]) {
+				Debug.Log ("We're in boss level 2, but have the wrong music!!!");
 				++state;
 			} else if (currentScene.name == "Level2" && !isCurrentlyPlaying [(int)Track.Warhammer]) {
 				++state;
@@ -66,7 +68,8 @@ public class KeepMusic : MonoBehaviour {
 		case 2: // Selecting a new track
 			audioSource.Stop ();
 			setAllTracksToNotPlaying ();
-			if (currentScene.name == "Prologue" || currentScene.name == "JoustTutorial") {
+			if (currentScene.name == "Prologue" || currentScene.name == "JoustTutorial" || currentScene.name == "Level1Cutscene" ||
+				currentScene.name == "Level1") {
 				Debug.Log ("Choosing prologue track");
 				isCurrentlyPlaying [(int)Track.BattleCry] = true;
 				audioSource.PlayOneShot (audioClips [(int)Track.BattleCry]);
@@ -76,7 +79,7 @@ public class KeepMusic : MonoBehaviour {
 			} else if (currentScene.name == "Menu" || currentScene.name == "Menu_LevelSelect") {
 				isCurrentlyPlaying [(int)Track.MenuMusic] = true;
 				audioSource.PlayOneShot (audioClips [(int)Track.MenuMusic]);
-			} else if (currentScene.name == "BossLevel2") {
+			} else if (currentScene.name == "BossLevel2" || currentScene.name == "BossLevel2Cutscene") {
 				isCurrentlyPlaying [(int)Track.Maelstrom] = true;
 				audioSource.PlayOneShot (audioClips [(int)Track.Maelstrom]);
 				/*
