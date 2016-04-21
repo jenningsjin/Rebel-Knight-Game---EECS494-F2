@@ -95,7 +95,7 @@ public class MoveEnemy : MonoBehaviour {
     }
 
     void OnCollisionEnter(Collision col) {
-        print(col.gameObject.name);
+        //print(col.gameObject.name);
 		Match nameContainsAllyProjectile = Regex.Match (col.gameObject.name, "AllyProjectile*");
 		if (col.gameObject.name == "Knight" && state == 1) {
 			if (MoveKnight.lanceReady) {

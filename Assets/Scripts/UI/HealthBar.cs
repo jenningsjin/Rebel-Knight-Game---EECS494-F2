@@ -8,7 +8,6 @@ public class HealthBar : MonoBehaviour {
 	public float currentHealth;
 	public GameObject cam;
 	public bool sentMsg = false;
-
 	// Use this for initialization
 	void Start () {
 		currentHealth = maxHealth;
@@ -18,7 +17,7 @@ public class HealthBar : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-
+        
 	}
 
 	public void decreaseHealth() {
