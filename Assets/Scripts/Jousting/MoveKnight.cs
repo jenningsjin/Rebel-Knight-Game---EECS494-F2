@@ -453,7 +453,7 @@ public class MoveKnight : MonoBehaviour {
 
 		for (int counter = 0; counter < numFlashes; ++counter) {
 			// Increment the red to max
-			Debug.Log("1: Flashing red");
+			//Debug.Log("1: Flashing red");
 			bool flashingRed = true;
 			while (flashingRed) {
 				// Update each renderer's red value to a max of 1.
@@ -486,7 +486,7 @@ public class MoveKnight : MonoBehaviour {
 				yield return null;
 			}
 			// Return knight and horse to their original colors
-			Debug.Log ("2: Flashing back to original colors");
+			//Debug.Log ("2: Flashing back to original colors");
 			while (!flashingRed) {
 				// Decrease each renderer's red value
 				for (int i = 0; i < renderers.Length; ++i) {
@@ -516,7 +516,7 @@ public class MoveKnight : MonoBehaviour {
 				}
 				yield return null;
 			}
-			Debug.Log ("Done with flashing red");
+			//Debug.Log ("Done with flashing red");
 		}
 	}
 
