@@ -371,10 +371,10 @@ public class Boss2Script : MonoBehaviour {
                 {
                     attackStage = 9;
                 }
-            } else
+            } /*else
             {
                 stage = 3;
-            }
+            }*/
         }
     }
 
