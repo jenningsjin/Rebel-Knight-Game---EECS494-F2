@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class KeepMusic : MonoBehaviour {
 	public AudioClip [] audioClips;
-	public enum Track {FragmentsOfTime, BattleCry, ThroughTheGates, OldEnglishMarch, ExtraCredit, Maelstrom, Warhammer};
+	public enum Track {MenuMusic, BattleCry, ThroughTheGates, OldEnglishMarch, ExtraCredit, Maelstrom, Warhammer};
 	bool [] isCurrentlyPlaying;
 	public AudioSource audioSource;
 	//public float fadeSpeed = 50f;
@@ -27,8 +27,8 @@ public class KeepMusic : MonoBehaviour {
 		
 	// Use this for initialization
 	void Start () {
-		audioSource.PlayOneShot(audioClips[(int) Track.FragmentsOfTime]);
-		isCurrentlyPlaying [(int)Track.FragmentsOfTime] = true;
+		audioSource.PlayOneShot(audioClips[(int) Track.MenuMusic]);
+		isCurrentlyPlaying [(int)Track.MenuMusic] = true;
 	}
 	
 	// Update is called once per frame
@@ -45,7 +45,7 @@ public class KeepMusic : MonoBehaviour {
 			           !isCurrentlyPlaying [(int)Track.OldEnglishMarch]) {
 				++state;
 			} else if ((currentScene.name == "Menu" || currentScene.name == "Menu_LevelSelect") &&
-			           !isCurrentlyPlaying [(int)Track.FragmentsOfTime]) {
+				!isCurrentlyPlaying [(int)Track.MenuMusic]) {
 				++state;
 			} else if (currentScene.name == "BossLevel2" && !isCurrentlyPlaying [(int)Track.Maelstrom]) {
 				++state;
@@ -74,8 +74,8 @@ public class KeepMusic : MonoBehaviour {
 				isCurrentlyPlaying [(int)Track.OldEnglishMarch] = true;
 				audioSource.PlayOneShot (audioClips [(int)Track.OldEnglishMarch]);
 			} else if (currentScene.name == "Menu" || currentScene.name == "Menu_LevelSelect") {
-				isCurrentlyPlaying [(int)Track.FragmentsOfTime] = true;
-				audioSource.PlayOneShot (audioClips [(int)Track.FragmentsOfTime]);
+				isCurrentlyPlaying [(int)Track.MenuMusic] = true;
+				audioSource.PlayOneShot (audioClips [(int)Track.MenuMusic]);
 			} else if (currentScene.name == "BossLevel2") {
 				isCurrentlyPlaying [(int)Track.Maelstrom] = true;
 				audioSource.PlayOneShot (audioClips [(int)Track.Maelstrom]);
